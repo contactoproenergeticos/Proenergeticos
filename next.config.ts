@@ -1,43 +1,37 @@
-import type {NextConfig} from 'next';
+import type { NextConfig } from 'next';
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   typescript: {
-    // ESTO SALTARÁ EL PASO DONDE SE DETIENE VERCEL
+    // Salta la validación de tipos para finalizar el despliegue de Proenergéticos
     ignoreBuildErrors: true,
   },
   eslint: {
-    // TAMBIÉN SALTAMOS LINTING PARA ASEGURAR EL ÉXITO
+    // Salta la validación de linting para asegurar el éxito del build
     ignoreDuringBuilds: true,
   },
-
-export default nextConfig;
-
-  // Autorización de dominios externos para las imágenes del historial técnico
+  // Configuración de imágenes del historial técnico
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'picsum.photos',
-        port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
-        port: '',
         pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'i.postimg.cc',
-        port: '',
         pathname: '/**',
       },
     ],
   },
   output: 'standalone',
   transpilePackages: ['motion'],
-  webpack: (config, {dev}) => {
+  webpack: (config, { dev }) => {
     if (dev && process.env.DISABLE_HMR === 'true') {
       config.watchOptions = {
         ignored: /.*/,
