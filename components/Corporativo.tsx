@@ -2,7 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { Truck, BarChart3, CreditCard, ShieldCheck, Ship, Send, CheckCircle2, AlertCircle, Loader2, Zap } from 'lucide-react';
+import { 
+  Truck, 
+  BarChart3, 
+  CreditCard, 
+  ShieldCheck, 
+  Ship, 
+  Send, 
+  CheckCircle2, 
+  Loader2, 
+  Zap, 
+  XCircle 
+} from 'lucide-react';
 
 const CorporativoCard = ({ icon: Icon, title, desc }: { icon: any; title: string; desc: string }) => (
   <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-gray-100 hover:border-[#E30613]/20 transition-all group">
@@ -18,7 +29,7 @@ export default function Corporativo() {
   const [formData, setFormData] = useState({ nombre: '', correo: '', mensaje: '' });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-  // Validaciones
+  // Validaciones de formulario
   const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   const hasNumbersInNombre = /\d/.test(formData.nombre);
   const isNombreValid = formData.nombre.trim().length >= 3 && !hasNumbersInNombre;
@@ -26,25 +37,10 @@ export default function Corporativo() {
   const isMensajeValid = formData.mensaje.trim().length >= 10;
   const isFormValid = isNombreValid && isCorreoValid && isMensajeValid;
 
-  // EFECTO DE AUTOLIMPIEZA: Quita el mensaje tras 5 segundos si no hay interacción
-  useEffect(() => {
-    if (status === 'success' || status === 'error') {
-      const timer = setTimeout(() => {
-        setStatus('idle');
-      }, 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [status]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    
-    // Al escribir, reseteamos el estado a 'idle' para ocultar mensajes previos 
-    // y permitir que el botón se reactive inmediatamente.
-    if (status !== 'idle') {
-      setStatus('idle');
-    }
-
+    // Si el usuario escribe después de un error o éxito, regresamos a 'idle'
+    if (status !== 'idle' && status !== 'loading') setStatus('idle');
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
@@ -57,23 +53,59 @@ export default function Corporativo() {
       const response = await fetch('/api/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          tipo: 'COTIZACION', // Identificador para la distinción en el correo
+          asunto: "Solicitud de Cotización Corporativa"
+        }),
       });
 
       if (response.ok) {
         setStatus('success');
-        // Limpiamos los campos para permitir una nueva entrada
         setFormData({ nombre: '', correo: '', mensaje: '' });
       } else {
         setStatus('error');
       }
     } catch (error) {
+      console.error("Error al enviar:", error);
       setStatus('error');
     }
   };
 
   return (
-    <div className="py-12 bg-gray-200 w-full overflow-x-hidden font-sans">
+    <div className="py-12 bg-gray-200 w-full overflow-x-hidden font-sans relative">
+      
+      {/* MODAL DE ESTADO PERSONALIZADO (Reemplaza al alert básico) */}
+      {(status === 'success' || status === 'error') && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white rounded-[40px] p-8 md:p-12 max-w-sm w-full shadow-2xl text-center border-b-8 border-[#E30613] transform animate-in zoom-in-95 duration-300">
+            {status === 'success' ? (
+              <>
+                <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle2 className="text-green-600 w-12 h-12" />
+                </div>
+                <h3 className="text-2xl font-black text-gray-900 uppercase italic mb-2">Solicitud Enviada</h3>
+                <p className="text-gray-500 font-medium mb-8">Hemos recibido tu solicitud de cotización con éxito. Un asesor comercial te contactará pronto.</p>
+              </>
+            ) : (
+              <>
+                <div className="bg-red-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <XCircle className="text-[#E30613] w-12 h-12" />
+                </div>
+                <h3 className="text-2xl font-black text-gray-900 uppercase italic mb-2">Error de Envío</h3>
+                <p className="text-gray-500 font-medium mb-8">No pudimos procesar tu solicitud en este momento. Por favor, intenta más tarde.</p>
+              </>
+            )}
+            <button 
+              onClick={() => setStatus('idle')}
+              className="w-full bg-gray-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-gray-800 transition-all active:scale-95"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-6xl mx-auto space-y-24 px-4">
         
         {/* Hero Section */}
@@ -101,24 +133,25 @@ export default function Corporativo() {
 
         {/* Cards de Servicios */}
         <div className="grid md:grid-cols-3 gap-12">
-          <CorporativoCard icon={Zap} title="Suministro Industrial" desc="Diésel certificado de alta calidad." />
-          <CorporativoCard icon={CreditCard} title="Crédito Corporativo" desc="Control total y reportes detallados." />
-          <CorporativoCard icon={Truck} title="Atención a Flotas" desc="Servicio prioritario y trazabilidad." />
+          <CorporativoCard icon={Zap} title="Suministro Industrial" desc="Diésel certificado de alta calidad para tanques de autoconsumo." />
+          <CorporativoCard icon={CreditCard} title="Crédito Corporativo" desc="Líneas de crédito diseñadas para optimizar el flujo de tu empresa." />
+          <CorporativoCard icon={Truck} title="Atención a Flotas" desc="Cargas rápidas y seguras con trazabilidad total de consumos." />
         </div>
 
-        {/* Formulario e Info */}
+        {/* Formulario e Infraestructura */}
         <div className="bg-white rounded-[30px] md:rounded-[60px] p-8 md:p-20 shadow-xl border border-gray-100">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             
-            <div aria-label="Nuestra Infraestructura">
+            {/* Columna Texto */}
+            <div>
               <h3 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tighter uppercase italic mb-8">
                 Infraestructura <span className="text-[#E30613]">Logística</span>
               </h3>
               <div className="space-y-8">
                 {[
-                  { icon: ShieldCheck, title: "Garantía de Calidad", desc: "Combustibles que protegen tus equipos." },
-                  { icon: BarChart3, title: "Reportes Inteligentes", desc: "Datos precisos en tiempo real." },
-                  { icon: Ship, title: "Suministro Marino", desc: "Atención especializada en muelle." }
+                  { icon: ShieldCheck, title: "Garantía de Calidad", desc: "Suministramos combustibles bajo las normas oficiales para proteger tus motores." },
+                  { icon: BarChart3, title: "Reportes Inteligentes", desc: "Accede a datos precisos de consumo por unidad y periodo en tiempo real." },
+                  { icon: Ship, title: "Suministro Marino", desc: "Logística especializada para el sector pesquero y embarcaciones en muelle." }
                 ].map((item, i) => (
                   <div key={i} className="flex gap-6 items-start">
                     <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
@@ -133,76 +166,55 @@ export default function Corporativo() {
               </div>
             </div>
 
-            {/* FORMULARIO DE CONTACTO */}
-            <div className="bg-gray-900 rounded-[30px] md:rounded-[40px] p-8 md:p-10 shadow-2xl relative" role="region" aria-label="Solicitud de cotización">
+            {/* Columna Formulario */}
+            <div className="bg-gray-900 rounded-[30px] md:rounded-[40px] p-8 md:p-10 shadow-2xl relative">
               <p className="text-[#E30613] font-black uppercase tracking-widest text-xs mb-2 italic">Contacto Comercial</p>
               <h3 className="text-2xl font-black text-white uppercase italic mb-6">Solicitar Cotización</h3>
               
               <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <input 
-                    type="text" 
-                    name="nombre"
-                    value={formData.nombre}
-                    onChange={handleChange}
-                    placeholder="NOMBRE O EMPRESA" 
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white font-bold outline-none focus:bg-white focus:text-gray-900 transition-all"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <input 
-                    type="email" 
-                    name="correo"
-                    value={formData.correo}
-                    onChange={handleChange}
-                    placeholder="CORREO ELECTRÓNICO" 
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white font-bold outline-none focus:bg-white focus:text-gray-900 transition-all"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <textarea 
-                    name="mensaje"
-                    value={formData.mensaje}
-                    onChange={handleChange}
-                    placeholder="DETALLES (VOLUMEN, UBICACIÓN...)" 
-                    rows={4}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white font-bold outline-none resize-none focus:bg-white focus:text-gray-900 transition-all"
-                    required
-                  ></textarea>
-                </div>
+                <input 
+                  type="text" 
+                  name="nombre"
+                  value={formData.nombre}
+                  onChange={handleChange}
+                  placeholder="NOMBRE O EMPRESA" 
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white font-bold outline-none focus:bg-white focus:text-gray-900 transition-all uppercase"
+                  required
+                />
+                <input 
+                  type="email" 
+                  name="correo"
+                  value={formData.correo}
+                  onChange={handleChange}
+                  placeholder="CORREO ELECTRÓNICO" 
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white font-bold outline-none focus:bg-white focus:text-gray-900 transition-all"
+                  required
+                />
+                <textarea 
+                  name="mensaje"
+                  value={formData.mensaje}
+                  onChange={handleChange}
+                  placeholder="DETALLES (VOLUMEN MENSUAL, UBICACIÓN...)" 
+                  rows={4}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white font-bold outline-none resize-none focus:bg-white focus:text-gray-900 transition-all"
+                  required
+                ></textarea>
                 
                 <button 
                   type="submit"
                   disabled={!isFormValid || status === 'loading'}
                   className={`w-full py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-sm transition-all flex items-center justify-center gap-3 ${
-                    isFormValid && status !== 'loading' ? 'bg-[#E30613] text-white hover:scale-[1.02]' : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+                    isFormValid && status !== 'loading' 
+                      ? 'bg-[#E30613] text-white hover:scale-[1.02] shadow-lg shadow-[#E30613]/20' 
+                      : 'bg-gray-700 text-gray-400 cursor-not-allowed'
                   }`}
                 >
                   {status === 'loading' ? (
-                    <> <Loader2 className="animate-spin" /> ENVIANDO... </>
+                    <> <Loader2 className="animate-spin" /> PROCESANDO... </>
                   ) : (
-                    <> ENVIAR MENSAJE <Send size={16} /> </>
+                    <> SOLICITAR INFORMACIÓN <Send size={16} /> </>
                   )}
                 </button>
-
-                {/* MENSAJES DE ESTADO DINÁMICOS */}
-                <div aria-live="polite" className="mt-4 text-center min-h-[30px]">
-                  {/* El mensaje verde desaparece si el estado cambia O si el usuario empieza a escribir (nombre != '') */}
-                  {status === 'success' && formData.nombre === '' && (
-                    <div className="flex items-center justify-center gap-2 text-green-400 font-bold animate-in fade-in zoom-in duration-300">
-                      <CheckCircle2 size={20} /> ¡ENVIADO CON ÉXITO!
-                    </div>
-                  )}
-                  {status === 'error' && (
-                    <div className="flex items-center justify-center gap-2 text-red-500 font-bold">
-                      <AlertCircle size={20} /> ERROR AL ENVIAR. REINTENTE.
-                    </div>
-                  )}
-                </div>
               </form>
             </div>
 
@@ -211,4 +223,4 @@ export default function Corporativo() {
       </div>
     </div>
   );
-} // Fin del componente
+}

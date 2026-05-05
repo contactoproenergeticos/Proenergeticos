@@ -1,11 +1,21 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Clock, Send, Facebook, Instagram, Linkedin } from 'lucide-react';
+import { 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Clock, 
+  Send, 
+  Facebook, 
+  Instagram, 
+  Linkedin, 
+  CheckCircle2, 
+  XCircle, 
+  Loader2 
+} from 'lucide-react';
 
 const ContactInfo = ({ icon: Icon, title, content }: { icon: any; title: string; content: string }) => (
-  // Ajuste de padding en móvil (p-5) y alineación
   <div className="flex gap-4 md:gap-6 items-start p-5 md:p-8 bg-white rounded-3xl shadow-xl border border-gray-100 transition-transform hover:scale-[1.02] w-full max-w-md mx-auto lg:mx-0">
     <div className="bg-white p-3 md:p-4 rounded-full flex-shrink-0 shadow-sm border border-gray-100">
       <Icon className="text-[#E30613] w-5 h-5 md:w-8 md:h-8" />
@@ -24,29 +34,86 @@ export default function Contacto() {
     asunto: '',
     mensaje: ''
   });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-  // --- MANTENIENDO TUS VALIDACIONES ORIGINALES ---
+  // --- VALIDACIONES ---
   const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
   const hasNumbersInNombre = /\d/.test(formData.nombre);
   const isNombreValid = formData.nombre.trim().length >= 3 && !hasNumbersInNombre;
   const isCorreoValid = validateEmail(formData.correo);
   const isAsuntoValid = formData.asunto.trim().length >= 5;
   const isMensajeValid = formData.mensaje.trim().length >= 10;
+  const isFormValid = isNombreValid && isCorreoValid && isAsuntoValid && isMensajeValid;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    if (status !== 'idle' && status !== 'loading') setStatus('idle');
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isFormValid) return;
+    setStatus('loading');
+
+    try {
+      const response = await fetch('/api/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...formData,
+          tipo: 'CONTACTO' // <--- Identificador para distinguir de Cotización
+        }),
+      });
+
+      if (response.ok) {
+        setStatus('success');
+        setFormData({ nombre: '', correo: '', asunto: '', mensaje: '' });
+      } else {
+        setStatus('error');
+      }
+    } catch (error) {
+      console.error("Error al enviar contacto:", error);
+      setStatus('error');
+    }
   };
 
   return (
-    <div className="py-8 md:py-24 bg-gray-200 w-full overflow-x-hidden">
+    <div className="py-8 md:py-24 bg-gray-200 w-full overflow-x-hidden relative font-sans">
+      
+      {/* MODAL DE ESTADO (Consistencia con Corporativo) */}
+      {(status === 'success' || status === 'error') && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white rounded-[40px] p-8 md:p-12 max-w-sm w-full shadow-2xl text-center border-b-8 border-[#E30613] transform animate-in zoom-in-95 duration-300">
+            {status === 'success' ? (
+              <>
+                <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle2 className="text-green-600 w-12 h-12" />
+                </div>
+                <h3 className="text-2xl font-black text-gray-900 uppercase italic mb-2">Mensaje Enviado</h3>
+                <p className="text-gray-500 font-medium mb-8">Gracias por contactarnos. Hemos recibido tu mensaje y te responderemos a la brevedad.</p>
+              </>
+            ) : (
+              <>
+                <div className="bg-red-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <XCircle className="text-[#E30613] w-12 h-12" />
+                </div>
+                <h3 className="text-2xl font-black text-gray-900 uppercase italic mb-2">Error de Envío</h3>
+                <p className="text-gray-500 font-medium mb-8">Hubo un problema al enviar tu mensaje. Por favor, revisa tu conexión e intenta de nuevo.</p>
+              </>
+            )}
+            <button 
+              onClick={() => setStatus('idle')}
+              className="w-full bg-gray-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-gray-800 transition-all active:scale-95"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="max-w-6xl mx-auto px-4 space-y-12 md:space-y-24">
         
-        {/* Encabezado: Texto dinámico para no desbordar */}
         <div className="text-center max-w-3xl mx-auto px-2">
           <h2 className="text-3xl md:text-6xl font-black text-gray-900 tracking-tighter uppercase italic mb-4 md:mb-6 leading-none">
             Estamos <span className="text-[#E30613]">Contigo</span>
@@ -58,7 +125,7 @@ export default function Contacto() {
 
         <div className="grid lg:grid-cols-2 gap-8 md:gap-16 items-start">
           
-          {/* Formulario Estilo Corporativo Oscuro: Ajuste de padding en móvil (p-6) */}
+          {/* Formulario */}
           <div className="bg-gray-900 p-6 md:p-12 rounded-[30px] md:rounded-[60px] shadow-2xl relative overflow-hidden w-full max-w-2xl mx-auto lg:mx-0 order-1 lg:order-none">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#E30613]/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
             
@@ -121,18 +188,25 @@ export default function Contacto() {
                 </div>
 
                 <button 
-                  type="button"
+                  type="submit"
+                  disabled={!isFormValid || status === 'loading'}
                   className={`w-full py-4 md:py-5 rounded-2xl font-black uppercase tracking-[0.15em] text-xs md:text-sm transition-all duration-300 flex items-center justify-center gap-3 ${
-                    'bg-[#E30613] text-white active:scale-95'
+                    isFormValid && status !== 'loading'
+                      ? 'bg-[#E30613] text-white hover:scale-[1.02] shadow-lg shadow-[#E30613]/20'
+                      : 'bg-gray-700 text-gray-400 cursor-not-allowed'
                   }`}
                 >
-                  <><Send size={16} /> Enviar Mensaje</>
+                  {status === 'loading' ? (
+                    <><Loader2 className="animate-spin" size={16} /> Procesando...</>
+                  ) : (
+                    <><Send size={16} /> Enviar Mensaje</>
+                  )}
                 </button>
               </form>
             </div>
           </div>
 
-          {/* Información de Contacto: Cards se apilan en móvil */}
+          {/* Información de Contacto */}
           <div className="flex flex-col space-y-4 md:space-y-8 w-full order-2">
             <ContactInfo icon={Phone} title="Teléfono" content="+52 (669) 991 1292" />
             <ContactInfo icon={Mail} title="Correo Electrónico" content="contacto@proenergeticos.mx" />
@@ -152,7 +226,7 @@ export default function Contacto() {
           </div>
         </div>
 
-        {/* Mapa: Optimización de altura para móvil */}
+        {/* Mapa */}
         <div className="bg-gray-200 h-[350px] md:h-[500px] rounded-[30px] md:rounded-[60px] overflow-hidden relative shadow-inner">
           <div className="absolute inset-0 bg-[url('https://picsum.photos/seed/mazatlanmap/1200/500')] bg-cover bg-center opacity-40"></div>
           <div className="absolute inset-0 flex items-center justify-center p-4">
