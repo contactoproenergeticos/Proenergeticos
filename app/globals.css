@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@layer base {
+  html, body {
+    @apply overflow-x-hidden w-full relative;
+  }
+  
+  main {
+    @apply overflow-x-hidden w-full relative;
+  }
+}
+
+/* El box-sizing ya viene por defecto en Tailwind, 
+   pero si quieres asegurar, ponlo fuera del @layer */
+*, ::before, ::after {
+  box-sizing: border-box;
+}
+
+/* --- MODO ACCESIBILIDAD --- */
+.modo-accesible {
+  font-size: 1.25rem !important;
+}
+
+.modo-accesible body {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+.modo-accesible a, 
+.modo-accesible button, 
+.modo-accesible input, 
+.modo-accesible textarea {
+  border: 4px solid #ffff00 !important;
+  background-color: #1a1a1a !important;
+  color: #ffff00 !important;
+  font-weight: 900 !important;
+  outline: 4px solid #ffff00 !important;
+  outline-offset: 2px;
+}
+
+html {
+  transition: all 0.3s ease;
+}
