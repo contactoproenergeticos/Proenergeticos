@@ -14,121 +14,103 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
-      <footer className="bg-[#121212] text-white py-16 px-6 border-t border-white/5 mt-12">
+      <footer className="bg-[#080808] text-white py-16 px-6 border-t border-white/5 mt-12">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+          {/* Grid principal con alineación protegida */}
+          <div className="flex flex-col lg:flex-row justify-between items-start gap-12 lg:gap-4 mb-16">
             
-            {/* COLUMNA 1: DESCRIPCIÓN Y LOGOTIPOS LOCALES */}
-            <div className="space-y-4">
-              <p className="text-gray-400 text-sm leading-relaxed font-medium italic">
-                Líderes en el suministro de combustibles de alta calidad en Mazatlán, Sinaloa. Comprometidos con la excelencia y el servicio litro por litro.
+            {/* 1. MÉTODOS DE PAGO (Usando tu nueva imagen unificada) */}
+            <div className="flex-shrink-0 w-full lg:w-[280px] space-y-6">
+              <p className="text-gray-300 text-[12px] italic font-medium leading-tight max-w-[260px]">
+                Carga combustible y paga de diferentes formas, aceptamos todas las tarjetas y diversos monederos.
               </p>
-              
-              {/* Contenedor de los 3 logos marcados en tu captura */}
-              <div className="flex items-center gap-4 pt-2">
-                {/* 1. ProEner_negro.png */}
-                <div className="relative w-20 h-20">
-                  <Image 
-                    src="/images/logotipos/ProEner_bco.png" 
-                    alt="ProEnergéticos" 
-                    fill 
-                    className="object-contain" 
-                  />
-                </div>
-                
-                {/* 2. Logo Grupo.jfif.jpeg */}
-                <div className="relative w-16 h-16">
-                  <Image 
-                    src="/images/logotipos/Logo Grupo.jfif.jpeg" 
-                    alt="Grupo ProEnergéticos" 
-                    fill 
-                    className="object-contain" 
-                  />
-                </div>
+              <div className="relative w-full h-32">
+                <Image 
+                  src="/images/pagos/pago tarjetas credito.png" 
+                  alt="Métodos de Pago" 
+                  fill 
+                  className="object-contain object-left"
+                  priority
+                />
+              </div>
+            </div>
 
-                {/* 3. BLAST.png */}
-                <div className="relative w-24 h-12">
-                  <Image 
-                    src="/images/logotipos/BLAST.png" 
-                    alt="Blast Gasoline" 
-                    fill 
-                    className="object-contain" 
-                  />
+            {/* BLOQUE CENTRAL: SERVICIOS, NOSOTROS, LLÁMANOS */}
+            <div className="flex flex-grow justify-around items-start px-4 lg:px-10 space-x-4">
+              
+              {/* SERVICIOS */}
+              <div className="min-w-[150px]">
+                <h4 className="text-[#E30613] font-black uppercase tracking-widest text-[12px] italic mb-6 border-b border-[#E30613]/30 pb-1">
+                  SERVICIOS
+                </h4>
+                <ul className="space-y-4 text-gray-400 text-[11px] font-bold uppercase italic tracking-tighter">
+                  <li><a href="#" className="hover:text-white transition-colors">COMBUSTIBLES</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">ESTACIONES DE SERVICIO</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">VENTAS CORPORATIVAS</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">FACTURACIÓN EN LÍNEA</a></li>
+                </ul>
+              </div>
+
+              {/* NOSOTROS */}
+              <div className="min-w-[150px]">
+                <h4 className="text-[#E30613] font-black uppercase tracking-widest text-[12px] italic mb-6 border-b border-[#E30613]/30 pb-1">
+                  NOSOTROS
+                </h4>
+                <ul className="space-y-4 text-gray-400 text-[11px] font-bold uppercase italic tracking-tighter">
+                  <li><a href="#" className="hover:text-white transition-colors">NUESTRA HISTORIA</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">PRECIOS VIGENTES</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">COMUNIDAD</a></li>
+                  <li><a href="#" className="hover:text-white transition-colors">CONTACTO</a></li>
+                </ul>
+              </div>
+
+              {/* LLÁMANOS */}
+              <div className="min-w-[200px]">
+                <h4 className="text-[#E30613] font-black uppercase tracking-widest text-[12px] italic mb-6 border-b border-[#E30613]/30 pb-1">
+                  LLÁMANOS
+                </h4>
+                <div className="space-y-5">
+                  {[
+                    { label: 'PRO-ENERGÉTICOS', tel: '669 991 12 92' },
+                    { label: 'GRUPO PRO-ENERGÉTICOS', tel: '669 991 01 01' },
+                    { label: 'GASOLINERA SANTA IRENE', tel: '669 990 04 00' }
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-3">
+                      <Phone size={14} className="text-[#E30613] fill-[#E30613]" />
+                      <div className="flex flex-col">
+                        <span className="text-[9px] text-gray-500 font-black uppercase italic leading-none mb-1">{item.label}</span>
+                        <span className="text-white font-black text-[14px] italic tracking-widest leading-none">{item.tel}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
 
-            {/* COLUMNA 2: SERVICIOS */}
-            <div>
-              <h4 className="text-[#E30613] font-black uppercase tracking-widest text-sm mb-8 italic">Servicios</h4>
-              <ul className="space-y-4 text-gray-400 text-[13px] font-bold uppercase italic tracking-tighter">
-                <li><a href="/servicios" className="hover:text-white transition-colors">Combustibles</a></li>
-                <li><a href="/estaciones" className="hover:text-white transition-colors">Estaciones de Servicio</a></li>
-                <li><a href="/servicios" className="hover:text-white transition-colors">Ventas Corporativas</a></li>
-                <li>
-                  <a 
-                    href="https://facturacion.proenergeticos.com" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="hover:text-white transition-colors"
-                  >
-                    Facturación en Línea
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* COLUMNA 3: NOSOTROS */}
-            <div>
-              <h4 className="text-[#E30613] font-black uppercase tracking-widest text-sm mb-8 italic">Nosotros</h4>
-              <ul className="space-y-4 text-gray-400 text-[13px] font-bold uppercase italic tracking-tighter">
-                <li><a href="/nosotros" className="hover:text-white transition-colors">Nuestra Historia</a></li>
-                <li><a href="/servicios" className="hover:text-white transition-colors">Precios Vigentes</a></li>
-                <li><a href="/servicios" className="hover:text-white transition-colors">Comunidad</a></li>
-                <li><a href="/contacto" className="hover:text-white transition-colors">Contacto</a></li>
-              </ul>
-            </div>
-
-            {/* COLUMNA 4: CONTACTO MULTILÍNEA */}
-            <div className="space-y-6">
-              <h4 className="text-[#E30613] font-black uppercase tracking-widest text-sm mb-6 italic">Llámanos</h4>
-              
-              <div className="space-y-4">
-                {/* Pro-Energéticos */}
-                <div className="flex items-start gap-3">
-                  <Phone className="w-5 h-5 text-[#E30613] mt-1" fill="#E30613" />
-                  <div className="flex flex-col">
-                    <span className="text-[10px] text-gray-500 font-black uppercase italic">Pro-Energéticos</span>
-                    <span className="text-white font-black text-sm italic tracking-wide">669 991 12 92</span>
-                  </div>
+            {/* 4. BRANDING (Logos a la derecha) */}
+            <div className="flex-shrink-0 w-full lg:w-[280px] space-y-6">
+              <p className="text-gray-300 text-[12px] leading-tight font-medium italic">
+                Líderes en el suministro de combustibles de alta calidad en Mazatlán, Sinaloa. Comprometidos con el servicio litro por litro.
+              </p>
+              <div className="flex items-center gap-4 pt-2">
+                <div className="relative w-22 h-20">
+                  <Image src="/images/logotipos/ProEner_bco.png" alt="ProEner" fill className="object-contain" />
                 </div>
-
-                {/* Grupo Pro-Energéticos */}
-                <div className="flex items-start gap-3">
-                  <Phone className="w-5 h-5 text-[#E30613] mt-1" fill="#E30613" />
-                  <div className="flex flex-col">
-                    <span className="text-[10px] text-gray-500 font-black uppercase italic">Grupo Pro-Energéticos</span>
-                    <span className="text-white font-black text-sm italic tracking-wide">669 991 01 01</span>
-                  </div>
+                <div className="relative w-20 h-20">
+                  <Image src="/images/logotipos/Logo Grupo.jfif.jpeg" alt="GPO" fill className="object-contain rounded-sm" />
                 </div>
-
-                {/* Gasolinera Santa Irene */}
-                <div className="flex items-start gap-3">
-                  <Phone className="w-5 h-5 text-[#E30613] mt-1" fill="#E30613" />
-                  <div className="flex flex-col">
-                    <span className="text-[10px] text-gray-500 font-black uppercase italic">Gasolinera Santa Irene</span>
-                    <span className="text-white font-black text-sm italic tracking-wide">669 990 04 00</span>
-                  </div>
+                <div className="relative w-32 h-20">
+                  <Image src="/images/logotipos/BLAST.png" alt="Blast" fill className="object-contain" />
                 </div>
               </div>
             </div>
 
           </div>
 
-          {/* BARRA INFERIOR (FOOTER BOTTOM) */}
-          <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-gray-500 font-bold uppercase tracking-[0.3em]">
+          {/* Barra inferior de certificación */}
+          <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[9px] text-gray-600 font-bold uppercase tracking-[0.4em]">
             <p>© 2026 PROENERGÉTICOS S.A. DE C.V. — MAZATLÁN, SINALOA</p>
-            <p>CUMPLIMIENTO NOM-016-CRE-2016</p>
+            <p className="text-white/20 uppercase">NOM-016-CRE-2016 CERTIFICACIÓN VIGENTE</p>
           </div>
         </div>
       </footer>
