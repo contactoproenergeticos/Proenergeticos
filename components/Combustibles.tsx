@@ -153,7 +153,7 @@ export default function Combustibles() {
         {/* Título Principal */}
         <div className="mb-10 text-center md:text-left">
           <h2 className="text-4xl md:text-7xl font-black italic text-gray-900 leading-[0.9] uppercase tracking-tighter">
-            Combustibles Pemex: <br className="hidden md:block"/> 
+            Combustibles: <br className="hidden md:block"/> 
             <span className="text-[#E30613]">Calidad con Historia</span>
           </h2>
           <p className="text-lg md:text-2xl text-red-600 font-bold italic mt-4">Certeza en cada litro</p>

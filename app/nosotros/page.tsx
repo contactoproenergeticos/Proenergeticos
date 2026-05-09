@@ -44,7 +44,7 @@ export default function Page() {
               </div>
               <h3 className="text-4xl font-black text-[#E30613] mb-6 tracking-tighter uppercase italic">Misión</h3>
               <p className="text-lg text-gray-600 leading-relaxed font-medium italic">
-                Proveer combustibles y servicios energéticos con los más altos estándares de calidad y honestidad, garantizando la satisfacción total de nuestros clientes y el desarrollo sostenible de nuestra comunidad.
+                Proporcionar a todos nuestros clientes un servicio completo de calidad, oportuno y personalizado superando sus expectativas.
               </p>
             </motion.div>
 
@@ -60,7 +60,7 @@ export default function Page() {
               </div>
               <h3 className="text-4xl font-black text-white mb-6 tracking-tighter uppercase italic">Visión</h3>
               <p className="text-lg text-gray-400 leading-relaxed font-medium italic">
-                Ser el grupo gasolinero líder y más confiable en el noroeste de México, reconocido por nuestra innovación tecnológica, compromiso ambiental y excelencia operativa.
+                Una ampliación en nuestras instalaciones e incorporar una nueva unidad enfocada al ramo transportista, logrando su máxima operación al año, creando mas fuentes de trabajo, desarrollandonos profesionalmente, estableciendo un compromiso de mejora continua y sirviendo a la comunidad. 
               </p>
             </motion.div>
           </div>
