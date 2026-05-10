@@ -1,16 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
-import { usePathname } from 'next/navigation'; // Hook para detectar la página actual
+import React, { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Header: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const pathname = usePathname(); // Obtenemos la ruta actual (ej: '/combustible')
+  const pathname = usePathname();
 
-  const menuOptions: { href: string; label: string }[] = [
+  // Menú de opciones
+  const menuOptions = [
     { href: '/', label: 'Inicio' },
     { href: '/nosotros', label: 'Nosotros' },
     { href: '/combustible', label: 'Combustible' },
@@ -22,26 +23,33 @@ const Header: React.FC = () => {
   ];
 
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
+  const handleNavClick = () => setIsDrawerOpen(false);
 
-  const handleNavClick = () => {
-    setIsDrawerOpen(false);
-  };
+  // Bloquear scroll en móvil cuando el drawer está abierto
+  useEffect(() => {
+    if (isDrawerOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isDrawerOpen]);
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
+    // Se asegura el sticky tanto en desktop como en mobile con z-index alto
+    <header className="sticky top-0 z-[100] w-full bg-white shadow-sm border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20 md:h-28 lg:h-32">
           
-          {/* SECCIÓN LOGOTIPO */}
+          {/* SECCIÓN LOGOTIPO - USANDO ProEner_negro.png sobre fondo blanco */}
           <a
             href="/"
             className="flex-shrink-0 cursor-pointer flex items-center gap-1.5 sm:gap-2 lg:gap-3"
             onClick={handleNavClick}
           >
-            <div className="relative w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14">
+            <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-20 lg:h-20">
               <Image 
-                src="https://i.postimg.cc/4x1q0QJt/proenergeicos.png"
-                alt="Logo"
+                src="/images/logotipos/ProEner_negro.png"
+                alt="Logo ProEnergéticos"
                 fill
                 className="object-contain"
                 priority
@@ -57,7 +65,7 @@ const Header: React.FC = () => {
             </div>
           </a>
 
-          {/* NAVEGACIÓN DESKTOP & TABLET (LG +) */}
+          {/* NAVEGACIÓN DESKTOP */}
           <div className="hidden lg:flex flex-col items-end gap-3 lg:gap-4">
             <a
               href="/facturacion"
@@ -69,14 +77,11 @@ const Header: React.FC = () => {
             <nav>
               <ul className="flex items-center justify-end space-x-4 lg:space-x-8">
                 {menuOptions.map((option) => {
-                  // Lógica para saber si el link está activo
                   const isActive = pathname === option.href;
-                  
                   return (
                     <li key={option.href}>
                       <a
                         href={option.href}
-                        onClick={handleNavClick}
                         className={`text-[11px] lg:text-[14px] font-black uppercase italic tracking-wider transition-all duration-300 py-1 border-b-2 
                           ${isActive 
                             ? 'text-[#E30613] border-[#E30613]' 
@@ -91,26 +96,26 @@ const Header: React.FC = () => {
             </nav>
           </div>
 
-          {/* CONTROLES PARA MÓVIL Y TABLET */}
+          {/* CONTROLES MÓVIL */}
           <div className="lg:hidden flex items-center gap-2 sm:gap-4">
             <a
               href="/facturacion"
-              className="bg-[#E30613] text-white font-black px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-[9px] sm:text-[11px] uppercase tracking-widest shadow-md active:scale-95"
+              className="bg-[#E30613] text-white font-black px-3 sm:px-5 py-1.5 sm:py-2 rounded-full text-[9px] sm:text-[11px] uppercase tracking-widest shadow-md"
             >
               Facturación
             </a>
             <button 
               onClick={toggleDrawer}
-              className="text-gray-900 p-1.5 hover:bg-gray-100 rounded-lg transition-colors border border-gray-100"
-              aria-label="Menu"
+              className="text-gray-900 p-1.5 hover:bg-gray-100 rounded-lg border border-gray-100"
+              aria-label="Abrir Menú"
             >
-              <Menu size={24} className="sm:w-7 sm:h-7" />
+              <Menu size={24} />
             </button>
           </div>
         </div>
       </div>
 
-      {/* DRAWER MÓVIL / TABLET */}
+      {/* DRAWER MÓVIL */}
       <AnimatePresence>
         {isDrawerOpen && (
           <>
@@ -119,7 +124,7 @@ const Header: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={toggleDrawer}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110]"
             />
 
             <motion.div
@@ -127,12 +132,12 @@ const Header: React.FC = () => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 h-full w-[85%] max-w-sm bg-white z-[70] shadow-2xl flex flex-col"
+              className="fixed right-0 top-0 h-full w-[85%] max-w-sm bg-white z-[120] shadow-2xl flex flex-col"
             >
               <div className="flex justify-between items-center p-6 border-b border-gray-100">
                 <div className="flex items-center gap-2">
-                  <Image src="https://i.postimg.cc/4x1q0QJt/proenergeicos.png" alt="Logo" width={35} height={35} className="h-8 w-auto" />
-                  <span className="text-lg font-black italic text-slate-900">
+                  <Image src="/images/logotipos/ProEner_negro.png" alt="Logo" width={40} height={40} className="h-10 w-auto" />
+                  <span className="text-lg font-black italic text-slate-900 uppercase">
                     PRO<span className="text-[#E30613]">ENERGÉTICOS</span>
                   </span>
                 </div>
@@ -145,14 +150,13 @@ const Header: React.FC = () => {
                 <ul className="flex flex-col space-y-2">
                   {menuOptions.map((option) => {
                     const isActive = pathname === option.href;
-                    
                     return (
                       <li key={option.href}>
                         <a
                           href={option.href}
                           onClick={handleNavClick}
-                          className={`w-full py-4 text-2xl font-black uppercase italic tracking-tighter transition-all duration-300 flex items-center justify-end gap-4 
-                            ${isActive ? 'text-[#E30613]' : 'text-gray-600 hover:text-[#E30613]'}`}
+                          className={`w-full py-4 text-2xl font-black uppercase italic tracking-tighter flex items-center justify-end gap-4 
+                            ${isActive ? 'text-[#E30613]' : 'text-gray-600'}`}
                         >
                           {option.label}
                         </a>
@@ -166,7 +170,7 @@ const Header: React.FC = () => {
                 <a
                   href="/facturacion"
                   onClick={handleNavClick}
-                  className="block w-full bg-[#E30613] text-white text-center font-black py-4 rounded-xl uppercase tracking-widest text-sm shadow-lg active:scale-95"
+                  className="block w-full bg-[#E30613] text-white text-center font-black py-4 rounded-xl uppercase tracking-widest text-sm"
                 >
                   Facturación en Línea
                 </a>

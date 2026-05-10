@@ -8,41 +8,45 @@ import Header from '@/components/Header';
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen w-full flex flex-col bg-gray-200 font-sans overflow-x-hidden">
-      {/* 1. NAVEGACIÓN FIJA (Sticky) */}
-      <div className="sticky top-0 z-50 w-full shadow-md">
+      
+      {/* 1. NAVEGACIÓN FIJA (FIXED) */}
+      {/* Usamos fixed para que nunca se mueva. El h-20 es para reservar el espacio */}
+      <nav className="fixed top-0 left-0 right-0 z-[100] w-full shadow-lg bg-white">
         <Header />
-      </div>
+      </nav>
 
-      <main className="flex-grow pt-4 px-4 md:px-0 w-full max-w-screen-2xl mx-auto">
+      {/* 2. ESPACIADOR */}
+      {/* Añadimos un padding-top (pt-20) para que el contenido no se meta debajo de la barra fija */}
+      <main className="flex-grow pt-24 px-4 md:px-0 w-full max-w-screen-2xl mx-auto">
         {children}
       </main>
 
       <footer className="bg-[#080808] text-white py-12 md:py-16 px-6 border-t border-white/5 mt-12">
         <div className="max-w-7xl mx-auto">
+          
           {/* Grid principal responsivo */}
           <div className="flex flex-col lg:flex-row justify-between items-start gap-12 lg:gap-8 mb-16">
             
-            {/* 1. MÉTODOS DE PAGO (Proporción ajustada para móviles) */}
-            <div className="w-full lg:w-[280px] space-y-4">
-              <p className="text-gray-300 text-[12px] italic font-medium leading-tight max-w-[260px]">
+            {/* MÉTODOS DE PAGO (Tamaño controlado en móvil) */}
+            <div className="w-full lg:w-[280px] space-y-4 text-center lg:text-left">
+              <p className="text-gray-300 text-[12px] italic font-medium leading-tight max-w-[260px] mx-auto lg:mx-0">
                 Carga combustible y paga de diferentes formas, aceptamos todas las tarjetas y diversos monederos.
               </p>
-              {/* h-20 en móvil, h-32 en desktop para que no se vea gigante */}
-              <div className="relative w-full h-20 lg:h-32">
+              {/* Ajuste de altura responsivo para evitar que se vea gigante en móvil */}
+              <div className="relative w-full h-16 md:h-20 lg:h-32">
                 <Image 
                   src="/images/pagos/pago tarjetas credito.png" 
                   alt="Métodos de Pago" 
                   fill 
-                  className="object-contain object-left md:object-center lg:object-left"
+                  className="object-contain lg:object-left"
                   priority
                 />
               </div>
             </div>
 
-            {/* 2. BLOQUE CENTRAL: Reorganizado para móviles */}
+            {/* BLOQUE CENTRAL: SERVICIOS, NOSOTROS, LLÁMANOS */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row flex-grow justify-around items-start gap-10 lg:gap-4 w-full">
               
-              {/* SERVICIOS */}
               <div className="min-w-[140px]">
                 <h4 className="text-[#E30613] font-black uppercase tracking-widest text-[12px] italic mb-6 border-b border-[#E30613]/30 pb-1">
                   SERVICIOS
@@ -55,7 +59,6 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
                 </ul>
               </div>
 
-              {/* NOSOTROS */}
               <div className="min-w-[140px]">
                 <h4 className="text-[#E30613] font-black uppercase tracking-widest text-[12px] italic mb-6 border-b border-[#E30613]/30 pb-1">
                   NOSOTROS
@@ -68,7 +71,6 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
                 </ul>
               </div>
 
-              {/* LLÁMANOS (Ocupa ancho completo en móvil si es necesario) */}
               <div className="col-span-1 sm:col-span-2 lg:col-span-1 lg:min-w-[200px]">
                 <h4 className="text-[#E30613] font-black uppercase tracking-widest text-[12px] italic mb-6 border-b border-[#E30613]/30 pb-1">
                   LLÁMANOS
@@ -91,28 +93,21 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
               </div>
             </div>
 
-            {/* 3. BRANDING (Logos responsivos) */}
-            <div className="w-full lg:w-[280px] space-y-6">
+            {/* BRANDING */}
+            <div className="w-full lg:w-[280px] space-y-6 text-center lg:text-left">
               <p className="text-gray-300 text-[12px] leading-tight font-medium italic">
                 Líderes en el suministro de combustibles de alta calidad en Mazatlán, Sinaloa. Comprometidos con el servicio litro por litro.
               </p>
-              <div className="flex flex-wrap items-center gap-6 lg:gap-4 pt-2">
-                <div className="relative w-16 h-14">
-                  <Image src="/images/logotipos/ProEner_bco.png" alt="ProEner" fill className="object-contain" />
-                </div>
-                <div className="relative w-14 h-14">
-                  <Image src="/images/logotipos/Logo Grupo.jfif.jpeg" alt="GPO" fill className="object-contain rounded-sm" />
-                </div>
-                <div className="relative w-24 h-14">
-                  <Image src="/images/logotipos/BLAST.png" alt="Blast" fill className="object-contain" />
-                </div>
+              <div className="flex flex-wrap justify-center lg:justify-start items-center gap-6 pt-2">
+                <div className="relative w-16 h-14"><Image src="/images/logotipos/ProEner_bco.png" alt="ProEner" fill className="object-contain" /></div>
+                <div className="relative w-14 h-14"><Image src="/images/logotipos/Logo Grupo.jfif.jpeg" alt="GPO" fill className="object-contain rounded-sm" /></div>
+                <div className="relative w-24 h-14"><Image src="/images/logotipos/BLAST.png" alt="Blast" fill className="object-contain" /></div>
               </div>
             </div>
 
           </div>
 
-          {/* Barra inferior de certificación responsiva */}
-          <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left text-[8px] md:text-[9px] text-gray-600 font-bold uppercase tracking-[0.2em] md:tracking-[0.4em]">
+          <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-center text-[8px] md:text-[9px] text-gray-600 font-bold uppercase tracking-[0.2em] md:tracking-[0.4em]">
             <p>© 2026 PROENERGÉTICOS S.A. DE C.V. — MAZATLÁN, SINALOA</p>
             <p className="text-white/20">NOM-016-CRE-2016 CERTIFICACIÓN VIGENTE</p>
           </div>
