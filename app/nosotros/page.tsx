@@ -13,7 +13,7 @@ export default function Page() {
           <section className="relative rounded-[30px] md:rounded-[60px] overflow-hidden shadow-2xl bg-gray-950 min-h-[400px] md:min-h-[600px] flex items-center">
             <div
               className="absolute inset-0 opacity-50 bg-cover bg-center contrast-125 scale-105"
-              style={{ backgroundImage: "url('/images/gasolinera/PLANTA/Planta4.jpg')" }}
+              style={{ backgroundImage: "url('/images/gasolinera/PLANTA/Planta3.jpg')" }}
             ></div>
 
             <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/80 to-transparent"></div>
@@ -27,7 +27,7 @@ export default function Page() {
                 Más de dos décadas <br /> <span className="text-[#E30613]">de Excelencia</span>
               </h2>
               <p className="text-lg md:text-2xl text-gray-300 font-medium leading-relaxed italic">
-                En Proenergéticos S.A. de C.V., nos dedicamos a impulsar el movimiento de Mazatlán y el sur de Sinaloa con soluciones energéticas de vanguardia.
+                En <span className="text-[#E30613] font-black italic">Proenergéticos</span> nos dedicamos a impulsar el movimiento de Mazatlán y el sur de Sinaloa con soluciones energéticas de vanguardia.
               </p>
             </div>
           </section>

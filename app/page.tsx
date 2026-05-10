@@ -35,7 +35,7 @@ export default function Page() {
             {/* SUB-HEADER */}
             <div className="flex items-center gap-4 mb-4 md:mb-6">
               <div className="h-[2px] w-8 md:w-12 bg-[#E30613]"></div>
-              <span className="text-[#E30613] text-[10px] md:text-sm font-black uppercase tracking-[0.2em] md:tracking-[0.4em] italic">
+              <span className="text-[#E30613] text-[15px] md:text-sm font-black uppercase tracking-[0.2em] md:tracking-[0.4em] italic">
                 — PROENERGETICOS —
               </span>
             </div>
@@ -58,7 +58,7 @@ export default function Page() {
             </div>
 
             {/* DESCRIPTION */}
-            <p className="max-w-xl text-sm md:text-lg text-white/90 font-medium italic mb-6 md:mb-8">
+            <p className="max-w-xl text-sm md:text-2xl text-white/90 font-medium italic mb-6 md:mb-8">
               Suministro confiable de combustibles de alta calidad para el sector transporte, industrial y marino.
             </p>
 
