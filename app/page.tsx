@@ -49,7 +49,7 @@ export default function Page() {
               {/* ESCUDO - Ajuste de tamaño responsivo */}
               <div className="relative w-24 h-24 md:w-36 md:h-36 lg:w-44 lg:h-44">
                 <Image
-                  src="/images/logotipos/ProEner_negro.png"
+                  src="/images/logotipos/ProEner.png"
                   alt="Logo Proenergéticos"
                   fill
                   className="object-contain drop-shadow-2xl"

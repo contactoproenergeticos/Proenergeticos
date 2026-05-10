@@ -11,10 +11,11 @@ export default function Nosotros() {
         
         {/* Hero Section con la nueva imagen de tanques */}
         <section className="relative rounded-[30px] md:rounded-[60px] overflow-hidden shadow-2xl bg-gray-950 min-h-[400px] md:min-h-[600px] flex items-center">
-          {/* IMAGEN ACTUALIZADA */}
+          {/* IMAGEN ACTUALIZADA \images\gasolinera\PLANTA\Planta4.jpg*/}
           <div 
             className="absolute inset-0 opacity-50 bg-cover bg-center contrast-125 scale-105"
             style={{ backgroundImage: "url('https://i.postimg.cc/d0KyJ9Q4/PLANTA-TANQUE.jpg')" }}
+            
           ></div>
           
           <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/80 to-transparent"></div>

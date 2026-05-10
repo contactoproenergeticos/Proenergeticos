@@ -9,14 +9,12 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen w-full flex flex-col bg-gray-200 font-sans overflow-x-hidden">
       
-      {/* 1. NAVEGACIÓN FIJA (FIXED) */}
-      {/* Usamos fixed para que nunca se mueva. El h-20 es para reservar el espacio */}
+      {/* 1. NAVEGACIÓN FIJA */}
       <nav className="fixed top-0 left-0 right-0 z-[100] w-full shadow-lg bg-white">
         <Header />
       </nav>
 
       {/* 2. ESPACIADOR */}
-      {/* Añadimos un padding-top (pt-20) para que el contenido no se meta debajo de la barra fija */}
       <main className="flex-grow pt-24 px-4 md:px-0 w-full max-w-screen-2xl mx-auto">
         {children}
       </main>
@@ -24,15 +22,13 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
       <footer className="bg-[#080808] text-white py-12 md:py-16 px-6 border-t border-white/5 mt-12">
         <div className="max-w-7xl mx-auto">
           
-          {/* Grid principal responsivo */}
           <div className="flex flex-col lg:flex-row justify-between items-start gap-12 lg:gap-8 mb-16">
             
-            {/* MÉTODOS DE PAGO (Tamaño controlado en móvil) */}
+            {/* MÉTODOS DE PAGO */}
             <div className="w-full lg:w-[280px] space-y-4 text-center lg:text-left">
               <p className="text-gray-300 text-[12px] italic font-medium leading-tight max-w-[260px] mx-auto lg:mx-0">
                 Carga combustible y paga de diferentes formas, aceptamos todas las tarjetas y diversos monederos.
               </p>
-              {/* Ajuste de altura responsivo para evitar que se vea gigante en móvil */}
               <div className="relative w-full h-16 md:h-20 lg:h-32">
                 <Image 
                   src="/images/pagos/pago tarjetas credito.png" 
@@ -93,15 +89,22 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
               </div>
             </div>
 
-            {/* BRANDING */}
-            <div className="w-full lg:w-[280px] space-y-6 text-center lg:text-left">
+            {/* BRANDING ACTUALIZADO: LOGOS ALINEADOS SECUENCIALMENTE */}
+            <div className="w-full lg:w-[320px] space-y-6 text-center lg:text-left">
               <p className="text-gray-300 text-[12px] leading-tight font-medium italic">
                 Líderes en el suministro de combustibles de alta calidad en Mazatlán, Sinaloa. Comprometidos con el servicio litro por litro.
               </p>
-              <div className="flex flex-wrap justify-center lg:justify-start items-center gap-6 pt-2">
-                <div className="relative w-16 h-14"><Image src="/images/logotipos/ProEner_bco.png" alt="ProEner" fill className="object-contain" /></div>
-                <div className="relative w-14 h-14"><Image src="/images/logotipos/Logo Grupo.jfif.jpeg" alt="GPO" fill className="object-contain rounded-sm" /></div>
-                <div className="relative w-24 h-14"><Image src="/images/logotipos/BLAST.png" alt="Blast" fill className="object-contain" /></div>
+              {/* Contenedor Flex con items-center para alineación horizontal perfecta */}
+              <div className="flex flex-row justify-center lg:justify-start items-center gap-4 pt-2">
+                <div className="relative w-14 h-22">
+                  <Image src="/images/logotipos/ProEner_bco.png" alt="ProEner" fill className="object-contain" />
+                </div>
+                <div className="relative w-20 h-18">
+                  <Image src="/images/logotipos/Logo Grupo.jfif.jpeg" alt="GPO" fill className="object-contain rounded-sm" />
+                </div>
+                <div className="relative w-27 h-12">
+                  <Image src="/images/logotipos/BLAST.png" alt="Blast" fill className="object-contain" />
+                </div>
               </div>
             </div>
 
