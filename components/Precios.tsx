@@ -163,7 +163,7 @@ export default function Precios() {
         />
         <EstacionCard 
           nombre="El Pozole (GPO)" 
-          marca="Grupo Proenergéticos" 
+          marca="Grupo Proenergeticos Oil Companies" 
           borderColor="border-gray-900" 
           precios={[
             { label: "Gasolina Magna", precio: "23.24", color: "text-green-600", subtitulo: "Aditivada" },
@@ -171,7 +171,7 @@ export default function Precios() {
             { label: "Diésel", precio: "25.40", color: "text-gray-900", subtitulo: "Industrial" },
           ]} 
           nota="Garantía de Origen"
-          logoUrl="/images/logotipos/ProEner_negro.png"
+          logoUrl="/images/logotipos/GPO.png"
         />
       </div>
 
