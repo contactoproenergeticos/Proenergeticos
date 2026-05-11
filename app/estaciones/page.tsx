@@ -162,7 +162,7 @@ export default function EstacionesPage() {
 
               {/* Imagen Directa: Se eliminó el contenedor bg-white/5 y el borde interno */}
               <div className="w-full lg:w-auto flex items-center justify-center py-6">
-                <div className="relative w-80 h-48 md:w-[500px] md:h-80 transition-transform duration-700 hover:scale-105">
+                <div className="relative w-64 h-40 md:w-[320px] md:h-52 transition-transform duration-700 hover:scale-105">
                   <Image 
                     src="/images/pagos/pago tarjetas credito.png" 
                     alt="Métodos de Pago: VISA, MasterCard, Efecticard, TicketCar" 
