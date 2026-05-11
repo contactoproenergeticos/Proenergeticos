@@ -535,32 +535,7 @@ export default function Precios() {
         <p className="text-lg md:text-xl text-gray-500 font-bold leading-tight max-w-2xl mx-auto uppercase tracking-tight italic">
           Combustibles de alta calidad con garantía de litraje exacto en Mazatlán.
         </p>
-
-        <div className="mt-8 md:mt-10 mx-auto max-w-3xl rounded-[2rem] border-2 border-gray-900/10 bg-white px-5 py-4 md:px-8 md:py-5 shadow-xl">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 text-center sm:text-left">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#E30613]/10">
-              <CalendarDays className="h-6 w-6 text-[#E30613]" aria-hidden />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-gray-400 mb-1">
-                Fecha de los precios mostrados
-              </p>
-              <p className="text-base md:text-xl font-black text-gray-900 tracking-tight normal-case">
-                {etiquetaVigenciaBanner ? (
-                  <>
-                    Precios actualizados al{' '}
-                    <span className="text-[#E30613]">{etiquetaVigenciaBanner}</span>
-                  </>
-                ) : (
-                  <span className="text-gray-500">Consultando…</span>
-                )}
-              </p>
-              <p className="mt-1.5 text-xs font-bold text-gray-500 normal-case leading-snug">
-                Corresponde a la fecha de última actualización registrada para los precios del tablero.
-              </p>
-            </div>
-          </div>
-        </div>
+       
       </div>
 
       <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 px-4 relative">
