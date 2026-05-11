@@ -98,7 +98,7 @@ export default function EstacionesPage() {
       nombre: 'SANTA IRENE (GSI)', 
       marca: 'Estación de Servicio', 
       direccion: 'Luis Donaldo Colosio Murrieta 14101, Santa Laura, 82136 Mazatlán, Sin.', 
-      mapLink: 'https://maps.google.com', 
+      mapLink: 'https://maps.google.com/?cid=6818530638675163216&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNl', // Enlace real, 
       imagen: '/images/gasolinera/GSI/gsi3.jpeg', 
       servicios: [
         { icon: Store, label: 'OXXO', color: 'text-red-600' },
@@ -110,7 +110,7 @@ export default function EstacionesPage() {
       nombre: 'EL POZOLE (GPO)', 
       marca: 'Estación de Servicio', 
       direccion: 'CARRETERA INTERNACIONAL SUR KM. 60 EL POZOLE, VILLA UNION, Sin.', 
-      mapLink: 'https://maps.google.com', 
+      mapLink: 'https://maps.google.com/?cid=2912828460837729529&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNl', // Enlace real 
       imagen: '/images/gasolinera/GPO/GPO2.jpg', 
       servicios: [
         { icon: Store, label: 'Kiosko', color: 'text-orange-600' },
@@ -122,7 +122,7 @@ export default function EstacionesPage() {
       nombre: 'PLANTA DE DISTRIBUCIÓN', 
       marca: 'Centro Logístico', 
       direccion: 'Sur, México 15 1002, Urías, 82070 Mazatlán, Sin.', 
-      mapLink: 'https://maps.google.com', 
+      mapLink: 'https://maps.google.com/?cid=14017863012502601436&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNl', // Enlace real 
       isFeatured: true, 
       imagen: '/images/gasolinera/PLANTA/Planta3.jpg', 
       servicios: [
