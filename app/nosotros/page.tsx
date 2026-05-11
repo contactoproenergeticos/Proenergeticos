@@ -24,7 +24,7 @@ export default function Page() {
                 <span className="text-sm md:text-lg font-black text-[#E30613] uppercase tracking-[0.3em] md:tracking-[0.5em] italic">Nuestra Identidad</span>
               </div>
               <h2 className="text-3xl md:text-7xl font-black text-white mb-6 md:mb-8 tracking-tighter leading-[0.9] uppercase italic">
-                Más de dos décadas <br /> <span className="text-[#E30613]">de Excelencia</span>
+                Más de una década <br /> <span className="text-[#E30613]">de Excelencia</span>
               </h2>
               <p className="text-lg md:text-2xl text-gray-300 font-medium leading-relaxed italic">
                 En <span className="text-[#E30613] font-black italic">Proenergéticos</span> nos dedicamos a impulsar el movimiento de Mazatlán y el sur de Sinaloa con soluciones energéticas de vanguardia.

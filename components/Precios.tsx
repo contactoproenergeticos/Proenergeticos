@@ -41,18 +41,16 @@ const EstacionCard = ({
   >
     <div className={`h-3 w-full ${borderColor}`}></div>
     <div className="p-6 md:p-8 flex-grow">
-      {/* CABECERA AJUSTADA: Centrado perfecto y logo más grande */}
       <div className="flex flex-col md:flex-row items-center justify-between mb-8 md:mb-10 min-h-[80px] gap-4">
         <div className="flex-1 text-center md:text-left">
           <h3 className="text-xl md:text-2xl font-black text-gray-900 tracking-tighter uppercase italic leading-none mb-1">
             {nombre}
           </h3>
-          <p className="text-[10px] md:text-xs text-gray-500 font-bold tracking-tight uppercase">
+          <p className="text-[10px] md:text-xs text-[#E30613] font-black tracking-tight uppercase">
             {marca}
           </p>
         </div>
         
-        {/* CONTENEDOR DE LOGO: Centrado a la mitad derecha con escala aumentada */}
         <div className="flex-1 flex justify-center items-center">
           <div className="w-24 md:w-32 h-16 md:h-20 flex items-center justify-center relative">
             <Image 
@@ -61,7 +59,6 @@ const EstacionCard = ({
               fill
               className="object-contain scale-[1.3] md:scale-[1.6]" 
               sizes="128px"
-              referrerPolicy="no-referrer"
             />
           </div>
         </div>
@@ -74,7 +71,7 @@ const EstacionCard = ({
       </div>
 
       <div className="mt-6 pt-6 border-t border-gray-100 flex items-center gap-3">
-        <div className={`px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${logoUrl.includes('BLAST') ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700'}`}>
+        <div className={`px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${logoUrl.includes('BLAST') ? 'bg-amber-100 text-amber-700' : 'bg-red-50 text-[#E30613]'}`}>
           {nota}
         </div>
         <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Verificado CRE</span>
@@ -133,27 +130,27 @@ export default function Precios() {
       <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 px-4">
         <EstacionCard 
           nombre="Santa Irene (GSI)" 
-          marca="" 
-          borderColor="bg-[#D4AF37]" 
+          marca="Estación Blast" 
+          borderColor="bg-[#E30613]" 
           precios={[
             { label: "Magna (Blast)", precio: "21.72", color: "text-green-600", subtitulo: "87 Octanos" },
             { label: "Premium (Blast)", precio: "22.68", color: "text-red-600", subtitulo: "91 Octanos" },
             { label: "Diésel", precio: "23.15", color: "text-gray-900", subtitulo: "UBA" },
           ]} 
           nota="Marca Propia"
-          logoUrl="https://i.postimg.cc/c4YYcDsf/BLAST.png"
+          logoUrl="/images/logotipos/BLAST.png"
         />
         <EstacionCard 
           nombre="El Pozole (GPO)" 
-          marca="Franquicia PEMEX" 
-          borderColor="bg-[#006847]" 
+          marca="Grupo Proenergéticos Oil Companies" 
+          borderColor="bg-gray-900" 
           precios={[
             { label: "Gasolina Magna", precio: "22.44", color: "text-green-600", subtitulo: "Regular" },
             { label: "Gasolina Premium", precio: "24.74", color: "text-red-600", subtitulo: "Alto Octanaje" },
             { label: "Diésel", precio: "25.34", color: "text-gray-900", subtitulo: "Industrial" },
           ]} 
           nota="Garantía de Origen"
-          logoUrl="https://i.postimg.cc/qgfKTKGn/LOGO-PEMEX.png"
+          logoUrl="/images/logotipos/ProEner_negro.png"
         />
       </div>
 

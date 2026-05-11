@@ -18,13 +18,28 @@ const ServiceIcon = ({ icon: Icon, label, color }: { icon: React.ElementType; la
   </div>
 );
 
-const EstacionCard = ({ nombre, marca, direccion, servicios, imagen, isFeatured, mapLink }: any) => {
+const EstacionCard = ({ nombre, marca, direccion, servicios, imagen, isFeatured, mapLink, estacionLogo }: any) => {
   const handleNavigation = () => {
     if (mapLink && mapLink !== '#') window.open(mapLink, '_blank', 'noopener,noreferrer');
   };
 
   return (
     <div className={`bg-white rounded-[40px] shadow-xl overflow-hidden border ${isFeatured ? 'border-[#E30613] ring-4 ring-[#E30613]/5' : 'border-gray-100'} flex flex-col h-full group transition-all duration-500 hover:shadow-2xl relative`}>
+      
+      {/* LOGOTIPO DE ESTACIÓN TRANSPARENTE SOBRE LA FOTO (CORREGIDO) */}
+      <div className="absolute top-4 left-6 z-20 transition-transform duration-500 group-hover:scale-110">
+        <div className="relative w-20 h-12">
+          <Image 
+            src={estacionLogo} 
+            alt="Identificador Estación" 
+            fill 
+            className="object-contain" 
+            sizes="128px"
+            unoptimized={true} // Para asegurar la transparencia del PNG original
+          />
+        </div>
+      </div>
+
       {isFeatured && (
         <div className="absolute top-4 right-4 z-20 scale-90 md:scale-100">
           <div className="bg-[#E30613] text-white text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
@@ -36,7 +51,7 @@ const EstacionCard = ({ nombre, marca, direccion, servicios, imagen, isFeatured,
       
       {/* Imagen Principal */}
       <div className="relative h-56 w-full overflow-hidden">
-        <Image src={imagen} alt={nombre} fill className="object-cover group-hover:scale-110 transition-transform duration-1000" unoptimized={true} />
+        <Image src={imagen} alt={nombre} fill className="object-cover transition-transform duration-1000 group-hover:scale-110" unoptimized={true} />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
         <div className="absolute bottom-4 left-6 text-left">
           <h4 className="text-2xl font-black text-white uppercase tracking-tighter italic leading-tight mb-1">{nombre}</h4>
@@ -59,7 +74,7 @@ const EstacionCard = ({ nombre, marca, direccion, servicios, imagen, isFeatured,
           {servicios.map((service: any, i: number) => <ServiceIcon key={i} {...service} />)}
         </div>
 
-        {/* ANUNCIO DE TARJETAS (MÁS GRANDE) */}
+        {/* ANUNCIO DE TARJETAS */}
         <div className="flex-grow flex flex-col justify-center py-4 border-t border-gray-100 bg-gray-50/50 -mx-6 px-6">
           <p className="text-[11px] text-gray-400 font-black uppercase tracking-[0.2em] mb-3 italic text-center">
             Aceptamos todas las tarjetas
@@ -98,8 +113,9 @@ export default function EstacionesPage() {
       nombre: 'SANTA IRENE (GSI)', 
       marca: 'Estación de Servicio', 
       direccion: 'Luis Donaldo Colosio Murrieta 14101, Santa Laura, 82136 Mazatlán, Sin.', 
-      mapLink: 'https://maps.google.com/?cid=6818530638675163216&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNl', // Enlace real, 
+      mapLink: 'https://maps.google.com/?cid=6818530638675163216&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNl', // Enlace real,       
       imagen: '/images/gasolinera/GSI/gsi3.jpeg', 
+      estacionLogo: '/images/logotipos/BLAST.png', // Logo transparente BLAST
       servicios: [
         { icon: Store, label: 'OXXO', color: 'text-red-600' },
         { icon: Clock, label: '24/7', color: 'text-green-600' },
@@ -112,6 +128,7 @@ export default function EstacionesPage() {
       direccion: 'CARRETERA INTERNACIONAL SUR KM. 60 EL POZOLE, VILLA UNION, Sin.', 
       mapLink: 'https://maps.google.com/?cid=2912828460837729529&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNl', // Enlace real 
       imagen: '/images/gasolinera/GPO/GPO2.jpg', 
+      estacionLogo: '/images/logotipos/GPO.png', // Logo transparente GPO
       servicios: [
         { icon: Store, label: 'Kiosko', color: 'text-orange-600' },
         { icon: Clock, label: '24/7', color: 'text-green-600' },
@@ -125,6 +142,7 @@ export default function EstacionesPage() {
       mapLink: 'https://maps.google.com/?cid=14017863012502601436&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNl', // Enlace real 
       isFeatured: true, 
       imagen: '/images/gasolinera/PLANTA/Planta3.jpg', 
+      estacionLogo: '/images/logotipos/ProEner_negro.png', // Logo transparente Proenergeticos
       servicios: [
         { icon: Truck, label: 'Logística', color: 'text-blue-600' },
         { icon: Briefcase, label: 'Industrial', color: 'text-[#E30613]' },
@@ -147,7 +165,7 @@ export default function EstacionesPage() {
             ))}
           </div>
 
-          {/* Banner de Digitalización */}
+          {/* Banner de Digitalización mantenido sin cambios */}
           <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} className="bg-[#080808] rounded-[40px] p-8 md:p-10 text-white shadow-2xl border border-white/5 overflow-hidden relative">
             <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
               <div className="flex-1 space-y-4 text-left">
