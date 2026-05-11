@@ -28,7 +28,7 @@ const EstacionCard = ({ nombre, marca, direccion, servicios, imagen, isFeatured,
       
       {/* LOGOTIPO DE ESTACIÓN TRANSPARENTE SOBRE LA FOTO (CORREGIDO) */}
       <div className="absolute top-4 left-6 z-20 transition-transform duration-500 group-hover:scale-110">
-        <div className="relative w-20 h-12">
+        <div className="relative w-30 h-17">
           <Image 
             src={estacionLogo} 
             alt="Identificador Estación" 
@@ -142,7 +142,7 @@ export default function EstacionesPage() {
       mapLink: 'https://maps.google.com/?cid=14017863012502601436&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNl', // Enlace real 
       isFeatured: true, 
       imagen: '/images/gasolinera/PLANTA/Planta3.jpg', 
-      estacionLogo: '/images/logotipos/ProEner_negro.png', // Logo transparente Proenergeticos
+      estacionLogo: '/images/logotipos/ProEner.png', // Logo transparente Proenergeticos
       servicios: [
         { icon: Truck, label: 'Logística', color: 'text-blue-600' },
         { icon: Briefcase, label: 'Industrial', color: 'text-[#E30613]' },
