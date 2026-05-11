@@ -73,9 +73,9 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
                 </h4>
                 <div className="space-y-5">
                   {[
-                    { label: 'PRO-ENERGÉTICOS', tel: '669 991 12 92' },
-                    { label: 'GRUPO PRO-ENERGÉTICOS', tel: '669 991 01 01' },
-                    { label: 'GASOLINERA SANTA IRENE', tel: '669 990 04 00' }
+                    { label: '', tel: '669 991 12 92' },
+                    { label: '', tel: '669 991 01 01' },
+                    { label: '', tel: '669 990 04 00' }
                   ].map((item, idx) => (
                     <div key={idx} className="flex items-center gap-3">
                       <Phone size={14} className="text-[#E30613] fill-[#E30613]" />
