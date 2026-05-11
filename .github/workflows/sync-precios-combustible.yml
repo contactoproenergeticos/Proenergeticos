@@ -1,0 +1,23 @@
+name: Sync precios combustible
+
+on:
+  schedule:
+    # ~07:00 hora Mazatlán (variación por horario de verano; ajustar si hace falta)
+    - cron: '0 14 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - name: Ejecutar sincronización
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/sync-precios-combustible.mjs
