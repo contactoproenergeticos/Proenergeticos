@@ -24,18 +24,20 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
           
           <div className="flex flex-col lg:flex-row justify-between items-start gap-12 lg:gap-8 mb-16">
             
-            {/* MÉTODOS DE PAGO */}
+            {/* MÉTODOS DE PAGO - AJUSTADO PARA VISIBILIDAD MÓVIL */}
             <div className="w-full lg:w-[280px] space-y-4 text-center lg:text-left">
               <p className="text-gray-300 text-[12px] italic font-medium leading-tight max-w-[260px] mx-auto lg:mx-0">
                 Carga combustible y paga de diferentes formas, aceptamos todas las tarjetas y diversos monederos.
               </p>
-              <div className="relative w-full h-16 md:h-20 lg:h-32">
+              {/* Se aumentó el alto en móvil (h-24) y se aseguró el ancho completo */}
+              <div className="relative w-full h-24 md:h-28 lg:h-32 transition-all">
                 <Image 
                   src="/images/pagos/pago tarjetas credito.png" 
                   alt="Métodos de Pago" 
                   fill 
                   className="object-contain lg:object-left"
                   priority
+                  sizes="(max-width: 768px) 100vw, 280px"
                 />
               </div>
             </div>
@@ -89,20 +91,23 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
               </div>
             </div>
 
-            {/* BRANDING ACTUALIZADO: LOGOS ALINEADOS SECUENCIALMENTE */}
+            {/* BRANDING ACTUALIZADO: LOGOS EQUILIBRADOS */}
             <div className="w-full lg:w-[320px] space-y-6 text-center lg:text-left">
               <p className="text-gray-300 text-[12px] leading-tight font-medium italic">
                 Líderes en el suministro de combustibles de alta calidad en Mazatlán, Sinaloa. Comprometidos con el servicio litro por litro.
               </p>
-              {/* Contenedor Flex con items-center para alineación horizontal perfecta */}
-              <div className="flex flex-row justify-center lg:justify-start items-center gap-4 pt-2">
-                <div className="relative w-14 h-22">
+              
+              <div className="flex flex-row justify-center lg:justify-start items-center gap-6 pt-2">
+                {/* ProEner */}
+                <div className="relative w-12 h-16 md:w-14 md:h-20">
                   <Image src="/images/logotipos/ProEner_bco.png" alt="ProEner" fill className="object-contain" />
                 </div>
-                <div className="relative w-20 h-18">
+                {/* GPO */}
+                <div className="relative w-16 h-14 md:w-20 md:h-18">
                   <Image src="/images/logotipos/Logo Grupo.jfif.jpeg" alt="GPO" fill className="object-contain rounded-sm" />
                 </div>
-                <div className="relative w-27 h-12">
+                {/* Blast - Ajustado para que no se vea gigante */}
+                <div className="relative w-24 h-10 md:w-28 md:h-12">
                   <Image src="/images/logotipos/BLAST.png" alt="Blast" fill className="object-contain" />
                 </div>
               </div>
