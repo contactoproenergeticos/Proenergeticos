@@ -45,7 +45,7 @@ const FALLBACK_ESTACIONES: EstacionRow[] = [
   {
     id: 'fallback-gsi',
     nombre: 'Santa Irene (GSI)',
-    marca: 'Estación Blast',
+    marca: 'Gasolinera Blast Santa Irene, S.A. de C.V.',
     orden: 1,
     precios_combustible: [
       { label: 'Magna', subtitulo: '87 Octanos', precio: '22.79', updated_at: null },
