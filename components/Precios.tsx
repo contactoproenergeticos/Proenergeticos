@@ -387,8 +387,9 @@ function precioDesdeSelect(p: PrecioApiRow): PrecioCombustibleRow {
 }
 
 export default function Precios() {
-  const [exchangeRate, setExchangeRate] = useState<number | null>(null);
-  const [loadingFx, setLoadingFx] = useState(true);
+  const [tipoCambio, setTipoCambio] = useState<number | null>(null);
+  const [tipoCambioUpdatedAt, setTipoCambioUpdatedAt] = useState<string | null>(null);
+  const [tipoCambioCargando, setTipoCambioCargando] = useState(true);
   const [estaciones, setEstaciones] = useState<EstacionRow[]>(FALLBACK_ESTACIONES);
   const [sincronizandoPrecios, setSincronizandoPrecios] = useState(true);
 
@@ -398,21 +399,58 @@ export default function Precios() {
     return legible || vigenciaFechaHoraMazatlan(FALLBACK_PRECIOS_VIGENCIA_ISO);
   }, [vigenciaGlobalStr]);
 
+  const tipoCambioActualizadoLeyenda = useMemo(() => {
+    if (!tipoCambioUpdatedAt?.trim()) return '';
+    return vigenciaFechaHoraMazatlan(tipoCambioUpdatedAt.trim());
+  }, [tipoCambioUpdatedAt]);
+
   useEffect(() => {
-    const fetchExchangeRate = async () => {
+    let cancelado = false;
+    (async () => {
+      console.log('Consultando dólar...');
       try {
-        const response = await fetch('https://open.er-api.com/v6/latest/USD');
-        const data = await response.json();
-        if (data && data.rates && data.rates.MXN) {
-          setExchangeRate(data.rates.MXN);
+        const { data, error } = await supabase.from('tipo_cambio').select('valor, updated_at').eq('id', 1).single();
+        if (cancelado) return;
+        console.log('[Precios] tipo_cambio resultado data:', data);
+
+        if (error) {
+          console.error('[Precios] tipo_cambio falló:', {
+            message: error.message,
+            code: error.code,
+            details: error.details,
+            hint: error.hint,
+          });
+          setTipoCambio(null);
+          setTipoCambioUpdatedAt(null);
+          return;
         }
-      } catch {
-        setExchangeRate(17.79);
+
+        const raw = data?.valor;
+        if (raw == null || (typeof raw === 'string' && raw.trim() === '')) {
+          console.error('[Precios] tipo_cambio: data sin valor usable', data);
+          setTipoCambio(null);
+          setTipoCambioUpdatedAt(null);
+          return;
+        }
+
+        const num = Number(raw);
+        if (!Number.isFinite(num)) {
+          console.error('[Precios] tipo_cambio: data.valor no es un número finito', raw);
+          setTipoCambio(null);
+          setTipoCambioUpdatedAt(null);
+          return;
+        }
+
+        setTipoCambio(num);
+        const ua = data.updated_at;
+        setTipoCambioUpdatedAt(ua != null && String(ua).trim() !== '' ? String(ua).trim() : null);
       } finally {
-        setLoadingFx(false);
+        if (!cancelado) setTipoCambioCargando(false);
       }
+    })();
+    return () => {
+      cancelado = true;
     };
-    fetchExchangeRate();
   }, []);
 
   useEffect(() => {
@@ -510,24 +548,44 @@ export default function Precios() {
           Tablero de <span className="text-[#E30613]">Precios</span>
         </h2>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="inline-flex flex-col md:flex-row items-center gap-2 md:gap-6 bg-gray-900 px-10 py-6 rounded-[2.5rem] shadow-2xl mb-10 border border-white/10"
-        >
-          <div className="flex items-center gap-3">
-            <RefreshCw className={`w-6 h-6 ${loadingFx ? 'animate-spin' : ''} text-[#E30613]`} />
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">
-              Tipo de Cambio MXN/USD
-            </span>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-4xl md:text-6xl font-black text-white tracking-tighter">
-              {loadingFx ? '---' : `$${exchangeRate?.toFixed(2)}`}
-            </span>
-            <span className="text-xs font-black text-[#E30613] uppercase tracking-widest">MXN</span>
-          </div>
-        </motion.div>
+        <div className="flex flex-col items-center mb-10">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="inline-flex flex-col md:flex-row items-center gap-2 md:gap-6 bg-gray-900 px-10 py-6 rounded-[2.5rem] shadow-2xl border border-white/10"
+          >
+            <div className="flex items-center gap-3">
+              <RefreshCw className={`w-6 h-6 ${tipoCambioCargando ? 'animate-spin' : ''} text-[#E30613]`} />
+              <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">
+                Tipo de Cambio MXN/USD
+              </span>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl md:text-6xl font-black text-white tracking-tighter">
+                {tipoCambioCargando ? '---' : tipoCambio != null ? `$${tipoCambio.toFixed(2)}` : '—'}
+              </span>
+              <span className="text-xs font-black text-[#E30613] uppercase tracking-widest">MXN</span>
+            </div>
+          </motion.div>
+          <p className="mt-4 w-full max-w-2xl px-4 text-center text-sm font-bold leading-snug text-gray-900 sm:text-[15px] md:text-base">
+            {tipoCambioCargando ? (
+              <>
+                Última actualización:{' '}
+                <span className="font-extrabold text-[#E30613]">…</span>
+              </>
+            ) : tipoCambioActualizadoLeyenda ? (
+              <>
+                Última actualización:{' '}
+                <span className="font-extrabold text-[#E30613]">{tipoCambioActualizadoLeyenda}</span>
+              </>
+            ) : (
+              <>
+                Última actualización:{' '}
+                <span className="font-extrabold text-[#E30613]">—</span>
+              </>
+            )}
+          </p>
+        </div>
 
         <p className="text-lg md:text-xl text-gray-500 font-bold leading-tight max-w-2xl mx-auto uppercase tracking-tight italic">
           Combustibles de alta calidad con garantía de litraje exacto en Mazatlán.
