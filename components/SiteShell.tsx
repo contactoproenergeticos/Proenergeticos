@@ -5,6 +5,13 @@ import Image from 'next/image';
 import { Phone } from 'lucide-react';
 import Header from '@/components/Header';
 
+/** `tel:` con prefijo +52 para números mostrados con espacios (México). */
+function telHrefMexico(display: string): string {
+  const digits = display.replace(/\D/g, '');
+  if (!digits) return '#';
+  return `tel:+52${digits}`;
+}
+
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen w-full flex flex-col bg-gray-200 font-sans overflow-x-hidden">
@@ -79,13 +86,20 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
                     { label: '', tel: '669 991 01 01' },
                     { label: '', tel: '669 990 04 00' }
                   ].map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3">
-                      <Phone size={14} className="text-[#E30613] fill-[#E30613]" />
-                      <div className="flex flex-col">
+                    <a
+                      key={idx}
+                      href={telHrefMexico(item.tel)}
+                      className="flex items-center gap-3 rounded-lg py-1 -my-1 transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E30613] focus-visible:ring-offset-2 focus-visible:ring-offset-[#080808]"
+                      aria-label={`Llamar al ${item.tel}`}
+                    >
+                      <Phone size={14} className="text-[#E30613] fill-[#E30613] shrink-0" aria-hidden />
+                      <div className="flex flex-col min-w-0">
                         <span className="text-[9px] text-gray-500 font-black uppercase italic leading-none mb-1">{item.label}</span>
-                        <span className="text-white font-black text-[14px] italic tracking-widest leading-none">{item.tel}</span>
+                        <span className="text-white font-black text-[14px] italic tracking-widest leading-none underline-offset-2 decoration-white/30 hover:underline">
+                          {item.tel}
+                        </span>
                       </div>
-                    </div>
+                    </a>
                   ))}
                 </div>
               </div>
