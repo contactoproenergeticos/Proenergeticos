@@ -1,14 +1,23 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
+/**
+ * Impresión / PDF: con `true` se quita el “anclaje” (sticky + nav `fixed` de SiteShell) solo al imprimir.
+ * Cuando ya no lo necesites: pon `false` aquí (o pídemelo) y el header vuelve a comportarse exactamente como antes de este arreglo.
+ */
+const HEADER_ENABLE_PRINT_UNSTICK = true;
+
 const Header: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const pathname = usePathname();
+  const headerRef = useRef<HTMLElement>(null);
+  /** Nodos a los que aplicamos estilos de impresión (header + contenedor fixed/sticky, p. ej. nav de SiteShell) */
+  const printAdjustedRefs = useRef<HTMLElement[]>([]);
 
   // Menú de opciones
   const menuOptions = [
@@ -34,11 +43,86 @@ const Header: React.FC = () => {
     }
   }, [isDrawerOpen]);
 
+  /*
+    Impresión / PDF (Chrome): el nav padre en SiteShell usa position:fixed; Chrome repite fixed en cada hoja.
+    Además el header usa sticky. Aquí se neutraliza header + ancestros fixed/sticky solo al imprimir.
+  */
+  useEffect(() => {
+    if (!HEADER_ENABLE_PRINT_UNSTICK || typeof window === 'undefined') return;
+
+    const props = ['position', 'top', 'left', 'right', 'bottom', 'inset', 'z-index'] as const;
+
+    const restorePrintLayout = () => {
+      for (const node of printAdjustedRefs.current) {
+        for (const p of props) node.style.removeProperty(p);
+      }
+      printAdjustedRefs.current = [];
+    };
+
+    const unstickForPrint = () => {
+      restorePrintLayout();
+      const start = headerRef.current;
+      if (!start) return;
+
+      const affected: HTMLElement[] = [];
+      let node: HTMLElement | null = start;
+      while (node) {
+        const pos = window.getComputedStyle(node).position;
+        if (pos === 'fixed' || pos === 'sticky') {
+          node.style.setProperty('position', 'static', 'important');
+          node.style.setProperty('top', 'auto', 'important');
+          node.style.setProperty('left', 'auto', 'important');
+          node.style.setProperty('right', 'auto', 'important');
+          node.style.setProperty('bottom', 'auto', 'important');
+          node.style.setProperty('inset', 'auto', 'important');
+          node.style.setProperty('z-index', 'auto', 'important');
+          affected.push(node);
+        }
+        node = node.parentElement;
+      }
+      printAdjustedRefs.current = affected;
+    };
+
+    window.addEventListener('beforeprint', unstickForPrint);
+    window.addEventListener('afterprint', restorePrintLayout);
+
+    const mql = window.matchMedia('print');
+    const onPrintMedia = () => {
+      if (mql.matches) unstickForPrint();
+      else restorePrintLayout();
+    };
+    mql.addEventListener('change', onPrintMedia);
+
+    return () => {
+      window.removeEventListener('beforeprint', unstickForPrint);
+      window.removeEventListener('afterprint', restorePrintLayout);
+      mql.removeEventListener('change', onPrintMedia);
+      restorePrintLayout();
+    };
+  }, []);
+
   return (
-    // Se asegura el sticky tanto en desktop como en mobile con z-index alto
-    <header className="sticky top-0 z-[100] w-full bg-white shadow-sm border-b border-gray-100">
+    <>
+      {HEADER_ENABLE_PRINT_UNSTICK ? (
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `@media print {
+            header.proenergeticos-header-print {
+              position: static !important;
+              top: auto !important;
+              inset: auto !important;
+              z-index: auto !important;
+            }
+          }`,
+          }}
+        />
+      ) : null}
+      <header
+        ref={HEADER_ENABLE_PRINT_UNSTICK ? headerRef : undefined}
+        className={`${HEADER_ENABLE_PRINT_UNSTICK ? 'proenergeticos-header-print ' : ''}sticky top-0 z-[100] w-full bg-white shadow-sm border-b border-gray-100`}
+      >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20 md:h-28 lg:h-32">
+        <div className="flex justify-between items-center gap-4 h-20 md:h-28 lg:h-32">
           
           {/* SECCIÓN LOGOTIPO - USANDO ProEner_negro.png sobre fondo blanco */}
           <a
@@ -55,34 +139,37 @@ const Header: React.FC = () => {
                 priority
               />
             </div>
-            <div className="flex flex-col justify-center">
-              <h1 className="text-[14px] sm:text-[16px] md:text-xl lg:text-2xl font-black italic tracking-tighter leading-none text-slate-900 uppercase">
+            <div className="flex flex-col justify-center gap-0 min-w-0">
+              <span className="text-[13px] sm:text-[15px] md:text-lg lg:text-2xl font-black italic tracking-tighter leading-none text-slate-900 uppercase">
+                GRUPO
+              </span>
+              <h1 className="text-[13px] sm:text-[15px] md:text-lg lg:text-2xl font-black italic tracking-tighter leading-none text-slate-900 uppercase">
                 PRO<span className="text-[#E30613]">ENERGÉTICOS</span>
               </h1>
-              <span className="text-[6px] sm:text-[7px] md:text-[9px] lg:text-[10px] font-bold tracking-[0.15em] sm:tracking-[0.3em] uppercase text-gray-500 leading-tight">
+              <span className="text-[6px] sm:text-[7px] md:text-[9px] lg:text-[10px] font-bold tracking-[0.15em] sm:tracking-[0.3em] uppercase text-gray-500 leading-tight mt-0.5">
                 Sinaloa, México
               </span>
             </div>
           </a>
 
-          {/* NAVEGACIÓN DESKTOP */}
-          <div className="hidden lg:flex flex-col items-end gap-3 lg:gap-4">
+          {/* NAVEGACIÓN DESKTOP: una sola fila, alineada a la derecha; texto tipo oración */}
+          <div className="hidden lg:flex flex-1 flex-col items-end justify-center gap-3 lg:gap-4 min-w-0 pl-2 xl:pl-4">
             <a
               href="/facturacion"
-              className="bg-[#E30613] text-white font-black px-6 lg:px-8 py-2 rounded-full hover:bg-gray-900 transition-all duration-300 text-[10px] lg:text-xs tracking-[0.2em] uppercase shadow-lg active:scale-95 text-center"
+              className="bg-[#E30613] text-white font-black px-6 lg:px-8 py-2 rounded-full hover:bg-gray-900 transition-all duration-300 text-[10px] lg:text-xs tracking-[0.2em] uppercase shadow-lg active:scale-95 text-center shrink-0"
             >
               Facturación en Línea
             </a>
 
-            <nav>
-              <ul className="flex items-center justify-end space-x-4 lg:space-x-8">
+            <nav className="w-full min-w-0 flex justify-end overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+              <ul className="flex flex-nowrap items-center justify-end gap-x-3 lg:gap-x-4 xl:gap-x-5 shrink-0">
                 {menuOptions.map((option) => {
                   const isActive = pathname === option.href;
                   return (
-                    <li key={option.href}>
+                    <li key={option.href} className="shrink-0">
                       <a
                         href={option.href}
-                        className={`text-[11px] lg:text-[14px] font-black uppercase italic tracking-wider transition-all duration-300 py-1 border-b-2 
+                        className={`text-[12px] lg:text-[15px] font-black italic tracking-wider normal-case transition-all duration-300 py-1 border-b-2 whitespace-nowrap
                           ${isActive 
                             ? 'text-[#E30613] border-[#E30613]' 
                             : 'text-gray-600 border-transparent hover:text-[#E30613]'}`}
@@ -135,11 +222,16 @@ const Header: React.FC = () => {
               className="fixed right-0 top-0 h-full w-[85%] max-w-sm bg-white z-[120] shadow-2xl flex flex-col"
             >
               <div className="flex justify-between items-center p-6 border-b border-gray-100">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <Image src="/images/logotipos/ProEner_negro.png" alt="Logo" width={40} height={40} className="h-10 w-auto" />
-                  <span className="text-lg font-black italic text-slate-900 uppercase">
-                    PRO<span className="text-[#E30613]">ENERGÉTICOS</span>
-                  </span>
+                  <div className="flex flex-col leading-none">
+                    <span className="text-lg font-black italic tracking-tighter text-slate-900 uppercase leading-none">
+                      GRUPO
+                    </span>
+                    <span className="text-lg font-black italic text-slate-900 uppercase leading-none">
+                      PRO<span className="text-[#E30613]">ENERGÉTICOS</span>
+                    </span>
+                  </div>
                 </div>
                 <button onClick={toggleDrawer} className="p-2 text-gray-500 hover:bg-gray-100 rounded-full">
                   <X size={24} />
@@ -155,7 +247,7 @@ const Header: React.FC = () => {
                         <a
                           href={option.href}
                           onClick={handleNavClick}
-                          className={`w-full py-4 text-2xl font-black uppercase italic tracking-tighter flex items-center justify-end gap-4 
+                          className={`w-full py-4 text-2xl font-black italic tracking-tighter flex items-center justify-end gap-4 normal-case
                             ${isActive ? 'text-[#E30613]' : 'text-gray-600'}`}
                         >
                           {option.label}
@@ -180,6 +272,7 @@ const Header: React.FC = () => {
         )}
       </AnimatePresence>
     </header>
+    </>
   );
 };
 

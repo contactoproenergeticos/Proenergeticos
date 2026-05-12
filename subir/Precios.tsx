@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {
   Info,
-  RefreshCw,
   Receipt,
   ChevronRight,
   AlertCircle,
@@ -202,8 +201,11 @@ function formatPrecioDisplay(v: number | string | null): string {
   return n.toFixed(2);
 }
 
-/** Fecha y hora legibles en hora de Mazatlán (p. ej. 11 de mayo de 2026 a las 06:57 p. m.). */
-function vigenciaFechaHoraMazatlan(dato: string): string {
+/**
+ * Fecha/hora del `updated_at` de Supabase (timestamptz en UTC).
+ * Se formatea en UTC para alinear el día con el panel de Supabase.
+ */
+function vigenciaFechaHoraLegible(dato: string): string {
   const s = String(dato).trim();
   if (!s) return '';
   const conT = s.includes('T') ? s : s.replace(/^(\d{4}-\d{2}-\d{2})\s/, '$1T');
@@ -213,15 +215,15 @@ function vigenciaFechaHoraMazatlan(dato: string): string {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-    timeZone: 'America/Mazatlan',
+    timeZone: 'UTC',
   });
   const hora = d.toLocaleTimeString('es-MX', {
     hour: '2-digit',
     minute: '2-digit',
     hour12: true,
-    timeZone: 'America/Mazatlan',
+    timeZone: 'UTC',
   });
-  return `${fecha} a las ${hora}`;
+  return `${fecha} a las ${hora} (UTC)`;
 }
 
 /** Primer `updated_at` no vacío; si no hay, vigencia fija de respaldo. */
@@ -387,33 +389,14 @@ function precioDesdeSelect(p: PrecioApiRow): PrecioCombustibleRow {
 }
 
 export default function Precios() {
-  const [exchangeRate, setExchangeRate] = useState<number | null>(null);
-  const [loadingFx, setLoadingFx] = useState(true);
   const [estaciones, setEstaciones] = useState<EstacionRow[]>(FALLBACK_ESTACIONES);
   const [sincronizandoPrecios, setSincronizandoPrecios] = useState(true);
 
   const vigenciaGlobalStr = useMemo(() => vigenciaGlobalMax(estaciones), [estaciones]);
   const vigenciaGlobalTexto = useMemo(() => {
-    const legible = vigenciaFechaHoraMazatlan(vigenciaGlobalStr);
-    return legible || vigenciaFechaHoraMazatlan(FALLBACK_PRECIOS_VIGENCIA_ISO);
+    const legible = vigenciaFechaHoraLegible(vigenciaGlobalStr);
+    return legible || vigenciaFechaHoraLegible(FALLBACK_PRECIOS_VIGENCIA_ISO);
   }, [vigenciaGlobalStr]);
-
-  useEffect(() => {
-    const fetchExchangeRate = async () => {
-      try {
-        const response = await fetch('https://open.er-api.com/v6/latest/USD');
-        const data = await response.json();
-        if (data && data.rates && data.rates.MXN) {
-          setExchangeRate(data.rates.MXN);
-        }
-      } catch {
-        setExchangeRate(17.79);
-      } finally {
-        setLoadingFx(false);
-      }
-    };
-    fetchExchangeRate();
-  }, []);
 
   useEffect(() => {
     const load = async () => {
@@ -486,8 +469,8 @@ export default function Precios() {
       }));
       const rawUpdatedAt = fechaCrudaVigenciaEstacion(row);
       const vigenciaFormateada =
-        vigenciaFechaHoraMazatlan(rawUpdatedAt) ||
-        vigenciaFechaHoraMazatlan(FALLBACK_PRECIOS_VIGENCIA_ISO);
+        vigenciaFechaHoraLegible(rawUpdatedAt) ||
+        vigenciaFechaHoraLegible(FALLBACK_PRECIOS_VIGENCIA_ISO);
       return {
         key: row.id,
         nombre: row.nombre,
@@ -510,26 +493,7 @@ export default function Precios() {
           Tablero de <span className="text-[#E30613]">Precios</span>
         </h2>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="inline-flex flex-col md:flex-row items-center gap-2 md:gap-6 bg-gray-900 px-10 py-6 rounded-[2.5rem] shadow-2xl mb-10 border border-white/10"
-        >
-          <div className="flex items-center gap-3">
-            <RefreshCw className={`w-6 h-6 ${loadingFx ? 'animate-spin' : ''} text-[#E30613]`} />
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">
-              Tipo de Cambio MXN/USD
-            </span>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-4xl md:text-6xl font-black text-white tracking-tighter">
-              {loadingFx ? '---' : `$${exchangeRate?.toFixed(2)}`}
-            </span>
-            <span className="text-xs font-black text-[#E30613] uppercase tracking-widest">MXN</span>
-          </div>
-        </motion.div>
-
-        <p className="text-lg md:text-xl text-gray-500 font-bold leading-tight max-w-2xl mx-auto uppercase tracking-tight italic">
+        <p className="text-lg md:text-xl text-gray-500 font-bold leading-tight max-w-2xl mx-auto uppercase tracking-tight italic mb-10">
           Combustibles de alta calidad con garantía de litraje exacto en Mazatlán.
         </p>
       </div>
