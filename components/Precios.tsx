@@ -11,12 +11,21 @@ import {
   ChevronRight,
   AlertCircle,
   ShieldCheck,
-  CalendarDays,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
+const NOTA_CRE_PIE =
+  'Precios oficiales obtenidos del portal de la Comisión Reguladora de Energía (CRE). Actualización automática sincronizada con los precios vigentes.';
+
+/** Misma leyenda en cada tarjeta (pie legal CRE). */
+const NOTA_CRE_TARJETA = NOTA_CRE_PIE;
+
+/** Último recurso si `updated_at` no viene en la respuesta (fecha estable, no carga infinita). */
+const FALLBACK_PRECIOS_VIGENCIA_ISO = '2026-05-11T18:57:08.058Z';
+
 export type PrecioCombustibleRow = {
   id?: string;
+  estacion_id?: string;
   label: string | null;
   subtitulo: string | null;
   precio: number | string | null;
@@ -31,8 +40,7 @@ export type EstacionRow = {
   precios_combustible: PrecioCombustibleRow[] | PrecioCombustibleRow | null;
 };
 
-const FALLBACK_PRECIOS_VIGENCIA_ISO = '2026-05-11T12:00:00.000Z';
-
+/** Solo UI de demostración si no hay Supabase. */
 const FALLBACK_ESTACIONES: EstacionRow[] = [
   {
     id: 'fallback-gsi',
@@ -40,24 +48,9 @@ const FALLBACK_ESTACIONES: EstacionRow[] = [
     marca: 'Estación Blast',
     orden: 1,
     precios_combustible: [
-      {
-        label: 'Magna',
-        subtitulo: '87 Octanos',
-        precio: '22.79',
-        updated_at: FALLBACK_PRECIOS_VIGENCIA_ISO,
-      },
-      {
-        label: 'Premium',
-        subtitulo: '91 Octanos',
-        precio: '26.39',
-        updated_at: FALLBACK_PRECIOS_VIGENCIA_ISO,
-      },
-      {
-        label: 'Diésel',
-        subtitulo: 'UBA',
-        precio: '27.39',
-        updated_at: FALLBACK_PRECIOS_VIGENCIA_ISO,
-      },
+      { label: 'Magna', subtitulo: '87 Octanos', precio: '22.79', updated_at: null },
+      { label: 'Premium', subtitulo: '91 Octanos', precio: '26.39', updated_at: null },
+      { label: 'Diésel', subtitulo: 'UBA', precio: '27.39', updated_at: null },
     ],
   },
   {
@@ -66,24 +59,9 @@ const FALLBACK_ESTACIONES: EstacionRow[] = [
     marca: 'Grupo Proenergéticos Oil Companies',
     orden: 2,
     precios_combustible: [
-      {
-        label: 'Magna',
-        subtitulo: 'Aditivada',
-        precio: '23.24',
-        updated_at: FALLBACK_PRECIOS_VIGENCIA_ISO,
-      },
-      {
-        label: 'Premium',
-        subtitulo: 'Máximo Desempeño',
-        precio: '28.98',
-        updated_at: FALLBACK_PRECIOS_VIGENCIA_ISO,
-      },
-      {
-        label: 'Diésel',
-        subtitulo: 'Industrial',
-        precio: '25.40',
-        updated_at: FALLBACK_PRECIOS_VIGENCIA_ISO,
-      },
+      { label: 'Magna', subtitulo: 'Aditivada', precio: '23.24', updated_at: null },
+      { label: 'Premium', subtitulo: 'Máximo Desempeño', precio: '28.98', updated_at: null },
+      { label: 'Diésel', subtitulo: 'Industrial', precio: '25.40', updated_at: null },
     ],
   },
 ];
@@ -110,7 +88,11 @@ const TEMA_UI: Record<
   },
 };
 
-/** Siempre un arreglo (vacío si no hay relación); evita fallos en .map(). */
+/** Misma clave al agrupar precios y al buscar por `estaciones.id` (evita fallos UUID mayúsculas/minúsculas). */
+function claveEstacionId(id: string): string {
+  return String(id).replace(/-/g, '').toLowerCase();
+}
+
 function listPrecios(pc: EstacionRow['precios_combustible']): PrecioCombustibleRow[] {
   if (pc == null) return [];
   return Array.isArray(pc) ? pc : [pc];
@@ -118,7 +100,6 @@ function listPrecios(pc: EstacionRow['precios_combustible']): PrecioCombustibleR
 
 type FuelKind = 'magna' | 'premium' | 'diesel';
 
-/** Compara por subcadena sin depender de acentos (p. ej. Diésel / Diesel). */
 function normalizeLabelForMatch(label: string | null | undefined): string {
   return String(label || '')
     .toLowerCase()
@@ -134,7 +115,13 @@ function fuelKindFromLabel(label: string | null | undefined): FuelKind | null {
   return null;
 }
 
-/** Tres filas fijas por tarjeta (textos visibles aunque no haya datos en Supabase). */
+function findPrecioRowForSlot(fromDb: PrecioCombustibleRow[], kind: FuelKind): PrecioCombustibleRow | undefined {
+  const byKind = fromDb.find((r) => fuelKindFromLabel(r.label) === kind);
+  if (byKind) return byKind;
+  const needle = kind === 'magna' ? 'magna' : kind === 'premium' ? 'premium' : 'diesel';
+  return fromDb.find((r) => normalizeLabelForMatch(r.label).includes(needle));
+}
+
 const SLOTS_BLAST: { kind: FuelKind; label: string; subtitulo: string }[] = [
   { kind: 'magna', label: 'Magna', subtitulo: '87 Octanos' },
   { kind: 'premium', label: 'Premium', subtitulo: '91 Octanos' },
@@ -151,15 +138,12 @@ function slotsForTema(tema: TemaEstacion) {
   return tema === 'blast' ? SLOTS_BLAST : SLOTS_PROENER;
 }
 
-/**
- * Garantiza exactamente 3 filas (Magna / Premium / Diésel) fusionando con lo que venga de BD.
- */
 function mergeEstacionPrecios(row: EstacionRow): PrecioCombustibleRow[] {
   const tema = resolveTema(row);
   const slots = slotsForTema(tema);
   const fromDb = sortPrecios(listPrecios(row.precios_combustible));
   return slots.map((slot) => {
-    const match = fromDb.find((r) => fuelKindFromLabel(r.label) === slot.kind);
+    const match = findPrecioRowForSlot(fromDb, slot.kind);
     if (!match) {
       return {
         label: slot.label,
@@ -170,16 +154,16 @@ function mergeEstacionPrecios(row: EstacionRow): PrecioCombustibleRow[] {
     }
     const labelDb = String(match.label ?? '').trim();
     const subDb = String(match.subtitulo ?? '').trim();
+    const u = match.updated_at;
     return {
       id: match.id,
       label: labelDb || slot.label,
       subtitulo: subDb || slot.subtitulo,
       precio: match.precio,
-      updated_at: match.updated_at,
+      updated_at: u != null && String(u).trim() !== '' ? String(u) : null,
     };
   });
 }
-
 
 function resolveTema(row: Pick<EstacionRow, 'marca' | 'nombre'>): TemaEstacion {
   const t = `${row.marca} ${row.nombre}`.toLowerCase();
@@ -218,42 +202,51 @@ function formatPrecioDisplay(v: number | string | null): string {
   return n.toFixed(2);
 }
 
-function maxUpdatedAt(rows: PrecioCombustibleRow[]): string | null {
-  let max: string | null = null;
-  for (const r of rows) {
-    const u = r.updated_at;
-    if (u && String(u).trim() && (!max || String(u) > max)) max = String(u).trim();
-  }
-  return max;
-}
-
-/** Ej. "11 de Mayo de 2026" en zona Mazatlán (sin hora). */
-function formatFechaVigencia(iso: string): string {
-  const d = new Date(iso);
-  const parts = new Intl.DateTimeFormat('es-MX', {
+/** Fecha y hora legibles en hora de Mazatlán (p. ej. 11 de mayo de 2026 a las 06:57 p. m.). */
+function vigenciaFechaHoraMazatlan(dato: string): string {
+  const s = String(dato).trim();
+  if (!s) return '';
+  const conT = s.includes('T') ? s : s.replace(/^(\d{4}-\d{2}-\d{2})\s/, '$1T');
+  const d = new Date(conT);
+  if (Number.isNaN(d.getTime())) return s;
+  const fecha = d.toLocaleDateString('es-MX', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
     timeZone: 'America/Mazatlan',
-  }).formatToParts(d);
-  let day = '';
-  let month = '';
-  let year = '';
-  for (const p of parts) {
-    if (p.type === 'day') day = p.value;
-    if (p.type === 'month')
-      month = p.value.charAt(0).toUpperCase() + p.value.slice(1);
-    if (p.type === 'year') year = p.value;
+  });
+  const hora = d.toLocaleTimeString('es-MX', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+    timeZone: 'America/Mazatlan',
+  });
+  return `${fecha} a las ${hora}`;
+}
+
+/** Primer `updated_at` no vacío; si no hay, vigencia fija de respaldo. */
+function fechaCrudaVigenciaEstacion(row: EstacionRow): string {
+  const lista = listPrecios(row.precios_combustible);
+  const cero = lista[0]?.updated_at;
+  if (cero != null && String(cero).trim() !== '') return String(cero).trim();
+  const con = lista.find((p) => p.updated_at != null && String(p.updated_at).trim() !== '');
+  if (con?.updated_at != null && String(con.updated_at).trim() !== '') {
+    return String(con.updated_at).trim();
   }
-  if (!day || !month || !year) {
-    return new Date(iso).toLocaleDateString('es-MX', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      timeZone: 'America/Mazatlan',
-    });
+  return FALLBACK_PRECIOS_VIGENCIA_ISO;
+}
+
+function vigenciaGlobalMax(estaciones: EstacionRow[]): string {
+  let best: string | null = null;
+  for (const e of estaciones) {
+    for (const p of listPrecios(e.precios_combustible)) {
+      const u = p.updated_at;
+      if (u == null || !String(u).trim()) continue;
+      const s = String(u).trim();
+      if (!best || new Date(s) > new Date(best)) best = s;
+    }
   }
-  return `${day} de ${month} de ${year}`;
+  return best || FALLBACK_PRECIOS_VIGENCIA_ISO;
 }
 
 const PrecioItem = ({
@@ -290,7 +283,7 @@ const EstacionCard = ({
   nota,
   logoUrl,
   badgeClass,
-  lineaVigencia,
+  vigenciaFormateada,
 }: {
   nombre: string;
   marca: string;
@@ -300,7 +293,7 @@ const EstacionCard = ({
   nota: string;
   logoUrl: string;
   badgeClass: string;
-  lineaVigencia: string | null;
+  vigenciaFormateada: string;
 }) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
@@ -309,7 +302,7 @@ const EstacionCard = ({
     className="bg-white rounded-[40px] shadow-2xl overflow-hidden border border-gray-100 flex flex-col relative h-full group"
   >
     <div className={`h-3 w-full ${borderColor}`}></div>
-    <div className="p-6 md:p-10 flex-grow">
+    <div className="p-6 md:p-10 flex-grow flex flex-col">
       <div className="flex flex-col md:flex-row items-center justify-between mb-8 md:mb-12 min-h-[100px] gap-6">
         <div className="flex-1 text-center md:text-left">
           <h3 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tighter uppercase italic leading-tight mb-2">
@@ -327,20 +320,20 @@ const EstacionCard = ({
               alt={marca}
               fill
               className="object-contain"
-              sizes="160px"
+              sizes="(max-width: 768px) 100vw, 33vw"
               unoptimized={true}
             />
           </div>
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 flex-1 min-h-0">
         {precios.map(({ rowKey, ...p }) => (
           <PrecioItem key={rowKey} {...p} />
         ))}
       </div>
 
-      <div className="mt-8 pt-6 border-t border-gray-100 space-y-4">
+      <div className="mt-8 pt-6 border-t border-gray-100">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${badgeClass}`}>
@@ -352,15 +345,46 @@ const EstacionCard = ({
             </div>
           </div>
         </div>
-        {lineaVigencia ? (
-          <p className="text-[10px] md:text-[11px] font-black text-gray-600 normal-case tracking-tight leading-snug">
-            {lineaVigencia}
-          </p>
-        ) : null}
+      </div>
+
+      <div className="mt-auto pt-6 border-t border-gray-200 pb-1">
+        <p className="text-sm text-gray-900 normal-case leading-snug">
+          <span className="font-black">Última actualización:</span>{' '}
+          <span className="font-extrabold text-gray-900">{vigenciaFormateada}</span>
+        </p>
+        <p className="mt-1 text-xs sm:text-[11px] text-slate-700 normal-case leading-relaxed font-medium max-w-prose mx-auto md:mx-0">
+          {NOTA_CRE_TARJETA}
+        </p>
       </div>
     </div>
   </motion.div>
 );
+
+type PrecioApiRow = {
+  id?: string;
+  estacion_id?: string;
+  label?: string | null;
+  subtitulo?: string | null;
+  precio?: number | string | null;
+  updated_at?: string | null;
+};
+
+function precioDesdeSelect(p: PrecioApiRow): PrecioCombustibleRow {
+  const r = p as Record<string, unknown>;
+  const isoVigencia =
+    (r.updated_at as string | null | undefined) ||
+    (r.updatedAt as string | null | undefined) ||
+    new Date().toISOString();
+  const u = String(isoVigencia).trim() || new Date().toISOString();
+  return {
+    id: p.id != null ? String(p.id) : undefined,
+    estacion_id: p.estacion_id != null ? String(p.estacion_id) : undefined,
+    label: p.label ?? null,
+    subtitulo: p.subtitulo ?? null,
+    precio: p.precio ?? null,
+    updated_at: u,
+  };
+}
 
 export default function Precios() {
   const [exchangeRate, setExchangeRate] = useState<number | null>(null);
@@ -368,30 +392,11 @@ export default function Precios() {
   const [estaciones, setEstaciones] = useState<EstacionRow[]>(FALLBACK_ESTACIONES);
   const [sincronizandoPrecios, setSincronizandoPrecios] = useState(true);
 
-  const vigenciaGlobalIso = useMemo(() => {
-    let maxIso: string | null = null;
-    for (const e of estaciones) {
-      const m = maxUpdatedAt(mergeEstacionPrecios(e));
-      if (m && (!maxIso || m > maxIso)) maxIso = m;
-    }
-    return maxIso;
-  }, [estaciones]);
-
-  const textoVigenciaGlobal = useMemo(() => {
-    if (!vigenciaGlobalIso) {
-      return sincronizandoPrecios
-        ? 'Obteniendo la fecha de vigencia desde la base de datos…'
-        : 'Vigencia de los precios: no disponible en este momento.';
-    }
-    return `Precios actualizados al: ${formatFechaVigencia(vigenciaGlobalIso)} (según registro en base de datos).`;
-  }, [vigenciaGlobalIso, sincronizandoPrecios]);
-
-  const etiquetaVigenciaBanner = useMemo(() => {
-    if (!vigenciaGlobalIso) {
-      return sincronizandoPrecios ? 'Cargando fecha de vigencia…' : null;
-    }
-    return formatFechaVigencia(vigenciaGlobalIso);
-  }, [vigenciaGlobalIso, sincronizandoPrecios]);
+  const vigenciaGlobalStr = useMemo(() => vigenciaGlobalMax(estaciones), [estaciones]);
+  const vigenciaGlobalTexto = useMemo(() => {
+    const legible = vigenciaFechaHoraMazatlan(vigenciaGlobalStr);
+    return legible || vigenciaFechaHoraMazatlan(FALLBACK_PRECIOS_VIGENCIA_ISO);
+  }, [vigenciaGlobalStr]);
 
   useEffect(() => {
     const fetchExchangeRate = async () => {
@@ -413,66 +418,58 @@ export default function Precios() {
   useEffect(() => {
     const load = async () => {
       setSincronizandoPrecios(true);
-      const { data, error } = await supabase
+      const { data: estacionesMeta, error: errEst } = await supabase
         .from('estaciones')
-        .select(
-          `
-          id,
-          nombre,
-          marca,
-          orden,
-          precios_combustible (
-            id,
-            label,
-            subtitulo,
-            precio,
-            updated_at
-          )
-        `
-        )
+        .select('id,nombre,marca,orden')
         .order('orden', { ascending: true });
 
-      if (error) {
-        if (process.env.NODE_ENV === 'development') {
-          console.warn('[Precios] Supabase:', error.message);
+      if (errEst || !estacionesMeta?.length) {
+        if (process.env.NODE_ENV === 'development' && errEst) {
+          console.warn('[Precios] estaciones:', errEst.message);
         }
         setEstaciones(FALLBACK_ESTACIONES);
-      } else if (!data || data.length === 0) {
-        setEstaciones(FALLBACK_ESTACIONES);
-      } else {
-        const rows = data as EstacionRow[];
-        const algunaSinPrecios = rows.some(
-          (e) => listPrecios(e.precios_combustible).length === 0
-        );
-        if (algunaSinPrecios) {
-          const ids = rows.map((e) => e.id);
-          const { data: precRows, error: e2 } = await supabase
-            .from('precios_combustible')
-            .select('id,estacion_id,label,subtitulo,precio,updated_at')
-            .in('estacion_id', ids);
-          if (!e2 && precRows?.length) {
-            setEstaciones(
-              rows.map((est) => {
-                const embebidos = listPrecios(est.precios_combustible);
-                if (embebidos.length > 0) {
-                  return est;
-                }
-                return {
-                  ...est,
-                  precios_combustible: precRows.filter((p) => p.estacion_id === est.id),
-                };
-              })
-            );
-          } else {
-            setEstaciones(rows);
-          }
-        } else {
-          setEstaciones(rows);
-        }
+        setSincronizandoPrecios(false);
+        return;
       }
+
+      const ids = estacionesMeta.map((e) => e.id);
+      const { data: precRowsRaw, error: errPrec } = await supabase
+        .from('precios_combustible')
+        .select('id,estacion_id,label,subtitulo,precio,updated_at')
+        .in('estacion_id', ids);
+
+      if (errPrec) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('[Precios] precios_combustible:', errPrec.message);
+        }
+        setEstaciones(
+          (estacionesMeta as EstacionRow[]).map((e) => ({ ...e, precios_combustible: [] }))
+        );
+        setSincronizandoPrecios(false);
+        return;
+      }
+
+      const precRows = (precRowsRaw ?? []) as PrecioApiRow[];
+      const porEstacion = new Map<string, PrecioCombustibleRow[]>();
+      for (const raw of precRows) {
+        const sid = raw.estacion_id != null ? String(raw.estacion_id) : '';
+        if (!sid) continue;
+        const row = precioDesdeSelect(raw);
+        const key = claveEstacionId(sid);
+        const arr = porEstacion.get(key) ?? [];
+        arr.push(row);
+        porEstacion.set(key, arr);
+      }
+
+      const merged = (estacionesMeta as EstacionRow[]).map((est) => ({
+        ...est,
+        precios_combustible: porEstacion.get(claveEstacionId(est.id)) ?? [],
+      }));
+
+      setEstaciones(merged);
       setSincronizandoPrecios(false);
     };
-    load();
+    void load();
   }, []);
 
   const tarjetas = useMemo(() => {
@@ -487,10 +484,10 @@ export default function Precios() {
         color: colorForLabel(r.label),
         precio: formatPrecioDisplay(r.precio),
       }));
-      const vigTarjeta = maxUpdatedAt(filas);
-      const lineaVigencia = vigTarjeta
-        ? `Vigencia de estos precios: ${formatFechaVigencia(vigTarjeta)}`
-        : null;
+      const rawUpdatedAt = fechaCrudaVigenciaEstacion(row);
+      const vigenciaFormateada =
+        vigenciaFechaHoraMazatlan(rawUpdatedAt) ||
+        vigenciaFechaHoraMazatlan(FALLBACK_PRECIOS_VIGENCIA_ISO);
       return {
         key: row.id,
         nombre: row.nombre,
@@ -501,7 +498,7 @@ export default function Precios() {
         logoUrl: ui.logoUrl,
         badgeClass: ui.badgeClass,
         precios,
-        lineaVigencia,
+        vigenciaFormateada,
       };
     });
   }, [estaciones]);
@@ -535,7 +532,6 @@ export default function Precios() {
         <p className="text-lg md:text-xl text-gray-500 font-bold leading-tight max-w-2xl mx-auto uppercase tracking-tight italic">
           Combustibles de alta calidad con garantía de litraje exacto en Mazatlán.
         </p>
-       
       </div>
 
       <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 px-4 relative">
@@ -596,14 +592,19 @@ export default function Precios() {
           </div>
         </div>
 
-        <div className="bg-gray-900 rounded-[2.5rem] p-10 flex items-center gap-8 border border-white/5 shadow-2xl">
-          <Info className="text-[#E30613] w-10 h-10 flex-shrink-0" />
-          <p className="text-[11px] text-gray-400 font-black leading-relaxed uppercase tracking-[0.2em]">
-            Actualización diaria conforme a mercado. <br />
-            <span className="text-white normal-case font-bold tracking-tight">
-              {textoVigenciaGlobal}
-            </span>
-          </p>
+        <div className="bg-gray-900 rounded-[2.5rem] p-10 flex flex-col sm:flex-row gap-6 sm:gap-8 sm:items-start border border-white/5 shadow-2xl">
+          <Info className="text-[#E30613] w-10 h-10 flex-shrink-0 mx-auto sm:mx-0" />
+          <div className="min-w-0 flex-1 space-y-3 text-center sm:text-left">
+            <p className="text-xs md:text-sm text-slate-200/95 normal-case leading-relaxed font-medium">
+              {NOTA_CRE_PIE}
+            </p>
+            <p className="text-[11px] text-gray-400 font-black uppercase tracking-[0.2em] border-t border-white/10 pt-3">
+              Última actualización del tablero
+            </p>
+            <p className="text-sm text-white font-extrabold normal-case leading-snug">
+              {vigenciaGlobalTexto}
+            </p>
+          </div>
         </div>
       </div>
     </div>

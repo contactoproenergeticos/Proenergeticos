@@ -117,11 +117,18 @@ function permisoDesdeNombre(nombre) {
   return null;
 }
 
+function normalizeLabelForMatch(label) {
+  return String(label || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '');
+}
+
 function kindFromLabel(label) {
-  const s = String(label || '').toLowerCase();
-  if (s.includes('diesel') || s.includes('diésel')) return 'diesel';
-  if (s.includes('premium')) return 'premium';
-  if (s.includes('magna')) return 'magna';
+  const n = normalizeLabelForMatch(label);
+  if (n.includes('diesel')) return 'diesel';
+  if (n.includes('premium')) return 'premium';
+  if (n.includes('magna')) return 'magna';
   return null;
 }
 
@@ -148,7 +155,7 @@ async function main() {
 
   const { data: estaciones, error: e1 } = await supabase
     .from('estaciones')
-    .select('id,nombre,orden')
+    .select('id,nombre,orden,permiso_cre')
     .order('orden', { ascending: true });
 
   if (e1) {
@@ -160,14 +167,16 @@ async function main() {
     process.exit(1);
   }
 
-  const permisos = [
-    ...new Set(
-      estaciones.map((e) => permisoDesdeNombre(e.nombre)).filter(Boolean)
-    ),
-  ];
+  function permisoParaEstacion(est) {
+    const desdeTabla = est.permiso_cre && String(est.permiso_cre).trim();
+    if (desdeTabla) return desdeTabla;
+    return permisoDesdeNombre(est.nombre);
+  }
+
+  const permisos = [...new Set(estaciones.map(permisoParaEstacion).filter(Boolean))];
   if (!permisos.length) {
     console.error(
-      'No se pudo asociar ningún permiso CRE al nombre de las estaciones. Ajusta PERMISO_POR_ESTACION en el script.'
+      'Ninguna estación tiene permiso_cre en la base ni coincide con PERMISO_POR_ESTACION por nombre.'
     );
     process.exit(1);
   }
@@ -177,9 +186,9 @@ async function main() {
   let hadError = false;
 
   for (const est of estaciones) {
-    const perm = permisoDesdeNombre(est.nombre);
+    const perm = permisoParaEstacion(est);
     if (!perm) {
-      console.warn(`[${est.nombre}] Sin regla de permiso CRE; se omite.`);
+      console.warn(`[${est.nombre}] Sin permiso CRE (columna o nombre); se omite.`);
       continue;
     }
     const snap = scraped[perm];
