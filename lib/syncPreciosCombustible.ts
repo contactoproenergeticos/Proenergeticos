@@ -328,12 +328,15 @@ export async function runSyncPreciosCombustible(): Promise<SyncPreciosResult> {
   const hora_actualizacion =
     process.env.PREC_SYNC_HORA_ACTUALIZACION?.trim() || leyendaHoraMazatlanLocal(instantLeyenda);
 
-  if (process.env.GITHUB_ACTIONS === 'true') {
-    console.log(
-      '[sync-precios] Leyenda (fecha_actualizacion / hora_actualizacion):',
-      JSON.stringify({ fecha_actualizacion, hora_actualizacion })
-    );
-  }
+  console.log(
+    '[sync-precios] Leyenda resuelta (env crudo vs aplicada):',
+    JSON.stringify({
+      envFechaRaw: process.env.PREC_SYNC_FECHA_ACTUALIZACION ?? null,
+      envHoraRaw: process.env.PREC_SYNC_HORA_ACTUALIZACION ?? null,
+      fecha_actualizacion,
+      hora_actualizacion,
+    })
+  );
   let hadError = false;
   const updates: SyncPreciosUpdate[] = [];
   const warnings: string[] = [];
@@ -380,7 +383,17 @@ export async function runSyncPreciosCombustible(): Promise<SyncPreciosResult> {
       }
 
       const nuevo = snap[kind];
-      if (nuevo == null) continue;
+      if (nuevo == null) {
+        if (
+          kind === 'diesel' &&
+          normalizeUuid(est.id) === normalizeUuid(ESTACION_EL_POZOLE_ID)
+        ) {
+          console.log(
+            '[sync-precios] Diésel Industrial (El Pozole): scrape devolvió precio null; no se llama a update.'
+          );
+        }
+        continue;
+      }
 
       let row = lista.find((r) => r.id === resolved);
       let actual = formatPrecioDb(row?.precio ?? null);
@@ -418,6 +431,19 @@ export async function runSyncPreciosCombustible(): Promise<SyncPreciosResult> {
       const payload = precioCambia
         ? { ...baseUpdate, precio: Number(nuevo) }
         : { ...baseUpdate };
+
+      if (
+        kind === 'diesel' &&
+        normalizeUuid(est.id) === normalizeUuid(ESTACION_EL_POZOLE_ID)
+      ) {
+        console.log(
+          'Intentando actualizar Diésel Industrial con ID 7490c2a8-f98f-4e93-802c-43380f0499ef',
+          '| eq id:',
+          resolved
+        );
+      }
+
+      console.log('DATOS A ENVIAR:', JSON.stringify({ id: resolved, payload }));
 
       const { error: e3 } = await supabase.from('precios_combustible').update(payload).eq('id', resolved);
 

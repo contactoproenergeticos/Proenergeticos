@@ -17,12 +17,14 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Exportar leyenda Mazatlán
-        run: node scripts/sync-precios-combustible.mjs --write-github-env
+        run: |
+          node scripts/sync-precios-combustible.mjs --write-github-env
+          echo "PREC_SYNC_FECHA_ACTUALIZACION=${{ env.PREC_SYNC_FECHA_ACTUALIZACION }}" >> $GITHUB_ENV
+          echo "PREC_SYNC_HORA_ACTUALIZACION=${{ env.PREC_SYNC_HORA_ACTUALIZACION }}" >> $GITHUB_ENV
       - name: Ejecutar sincronización
-        # Las claves PREC_SYNC_* las define el paso "Exportar leyenda Mazatlán" en GITHUB_ENV.
+        # No declares PREC_SYNC_* aquí: ${{ env.PREC_SYNC_* }} suele ir vacío y SOBRESCRIBE lo que ya inyectó GITHUB_ENV.
+        # Las leyendas llegan al proceso por el entorno del job (paso anterior + archivo GITHUB_ENV).
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          PREC_SYNC_FECHA_ACTUALIZACION: ${{ env.PREC_SYNC_FECHA_ACTUALIZACION }}
-          PREC_SYNC_HORA_ACTUALIZACION: ${{ env.PREC_SYNC_HORA_ACTUALIZACION }}
         run: node scripts/sync-precios-combustible.mjs
