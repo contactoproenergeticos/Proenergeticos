@@ -1,0 +1,27 @@
+name: Sync precios
+
+on:
+  schedule:
+    # 05:00 hora Mazatlán (America/Mazatlan, ~UTC-7) ≈ 12:00 UTC
+    - cron: '0 12 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Exportar leyenda Mazatlán
+        run: node scripts/sync-precios-combustible.mjs --write-github-env
+      - name: Ejecutar sincronización
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          PREC_SYNC_FECHA_ACTUALIZACION: ${{ env.PREC_SYNC_FECHA_ACTUALIZACION }}
+          PREC_SYNC_HORA_ACTUALIZACION: ${{ env.PREC_SYNC_HORA_ACTUALIZACION }}
+        run: node scripts/sync-precios-combustible.mjs
