@@ -3,7 +3,7 @@ name: Sync precios combustible
 on:
   schedule:
     # ~07:00 hora Mazatlán (variación por horario de verano; ajustar si hace falta)
-    - cron: '0 14 * * *'
+    - cron: '0 12 * * *'
   workflow_dispatch:
 
 jobs:

@@ -19,8 +19,11 @@ const NOTA_CRE_PIE =
 /** Misma leyenda en cada tarjeta (pie legal CRE). */
 const NOTA_CRE_TARJETA = NOTA_CRE_PIE;
 
-/** Último recurso si `updated_at` no viene en la respuesta (fecha estable, no carga infinita). */
-const FALLBACK_PRECIOS_VIGENCIA_ISO = '2026-05-12T05:00:08.058Z';
+/**
+ * Tablas Supabase (ver `supabase/migrations/20260511120000_estaciones_precios_combustible.sql`):
+ * - `estaciones`: id, nombre, marca, orden
+ * - `precios_combustible`: id, estacion_id → estaciones, label, subtitulo, precio (numeric), updated_at (timestamptz)
+ */
 
 export type PrecioCombustibleRow = {
   id?: string;
@@ -38,32 +41,6 @@ export type EstacionRow = {
   orden: number;
   precios_combustible: PrecioCombustibleRow[] | PrecioCombustibleRow | null;
 };
-
-/** Solo UI de demostración si no hay Supabase. */
-const FALLBACK_ESTACIONES: EstacionRow[] = [
-  {
-    id: 'fallback-gsi',
-    nombre: 'Santa Irene (GSI)',
-    marca: 'Gasolinera Blast Santa Irene, S.A. de C.V.',
-    orden: 1,
-    precios_combustible: [
-      { label: 'Magna', subtitulo: '87 Octanos', precio: '22.79', updated_at: null },
-      { label: 'Premium', subtitulo: '91 Octanos', precio: '26.39', updated_at: null },
-      { label: 'Diésel', subtitulo: 'UBA', precio: '27.39', updated_at: null },
-    ],
-  },
-  {
-    id: 'fallback-gpo',
-    nombre: 'El Pozole (GPO)',
-    marca: 'Grupo Proenergéticos Oil Companies',
-    orden: 2,
-    precios_combustible: [
-      { label: 'Magna', subtitulo: 'Aditivada', precio: '23.24', updated_at: null },
-      { label: 'Premium', subtitulo: 'Máximo Desempeño', precio: '28.98', updated_at: null },
-      { label: 'Diésel', subtitulo: 'Industrial', precio: '25.40', updated_at: null },
-    ],
-  },
-];
 
 type TemaEstacion = 'blast' | 'proener';
 
@@ -201,10 +178,11 @@ function formatPrecioDisplay(v: number | string | null): string {
   return n.toFixed(2);
 }
 
+/** Zona horaria de Mazatlán (Sinaloa); el IANA `America/Mazatlan` refleja el huso oficial (p. ej. UTC−7 en invierno). */
+const TIMEZONE_MAZATLAN = 'America/Mazatlan';
+
 /**
- * Fecha/hora legibles del `updated_at` de Supabase (timestamptz en UTC).
- * Se formatea en UTC para que el día coincida con lo que ves en el panel de Supabase;
- * en hora de Mazatlán el mismo instante puede mostrarse como la noche del día anterior.
+ * Fecha/hora legibles del `updated_at` de Supabase (timestamptz guardado en UTC, mostrado en hora de Mazatlán).
  */
 function vigenciaFechaHoraLegible(dato: string): string {
   const s = String(dato).trim();
@@ -213,33 +191,35 @@ function vigenciaFechaHoraLegible(dato: string): string {
   const d = new Date(conT);
   if (Number.isNaN(d.getTime())) return s;
   const fecha = d.toLocaleDateString('es-MX', {
+    weekday: 'long',
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-    timeZone: 'UTC',
+    timeZone: TIMEZONE_MAZATLAN,
   });
   const hora = d.toLocaleTimeString('es-MX', {
     hour: '2-digit',
     minute: '2-digit',
     hour12: true,
-    timeZone: 'UTC',
+    timeZone: TIMEZONE_MAZATLAN,
   });
-  return `${fecha} a las ${hora} (UTC)`;
+  return `${fecha}, ${hora} (hora Mazatlán)`;
 }
 
-/** Primer `updated_at` no vacío; si no hay, vigencia fija de respaldo. */
-function fechaCrudaVigenciaEstacion(row: EstacionRow): string {
+/** Mayor `updated_at` entre las filas de precios de la estación (más reciente sincronización visible en tarjeta). */
+function fechaCrudaVigenciaEstacion(row: EstacionRow): string | null {
   const lista = listPrecios(row.precios_combustible);
-  const cero = lista[0]?.updated_at;
-  if (cero != null && String(cero).trim() !== '') return String(cero).trim();
-  const con = lista.find((p) => p.updated_at != null && String(p.updated_at).trim() !== '');
-  if (con?.updated_at != null && String(con.updated_at).trim() !== '') {
-    return String(con.updated_at).trim();
+  let best: string | null = null;
+  for (const p of lista) {
+    const u = p.updated_at;
+    if (u == null || !String(u).trim()) continue;
+    const t = String(u).trim();
+    if (!best || new Date(t) > new Date(best)) best = t;
   }
-  return FALLBACK_PRECIOS_VIGENCIA_ISO;
+  return best;
 }
 
-function vigenciaGlobalMax(estaciones: EstacionRow[]): string {
+function vigenciaGlobalMax(estaciones: EstacionRow[]): string | null {
   let best: string | null = null;
   for (const e of estaciones) {
     for (const p of listPrecios(e.precios_combustible)) {
@@ -249,7 +229,7 @@ function vigenciaGlobalMax(estaciones: EstacionRow[]): string {
       if (!best || new Date(s) > new Date(best)) best = s;
     }
   }
-  return best || FALLBACK_PRECIOS_VIGENCIA_ISO;
+  return best;
 }
 
 const PrecioItem = ({
@@ -374,11 +354,11 @@ type PrecioApiRow = {
 
 function precioDesdeSelect(p: PrecioApiRow): PrecioCombustibleRow {
   const r = p as Record<string, unknown>;
-  const isoVigencia =
-    (r.updated_at as string | null | undefined) ||
-    (r.updatedAt as string | null | undefined) ||
-    new Date().toISOString();
-  const u = String(isoVigencia).trim() || new Date().toISOString();
+  const raw =
+    (r.updated_at as string | null | undefined) ??
+    (r.updatedAt as string | null | undefined) ??
+    null;
+  const u = raw != null && String(raw).trim() !== '' ? String(raw).trim() : null;
   return {
     id: p.id != null ? String(p.id) : undefined,
     estacion_id: p.estacion_id != null ? String(p.estacion_id) : undefined,
@@ -390,18 +370,25 @@ function precioDesdeSelect(p: PrecioApiRow): PrecioCombustibleRow {
 }
 
 export default function Precios() {
-  const [estaciones, setEstaciones] = useState<EstacionRow[]>(FALLBACK_ESTACIONES);
+  const [estaciones, setEstaciones] = useState<EstacionRow[]>([]);
   const [sincronizandoPrecios, setSincronizandoPrecios] = useState(true);
+  const [errorCarga, setErrorCarga] = useState<string | null>(null);
+  /** Falló solo `precios_combustible`; dejamos filas de estación para mostrar tarjetas con precios `--`. */
+  const [advertenciaPrecios, setAdvertenciaPrecios] = useState<string | null>(null);
 
   const vigenciaGlobalStr = useMemo(() => vigenciaGlobalMax(estaciones), [estaciones]);
   const vigenciaGlobalTexto = useMemo(() => {
-    const legible = vigenciaFechaHoraLegible(vigenciaGlobalStr);
-    return legible || vigenciaFechaHoraLegible(FALLBACK_PRECIOS_VIGENCIA_ISO);
+    if (!vigenciaGlobalStr) {
+      return 'Aún no hay fechas de actualización en la base de datos.';
+    }
+    return vigenciaFechaHoraLegible(vigenciaGlobalStr);
   }, [vigenciaGlobalStr]);
 
   useEffect(() => {
     const load = async () => {
       setSincronizandoPrecios(true);
+      setErrorCarga(null);
+      setAdvertenciaPrecios(null);
       const { data: estacionesMeta, error: errEst } = await supabase
         .from('estaciones')
         .select('id,nombre,marca,orden')
@@ -411,7 +398,11 @@ export default function Precios() {
         if (process.env.NODE_ENV === 'development' && errEst) {
           console.warn('[Precios] estaciones:', errEst.message);
         }
-        setEstaciones(FALLBACK_ESTACIONES);
+        setEstaciones([]);
+        setErrorCarga(
+          errEst?.message ??
+            'No hay estaciones en la base de datos o no se pudo conectar. Revisa las variables NEXT_PUBLIC_SUPABASE_* y las políticas RLS.'
+        );
         setSincronizandoPrecios(false);
         return;
       }
@@ -420,7 +411,8 @@ export default function Precios() {
       const { data: precRowsRaw, error: errPrec } = await supabase
         .from('precios_combustible')
         .select('id,estacion_id,label,subtitulo,precio,updated_at')
-        .in('estacion_id', ids);
+        .in('estacion_id', ids)
+        .order('updated_at', { ascending: false });
 
       if (errPrec) {
         if (process.env.NODE_ENV === 'development') {
@@ -429,6 +421,7 @@ export default function Precios() {
         setEstaciones(
           (estacionesMeta as EstacionRow[]).map((e) => ({ ...e, precios_combustible: [] }))
         );
+        setAdvertenciaPrecios(errPrec.message);
         setSincronizandoPrecios(false);
         return;
       }
@@ -469,9 +462,9 @@ export default function Precios() {
         precio: formatPrecioDisplay(r.precio),
       }));
       const rawUpdatedAt = fechaCrudaVigenciaEstacion(row);
-      const vigenciaFormateada =
-        vigenciaFechaHoraLegible(rawUpdatedAt) ||
-        vigenciaFechaHoraLegible(FALLBACK_PRECIOS_VIGENCIA_ISO);
+      const vigenciaFormateada = rawUpdatedAt
+        ? vigenciaFechaHoraLegible(rawUpdatedAt)
+        : 'Sin fecha de actualización en la base de datos.';
       return {
         key: row.id,
         nombre: row.nombre,
@@ -508,6 +501,31 @@ export default function Precios() {
             <span className="rounded-full bg-white/90 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-gray-500 shadow-sm border border-gray-100">
               Actualizando…
             </span>
+          </div>
+        ) : null}
+        {!sincronizandoPrecios && errorCarga ? (
+          <div className="lg:col-span-2 rounded-[2rem] border border-amber-200 bg-amber-50/90 p-8 text-center">
+            <p className="text-sm font-black uppercase tracking-widest text-amber-900 mb-2">
+              No se pudieron cargar los precios
+            </p>
+            <p className="text-sm text-amber-950/90 font-medium normal-case max-w-2xl mx-auto">
+              {errorCarga}
+            </p>
+          </div>
+        ) : null}
+        {!sincronizandoPrecios && advertenciaPrecios ? (
+          <div className="lg:col-span-2 rounded-[2rem] border border-amber-200 bg-amber-50/90 p-6 text-center">
+            <p className="text-xs font-black uppercase tracking-widest text-amber-900 mb-1">
+              No se pudieron cargar los importes desde Supabase
+            </p>
+            <p className="text-sm text-amber-950/90 font-medium normal-case max-w-2xl mx-auto">
+              {advertenciaPrecios}
+            </p>
+          </div>
+        ) : null}
+        {!sincronizandoPrecios && !errorCarga && estaciones.length === 0 ? (
+          <div className="lg:col-span-2 rounded-[2rem] border border-gray-200 bg-white p-10 text-center text-gray-600 font-medium">
+            No hay estaciones configuradas para mostrar precios.
           </div>
         ) : null}
         {tarjetas.map(({ key: stationKey, ...card }) => (
