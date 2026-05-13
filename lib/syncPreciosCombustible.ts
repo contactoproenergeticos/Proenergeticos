@@ -41,6 +41,33 @@ const PERMISO_POR_ESTACION: { test: (n: string) => boolean; permiso: string }[] 
   { test: (n) => /pozole|rusher|gpo/i.test(n), permiso: 'PL/23676/EXP/ES/2020' },
 ];
 
+type CombustibleKind = keyof FuelSnap;
+
+/**
+ * UUID fijos en `precios_combustible` (coinciden con la base en producción).
+ * El `.update(...).eq('id', ...)` usa estos valores cuando el permiso CRE coincide.
+ */
+const PRECIO_ROW_ID_POR_PERMISO_Y_COMBUSTIBLE: Partial<
+  Record<string, Partial<Record<CombustibleKind, string>>>
+> = {
+  'PL/2840/EXP/ES/2015': {
+    /** Diésel (UBA) */
+    diesel: '326414ab-4aa1-4a64-925e-c21605935ebc',
+  },
+  'PL/23676/EXP/ES/2020': {
+    /** Gasolina Magna */
+    magna: '65bcad2e-d19a-4692-9a71-fec1819e8882',
+    /** Gasolina Premium */
+    premium: 'b37a9c2c-af8d-4e40-a826-2423731907b9',
+    /** Diésel (Industrial) */
+    diesel: '7490c2a8-f98f-4e93-802c-43380f0499ef',
+  },
+};
+
+/** Nombres de columna en Supabase (snake_case, sin mayúsculas). */
+const COL_FECHA_ACTUALIZACION = 'fecha_actualizacion' as const;
+const COL_HORA_ACTUALIZACION = 'hora_actualizacion' as const;
+
 const FETCH_HEADERS: Record<string, string> = {
   Accept: 'text/html,application/xhtml+xml',
   'Accept-Language': 'es-MX,es;q=0.9',
@@ -201,6 +228,24 @@ function formatPrecioDb(val: number | string | null | undefined): string | null 
   return n.toFixed(2);
 }
 
+function precioRowIdParaActualizar(
+  permiso: string,
+  kind: CombustibleKind,
+  precRows: PrecioRow[]
+): string | null {
+  const fijo = PRECIO_ROW_ID_POR_PERMISO_Y_COMBUSTIBLE[permiso]?.[kind];
+  if (fijo) {
+    const ok = precRows.some((r) => r.id === fijo);
+    if (!ok) {
+      return null;
+    }
+    return fijo;
+  }
+  const row = precRows.find((r) => fuelKindFromParts(r.label, r.subtitulo) === kind);
+  if (!row?.id) return null;
+  return row.id;
+}
+
 /**
  * Ejecuta scraping + actualización en Supabase (service role).
  */
@@ -303,40 +348,59 @@ export async function runSyncPreciosCombustible(): Promise<SyncPreciosResult> {
       continue;
     }
 
-    for (const row of precRows as PrecioRow[]) {
-      const kind = fuelKindFromParts(row.label, row.subtitulo);
-      if (!kind) {
-        warnings.push(`[${est.nombre}] Etiqueta no reconocida: ${row.label}`);
+    const lista = precRows as PrecioRow[];
+    const kinds: CombustibleKind[] = ['magna', 'premium', 'diesel'];
+
+    for (const kind of kinds) {
+      const resolved = precioRowIdParaActualizar(perm, kind, lista);
+      if (!resolved) {
+        const fijo = PRECIO_ROW_ID_POR_PERMISO_Y_COMBUSTIBLE[perm]?.[kind];
+        if (fijo) {
+          warnings.push(
+            `[${est.nombre}] ID fijo ${kind} (${fijo}) no está en precios_combustible de esta estación; revisa estacion_id en Supabase.`
+          );
+        }
         continue;
       }
+
       const nuevo = snap[kind];
       if (nuevo == null) continue;
 
-      const actual = formatPrecioDb(row.precio);
-      if (actual === nuevo) continue;
+      const row = lista.find((r) => r.id === resolved);
+      const etiqueta = row ? `${row.label ?? ''}`.trim() || kind : kind;
+      const actual = formatPrecioDb(row?.precio ?? null);
+      const precioCambia = actual !== nuevo;
 
-      const { error: e3 } = await supabase
-        .from('precios_combustible')
-        .update({
-          precio: Number(nuevo),
-          updated_at: now,
-          fecha_actualizacion,
-          hora_actualizacion,
-        })
-        .eq('id', row.id);
+      const baseUpdate = {
+        updated_at: now,
+        [COL_FECHA_ACTUALIZACION]: fecha_actualizacion,
+        [COL_HORA_ACTUALIZACION]: hora_actualizacion,
+      } as const;
+
+      const payload = precioCambia
+        ? { ...baseUpdate, precio: Number(nuevo) }
+        : { ...baseUpdate };
+
+      const { error: e3 } = await supabase.from('precios_combustible').update(payload).eq('id', resolved);
 
       if (e3) {
-        console.error(`[${est.nombre}] Error actualizando ${row.label}:`, e3.message);
+        console.error(`[${est.nombre}] Error actualizando ${etiqueta} (${resolved}):`, e3.message);
         hadError = true;
-        warnings.push(`[${est.nombre}] Error actualizando ${row.label}: ${e3.message}`);
+        warnings.push(`[${est.nombre}] Error actualizando ${etiqueta}: ${e3.message}`);
       } else {
-        console.log(`[${est.nombre}] ${row.label}: ${actual} → ${nuevo}`);
-        updates.push({
-          estacion: est.nombre,
-          label: String(row.label ?? ''),
-          from: String(actual ?? ''),
-          to: nuevo,
-        });
+        if (precioCambia) {
+          console.log(`[${est.nombre}] ${etiqueta}: ${actual} → ${nuevo}`);
+          updates.push({
+            estacion: est.nombre,
+            label: etiqueta,
+            from: String(actual ?? ''),
+            to: nuevo,
+          });
+        } else {
+          console.log(
+            `[${est.nombre}] ${etiqueta}: precio sin cambio; leyenda ${COL_FECHA_ACTUALIZACION}/${COL_HORA_ACTUALIZACION} actualizada.`
+          );
+        }
       }
     }
   }

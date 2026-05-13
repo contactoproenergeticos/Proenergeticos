@@ -6,6 +6,10 @@
  * - Local / npm: se calculan aquí y se pasan al proceso hijo.
  * - GitHub Actions: el workflow puede exportarlas antes con `--write-github-env` y
  *   reinyectarlas en el paso de sincronización vía env: ${{ env.PREC_SYNC_* }}.
+ *
+ * El `.update()` a Supabase ocurre en `lib/syncPreciosCombustible.ts`. Las columnas de
+ * vigencia deben coincidir exactamente con la tabla: `fecha_actualizacion`, `hora_actualizacion`
+ * (todo minúsculas, snake_case). Los UUID fijos de `precios_combustible` están definidos allí.
  */
 import { execFileSync } from 'node:child_process';
 import { appendFileSync } from 'node:fs';
