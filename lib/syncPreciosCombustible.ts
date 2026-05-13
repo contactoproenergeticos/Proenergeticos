@@ -43,6 +43,14 @@ const PERMISO_POR_ESTACION: { test: (n: string) => boolean; permiso: string }[] 
 
 type CombustibleKind = keyof FuelSnap;
 
+/** El Pozole en producción: Diésel Industrial siempre este `precios_combustible.id`. */
+const ESTACION_EL_POZOLE_ID = 'bab496ad-333e-400b-9304-469b6f849c6d';
+const PRECIO_DIESEL_INDUSTRIAL_EL_POZOLE_ID = '7490c2a8-f98f-4e93-802c-43380f0499ef';
+
+function normalizeUuid(u: string): string {
+  return String(u).replace(/-/g, '').toLowerCase();
+}
+
 /**
  * UUID fijos en `precios_combustible` (coinciden con la base en producción).
  * El `.update(...).eq('id', ...)` usa estos valores cuando el permiso CRE coincide.
@@ -59,14 +67,10 @@ const PRECIO_ROW_ID_POR_PERMISO_Y_COMBUSTIBLE: Partial<
     magna: '65bcad2e-d19a-4692-9a71-fec1819e8882',
     /** Gasolina Premium */
     premium: 'b37a9c2c-af8d-4e40-a826-2423731907b9',
-    /** Diésel (Industrial) */
+    /** Diésel (Industrial) — mismo UUID que `ESTACION_EL_POZOLE_ID` + diesel forzado */
     diesel: '7490c2a8-f98f-4e93-802c-43380f0499ef',
   },
 };
-
-/** Nombres de columna en Supabase (snake_case, sin mayúsculas). */
-const COL_FECHA_ACTUALIZACION = 'fecha_actualizacion' as const;
-const COL_HORA_ACTUALIZACION = 'hora_actualizacion' as const;
 
 const FETCH_HEADERS: Record<string, string> = {
   Accept: 'text/html,application/xhtml+xml',
@@ -229,10 +233,15 @@ function formatPrecioDb(val: number | string | null | undefined): string | null 
 }
 
 function precioRowIdParaActualizar(
+  estacionId: string,
   permiso: string,
   kind: CombustibleKind,
   precRows: PrecioRow[]
 ): string | null {
+  if (kind === 'diesel' && normalizeUuid(estacionId) === normalizeUuid(ESTACION_EL_POZOLE_ID)) {
+    return PRECIO_DIESEL_INDUSTRIAL_EL_POZOLE_ID;
+  }
+
   const fijo = PRECIO_ROW_ID_POR_PERMISO_Y_COMBUSTIBLE[permiso]?.[kind];
   if (fijo) {
     const ok = precRows.some((r) => r.id === fijo);
@@ -318,6 +327,13 @@ export async function runSyncPreciosCombustible(): Promise<SyncPreciosResult> {
     process.env.PREC_SYNC_FECHA_ACTUALIZACION?.trim() || leyendaFechaMazatlanLocal(instantLeyenda);
   const hora_actualizacion =
     process.env.PREC_SYNC_HORA_ACTUALIZACION?.trim() || leyendaHoraMazatlanLocal(instantLeyenda);
+
+  if (process.env.GITHUB_ACTIONS === 'true') {
+    console.log(
+      '[sync-precios] Leyenda (fecha_actualizacion / hora_actualizacion):',
+      JSON.stringify({ fecha_actualizacion, hora_actualizacion })
+    );
+  }
   let hadError = false;
   const updates: SyncPreciosUpdate[] = [];
   const warnings: string[] = [];
@@ -352,7 +368,7 @@ export async function runSyncPreciosCombustible(): Promise<SyncPreciosResult> {
     const kinds: CombustibleKind[] = ['magna', 'premium', 'diesel'];
 
     for (const kind of kinds) {
-      const resolved = precioRowIdParaActualizar(perm, kind, lista);
+      const resolved = precioRowIdParaActualizar(est.id, perm, kind, lista);
       if (!resolved) {
         const fijo = PRECIO_ROW_ID_POR_PERMISO_Y_COMBUSTIBLE[perm]?.[kind];
         if (fijo) {
@@ -366,16 +382,38 @@ export async function runSyncPreciosCombustible(): Promise<SyncPreciosResult> {
       const nuevo = snap[kind];
       if (nuevo == null) continue;
 
-      const row = lista.find((r) => r.id === resolved);
+      let row = lista.find((r) => r.id === resolved);
+      let actual = formatPrecioDb(row?.precio ?? null);
+      if (!row) {
+        const { data: precioSolo, error: ePrecio } = await supabase
+          .from('precios_combustible')
+          .select('precio,label,subtitulo')
+          .eq('id', resolved)
+          .maybeSingle();
+        if (ePrecio) {
+          warnings.push(`[${est.nombre}] No se pudo leer precio por id ${resolved}: ${ePrecio.message}`);
+          continue;
+        }
+        if (precioSolo) {
+          const ps = precioSolo as { precio: number | string | null; label?: string | null; subtitulo?: string | null };
+          actual = formatPrecioDb(ps.precio);
+          row = {
+            id: resolved,
+            label: ps.label ?? null,
+            subtitulo: ps.subtitulo ?? null,
+            precio: ps.precio,
+          };
+        }
+      }
+
       const etiqueta = row ? `${row.label ?? ''}`.trim() || kind : kind;
-      const actual = formatPrecioDb(row?.precio ?? null);
       const precioCambia = actual !== nuevo;
 
       const baseUpdate = {
         updated_at: now,
-        [COL_FECHA_ACTUALIZACION]: fecha_actualizacion,
-        [COL_HORA_ACTUALIZACION]: hora_actualizacion,
-      } as const;
+        fecha_actualizacion,
+        hora_actualizacion,
+      };
 
       const payload = precioCambia
         ? { ...baseUpdate, precio: Number(nuevo) }
@@ -398,7 +436,7 @@ export async function runSyncPreciosCombustible(): Promise<SyncPreciosResult> {
           });
         } else {
           console.log(
-            `[${est.nombre}] ${etiqueta}: precio sin cambio; leyenda ${COL_FECHA_ACTUALIZACION}/${COL_HORA_ACTUALIZACION} actualizada.`
+            `[${est.nombre}] ${etiqueta}: precio sin cambio; leyenda fecha_actualizacion/hora_actualizacion actualizada.`
           );
         }
       }

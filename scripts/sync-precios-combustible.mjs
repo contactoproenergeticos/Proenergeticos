@@ -65,6 +65,23 @@ if (argv.includes('--write-github-env')) {
   process.exit(0);
 }
 
+const rawFechaEnv = process.env.PREC_SYNC_FECHA_ACTUALIZACION;
+const rawHoraEnv = process.env.PREC_SYNC_HORA_ACTUALIZACION;
+if (!rawFechaEnv?.trim()) {
+  console.log(
+    '[sync-precios-combustible] PREC_SYNC_FECHA_ACTUALIZACION vacío o ausente en process.env; se usará valor generado aquí y se pasará al proceso TS.'
+  );
+} else {
+  console.log('[sync-precios-combustible] PREC_SYNC_FECHA_ACTUALIZACION recibido:', rawFechaEnv.trim());
+}
+if (!rawHoraEnv?.trim()) {
+  console.log(
+    '[sync-precios-combustible] PREC_SYNC_HORA_ACTUALIZACION vacío o ausente en process.env; se usará valor generado aquí y se pasará al proceso TS.'
+  );
+} else {
+  console.log('[sync-precios-combustible] PREC_SYNC_HORA_ACTUALIZACION recibido:', rawHoraEnv.trim());
+}
+
 const instant = new Date();
 const fecha =
   process.env.PREC_SYNC_FECHA_ACTUALIZACION?.trim() || buildFechaActualizacion(instant);

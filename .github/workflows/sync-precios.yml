@@ -19,6 +19,7 @@ jobs:
       - name: Exportar leyenda Mazatlán
         run: node scripts/sync-precios-combustible.mjs --write-github-env
       - name: Ejecutar sincronización
+        # Las claves PREC_SYNC_* las define el paso "Exportar leyenda Mazatlán" en GITHUB_ENV.
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
