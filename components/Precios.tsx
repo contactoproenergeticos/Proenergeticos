@@ -211,14 +211,41 @@ function formatPrecioDisplay(v: number | string | null): string {
 const TIMEZONE_MAZATLAN = 'America/Mazatlan';
 
 /**
- * Fecha/hora legibles del `updated_at` de Supabase (timestamptz guardado en UTC, mostrado en hora de Mazatlán).
+ * Normaliza `timestamptz` tal como lo devuelve PostgREST/Supabase (a veces con espacio en lugar de `T`).
+ */
+function parseSupabaseTimestamptz(raw: string): Date | null {
+  const s = String(raw).trim();
+  if (!s) return null;
+  const normalized = s.includes('T') ? s : s.replace(/^(\d{4}-\d{2}-\d{2})\s+/, '$1T');
+  const d = new Date(normalized);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/** El instante más reciente según `precios_combustible.updated_at` (única fuente de vigencia en UI). */
+function maxUpdatedAtFromPrecioRows(rows: PrecioCombustibleRow[]): string | null {
+  let bestRaw: string | null = null;
+  let bestMs = -Infinity;
+  for (const p of rows) {
+    const u = p.updated_at;
+    if (u == null || !String(u).trim()) continue;
+    const t = String(u).trim();
+    const ms = parseSupabaseTimestamptz(t)?.getTime();
+    if (ms != null && ms > bestMs) {
+      bestMs = ms;
+      bestRaw = t;
+    }
+  }
+  return bestRaw;
+}
+
+/**
+ * Fecha/hora legibles del `updated_at` de `precios_combustible` (timestamptz en UTC → presentación en es-MX, huso Mazatlán).
  */
 function vigenciaFechaHoraLegible(dato: string): string {
   const s = String(dato).trim();
   if (!s) return '';
-  const conT = s.includes('T') ? s : s.replace(/^(\d{4}-\d{2}-\d{2})\s/, '$1T');
-  const d = new Date(conT);
-  if (Number.isNaN(d.getTime())) return s;
+  const d = parseSupabaseTimestamptz(s);
+  if (!d) return s;
   const fecha = d.toLocaleDateString('es-MX', {
     weekday: 'long',
     day: 'numeric',
@@ -235,30 +262,18 @@ function vigenciaFechaHoraLegible(dato: string): string {
   return `${fecha}, ${hora} (hora Mazatlán)`;
 }
 
-/** Mayor `updated_at` entre las filas de precios de la estación (más reciente sincronización visible en tarjeta). */
+/** Mayor `updated_at` entre las filas de precios de la estación (tabla `precios_combustible`). */
 function fechaCrudaVigenciaEstacion(row: EstacionRow): string | null {
-  const lista = listPrecios(row.precios_combustible);
-  let best: string | null = null;
-  for (const p of lista) {
-    const u = p.updated_at;
-    if (u == null || !String(u).trim()) continue;
-    const t = String(u).trim();
-    if (!best || new Date(t) > new Date(best)) best = t;
-  }
-  return best;
+  return maxUpdatedAtFromPrecioRows(listPrecios(row.precios_combustible));
 }
 
+/** Mayor `updated_at` de todo el tablero (todas las filas `precios_combustible` cargadas). */
 function vigenciaGlobalMax(estaciones: EstacionRow[]): string | null {
-  let best: string | null = null;
+  const todas: PrecioCombustibleRow[] = [];
   for (const e of estaciones) {
-    for (const p of listPrecios(e.precios_combustible)) {
-      const u = p.updated_at;
-      if (u == null || !String(u).trim()) continue;
-      const s = String(u).trim();
-      if (!best || new Date(s) > new Date(best)) best = s;
-    }
+    todas.push(...listPrecios(e.precios_combustible));
   }
-  return best;
+  return maxUpdatedAtFromPrecioRows(todas);
 }
 
 const PrecioItem = ({
@@ -417,10 +432,8 @@ type PrecioApiRow = {
 
 function precioDesdeSelect(p: PrecioApiRow): PrecioCombustibleRow {
   const r = p as Record<string, unknown>;
-  const raw =
-    (r.updated_at as string | null | undefined) ??
-    (r.updatedAt as string | null | undefined) ??
-    null;
+  /** Vigencia: solo columnas de timestamp de la fila `precios_combustible` (snake_case es la de Supabase). */
+  const raw = (r.updated_at as string | null | undefined) ?? null;
   const u = raw != null && String(raw).trim() !== '' ? String(raw).trim() : null;
   return {
     id: p.id != null ? String(p.id) : undefined,

@@ -1,14 +1,9 @@
-'use client';
+import PreciosPageClient from './PreciosPageClient';
 
-import React from 'react';
-import SiteShell from '@/components/SiteShell';
-import Precios from '@/components/Precios';
+/** Sin caché estática de la ruta: el shell se genera en cada solicitud (los datos van por cliente → Supabase). */
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default function Page() {
-  return (
-    <SiteShell>
-      <Precios />
-    </SiteShell>
-  );
+  return <PreciosPageClient />;
 }
-
