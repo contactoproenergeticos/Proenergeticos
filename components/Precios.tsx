@@ -42,6 +42,27 @@ export type EstacionRow = {
   precios_combustible: PrecioCombustibleRow[] | PrecioCombustibleRow | null;
 };
 
+/**
+ * Dos huecos fijos en el grid (misma maqueta siempre) cuando aún no hay datos o falló la conexión.
+ * Los nombres en `--` indican que la información no está disponible.
+ */
+const PLACEHOLDER_ESTACIONES: EstacionRow[] = [
+  {
+    id: '__placeholder-1',
+    nombre: '--',
+    marca: '--',
+    orden: 1,
+    precios_combustible: [],
+  },
+  {
+    id: '__placeholder-2',
+    nombre: '--',
+    marca: '--',
+    orden: 2,
+    precios_combustible: [],
+  },
+];
+
 type TemaEstacion = 'blast' | 'proener';
 
 const TEMA_UI: Record<
@@ -147,6 +168,14 @@ function resolveTema(row: Pick<EstacionRow, 'marca' | 'nombre'>): TemaEstacion {
   return 'proener';
 }
 
+/** Placeholders: misma estética Blast / ProEner que las estaciones reales. */
+function resolveTemaVisual(row: EstacionRow, index: number): TemaEstacion {
+  if (row.id.startsWith('__placeholder')) {
+    return index === 0 ? 'blast' : 'proener';
+  }
+  return resolveTema(row);
+}
+
 function sortPrecios(rows: PrecioCombustibleRow[]): PrecioCombustibleRow[] {
   const rank = (label: string | null) => {
     const k = fuelKindFromLabel(label);
@@ -237,11 +266,13 @@ const PrecioItem = ({
   precio,
   color,
   subtitulo,
+  mostrarEsqueleto,
 }: {
   label: string;
   precio: string;
   color: string;
   subtitulo: string;
+  mostrarEsqueleto?: boolean;
 }) => (
   <div className="flex flex-col items-center justify-center py-4 border-b border-gray-100 last:border-0 transition-colors hover:bg-gray-50/50">
     <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">
@@ -250,9 +281,15 @@ const PrecioItem = ({
     <h4 className="text-lg font-black text-gray-900 tracking-tighter uppercase italic mb-1">
       {label}
     </h4>
-    <div className="flex items-baseline gap-1">
-      <span className="text-xl font-black text-gray-400">$</span>
-      <span className={`text-5xl font-black tracking-tighter ${color}`}>{precio}</span>
+    <div className="flex min-h-[3rem] items-center justify-center gap-1">
+      {mostrarEsqueleto ? (
+        <span className="inline-block h-12 w-28 rounded-xl bg-gray-200 animate-pulse" aria-hidden />
+      ) : (
+        <>
+          <span className="text-xl font-black text-gray-400">$</span>
+          <span className={`text-5xl font-black tracking-tighter ${color}`}>{precio}</span>
+        </>
+      )}
     </div>
   </div>
 );
@@ -267,52 +304,78 @@ const EstacionCard = ({
   logoUrl,
   badgeClass,
   vigenciaFormateada,
+  tituloEsqueleto,
+  logoEsqueleto,
 }: {
   nombre: string;
   marca: string;
   borderColor: string;
   marcaColor: string;
-  precios: { rowKey: string; label: string; precio: string; color: string; subtitulo: string }[];
+  precios: {
+    rowKey: string;
+    label: string;
+    precio: string;
+    color: string;
+    subtitulo: string;
+    mostrarEsqueleto?: boolean;
+  }[];
   nota: string;
   logoUrl: string;
   badgeClass: string;
   vigenciaFormateada: string;
+  /** Pulso en título/marca (carga inicial). */
+  tituloEsqueleto?: boolean;
+  /** Pulso en lugar del logo. */
+  logoEsqueleto?: boolean;
 }) => (
   <motion.div
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    className="bg-white rounded-[40px] shadow-2xl overflow-hidden border border-gray-100 flex flex-col relative h-full group"
+    className="bg-white rounded-[40px] shadow-2xl overflow-hidden border border-gray-100 flex flex-col relative h-full min-h-[420px] md:min-h-[480px] group"
   >
     <div className={`h-3 w-full ${borderColor}`}></div>
     <div className="p-6 md:p-10 flex-grow flex flex-col">
       <div className="flex flex-col md:flex-row items-center justify-between mb-8 md:mb-12 min-h-[100px] gap-6">
-        <div className="flex-1 text-center md:text-left">
-          <h3 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tighter uppercase italic leading-tight mb-2">
-            {nombre}
-          </h3>
-          <p className={`text-[11px] md:text-sm font-black tracking-widest uppercase ${marcaColor}`}>
-            {marca}
-          </p>
+        <div className="flex-1 text-center md:text-left w-full min-h-[4.5rem] flex flex-col justify-center">
+          {tituloEsqueleto ? (
+            <>
+              <span className="block h-9 md:h-11 w-3/4 max-w-xs mx-auto md:mx-0 rounded-lg bg-gray-200 animate-pulse mb-3" />
+              <span className="block h-4 w-1/2 max-w-[12rem] mx-auto md:mx-0 rounded-md bg-gray-100 animate-pulse" />
+            </>
+          ) : (
+            <>
+              <h3 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tighter uppercase italic leading-tight mb-2">
+                {nombre}
+              </h3>
+              <p className={`text-[11px] md:text-sm font-black tracking-widest uppercase ${marcaColor}`}>
+                {marca}
+              </p>
+            </>
+          )}
         </div>
 
         <div className="flex-1 flex justify-center items-center">
           <div className="w-28 md:w-40 h-20 md:h-24 flex items-center justify-center relative transition-transform duration-500 group-hover:scale-110">
-            <Image
-              src={logoUrl}
-              alt={marca}
-              fill
-              className="object-contain"
-              sizes="(max-width: 768px) 100vw, 33vw"
-              unoptimized={true}
-            />
+            {logoEsqueleto ? (
+              <span className="inline-block w-24 md:w-32 h-16 md:h-20 rounded-2xl bg-gray-200 animate-pulse" aria-hidden />
+            ) : (
+              <Image
+                src={logoUrl}
+                alt={marca}
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 33vw"
+                unoptimized={true}
+              />
+            )}
           </div>
         </div>
       </div>
 
       <div className="space-y-3 flex-1 min-h-0">
-        {precios.map(({ rowKey, ...p }) => (
-          <PrecioItem key={rowKey} {...p} />
+        {precios.map(({ rowKey, mostrarEsqueleto, ...p }) => (
+          <PrecioItem key={rowKey} {...p} mostrarEsqueleto={mostrarEsqueleto} />
         ))}
       </div>
 
@@ -379,10 +442,23 @@ export default function Precios() {
   const vigenciaGlobalStr = useMemo(() => vigenciaGlobalMax(estaciones), [estaciones]);
   const vigenciaGlobalTexto = useMemo(() => {
     if (!vigenciaGlobalStr) {
-      return 'Aún no hay fechas de actualización en la base de datos.';
+      return 'Sin datos recientes.';
     }
     return vigenciaFechaHoraLegible(vigenciaGlobalStr);
   }, [vigenciaGlobalStr]);
+
+  /** Siempre dos tarjetas: reales o placeholders para no colapsar el layout. */
+  const estacionesVisibles = useMemo(() => {
+    if (sincronizandoPrecios) return PLACEHOLDER_ESTACIONES;
+    if (estaciones.length > 0) return estaciones;
+    return PLACEHOLDER_ESTACIONES;
+  }, [sincronizandoPrecios, estaciones]);
+
+  const avisoDiscreto = useMemo(() => {
+    if (sincronizandoPrecios) return 'Actualizando precios...';
+    if (errorCarga || advertenciaPrecios) return 'Sin conexión temporal';
+    return null;
+  }, [sincronizandoPrecios, errorCarga, advertenciaPrecios]);
 
   useEffect(() => {
     const load = async () => {
@@ -450,21 +526,28 @@ export default function Precios() {
   }, []);
 
   const tarjetas = useMemo(() => {
-    return estaciones.map((row) => {
-      const tema = resolveTema(row);
+    const esPlaceholder = (row: EstacionRow) => row.id.startsWith('__placeholder');
+    const mostrarPulsoCarga = sincronizandoPrecios;
+
+    return estacionesVisibles.map((row, index) => {
+      const tema = resolveTemaVisual(row, index);
       const ui = TEMA_UI[tema];
       const filas = mergeEstacionPrecios(row);
+      const placeholderFila = esPlaceholder(row);
       const precios = filas.map((r, i) => ({
         rowKey: r.id ?? `${row.id}-${i}-${r.label ?? i}`,
         label: String(r.label ?? ''),
         subtitulo: r.subtitulo?.trim() ? String(r.subtitulo) : '--',
         color: colorForLabel(r.label),
         precio: formatPrecioDisplay(r.precio),
+        mostrarEsqueleto: mostrarPulsoCarga,
       }));
       const rawUpdatedAt = fechaCrudaVigenciaEstacion(row);
       const vigenciaFormateada = rawUpdatedAt
         ? vigenciaFechaHoraLegible(rawUpdatedAt)
-        : 'Sin fecha de actualización en la base de datos.';
+        : placeholderFila || errorCarga || advertenciaPrecios
+          ? '—'
+          : 'Sin fecha de actualización en la base de datos.';
       return {
         key: row.id,
         nombre: row.nombre,
@@ -476,9 +559,11 @@ export default function Precios() {
         badgeClass: ui.badgeClass,
         precios,
         vigenciaFormateada,
+        tituloEsqueleto: mostrarPulsoCarga,
+        logoEsqueleto: mostrarPulsoCarga,
       };
     });
-  }, [estaciones]);
+  }, [estacionesVisibles, sincronizandoPrecios, errorCarga, advertenciaPrecios]);
 
   return (
     <div className="space-y-8 md:space-y-12 py-8 md:py-16 bg-gray-200 relative w-full overflow-x-hidden">
@@ -492,45 +577,23 @@ export default function Precios() {
         </p>
       </div>
 
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 px-4 relative">
-        {sincronizandoPrecios ? (
-          <div
-            className="pointer-events-none absolute inset-x-4 top-0 z-10 flex justify-end"
-            aria-hidden
-          >
-            <span className="rounded-full bg-white/90 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-gray-500 shadow-sm border border-gray-100">
-              Actualizando…
-            </span>
-          </div>
-        ) : null}
-        {!sincronizandoPrecios && errorCarga ? (
-          <div className="lg:col-span-2 rounded-[2rem] border border-amber-200 bg-amber-50/90 p-8 text-center">
-            <p className="text-sm font-black uppercase tracking-widest text-amber-900 mb-2">
-              No se pudieron cargar los precios
+      <div className="max-w-7xl mx-auto px-4 relative">
+        <div className="mb-4 flex min-h-[1.25rem] items-center justify-center">
+          {avisoDiscreto ? (
+            <p
+              className="text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-500"
+              role="status"
+              aria-live="polite"
+            >
+              {avisoDiscreto}
             </p>
-            <p className="text-sm text-amber-950/90 font-medium normal-case max-w-2xl mx-auto">
-              {errorCarga}
-            </p>
-          </div>
-        ) : null}
-        {!sincronizandoPrecios && advertenciaPrecios ? (
-          <div className="lg:col-span-2 rounded-[2rem] border border-amber-200 bg-amber-50/90 p-6 text-center">
-            <p className="text-xs font-black uppercase tracking-widest text-amber-900 mb-1">
-              No se pudieron cargar los importes desde Supabase
-            </p>
-            <p className="text-sm text-amber-950/90 font-medium normal-case max-w-2xl mx-auto">
-              {advertenciaPrecios}
-            </p>
-          </div>
-        ) : null}
-        {!sincronizandoPrecios && !errorCarga && estaciones.length === 0 ? (
-          <div className="lg:col-span-2 rounded-[2rem] border border-gray-200 bg-white p-10 text-center text-gray-600 font-medium">
-            No hay estaciones configuradas para mostrar precios.
-          </div>
-        ) : null}
-        {tarjetas.map(({ key: stationKey, ...card }) => (
-          <EstacionCard key={stationKey} {...card} />
-        ))}
+          ) : null}
+        </div>
+        <div className="grid lg:grid-cols-2 gap-10">
+          {tarjetas.map(({ key: stationKey, ...card }) => (
+            <EstacionCard key={stationKey} {...card} />
+          ))}
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4">
