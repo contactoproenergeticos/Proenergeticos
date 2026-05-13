@@ -6,6 +6,7 @@
  */
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import ws from 'ws';
 
 const LIST_URL = 'https://www.gasolinamexico.com.mx/estados/sinaloa/mazatlan/';
 
@@ -181,8 +182,12 @@ export async function runSyncPreciosCombustible(): Promise<SyncPreciosResult> {
     };
   }
 
+  // Node < 22 no expone WebSocket global; @supabase/realtime-js lo necesita aunque no usemos canales.
   const supabase: SupabaseClient = createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
+    ...(typeof globalThis.WebSocket === 'undefined'
+      ? { realtime: { transport: ws as never } }
+      : {}),
   });
 
   const { data: estaciones, error: e1 } = await supabase
