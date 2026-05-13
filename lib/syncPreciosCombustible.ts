@@ -7,12 +7,38 @@
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import ws from 'ws';
+import { fuelKindFromParts } from './fuelLabelKind';
 
 const LIST_URL = 'https://www.gasolinamexico.com.mx/estados/sinaloa/mazatlan/';
 
+/**
+ * Leyendas de vigencia: en GitHub Actions las calcula `scripts/sync-precios-combustible.mjs`
+ * y las pasa por `PREC_SYNC_*`. Si faltan (p. ej. cron en Vercel), se recalculan aquí con
+ * la misma convención que el `.mjs`.
+ */
+const TZ_LEYENDA = 'America/Mazatlan';
+
+function leyendaFechaMazatlanLocal(instant: Date): string {
+  const weekday = new Intl.DateTimeFormat('es-MX', { timeZone: TZ_LEYENDA, weekday: 'long' }).format(
+    instant
+  );
+  const day = new Intl.DateTimeFormat('es-MX', { timeZone: TZ_LEYENDA, day: 'numeric' }).format(instant);
+  const month = new Intl.DateTimeFormat('es-MX', { timeZone: TZ_LEYENDA, month: 'long' }).format(instant);
+  return `${weekday.toLowerCase()}, ${day} de ${month}`;
+}
+
+function leyendaHoraMazatlanLocal(instant: Date): string {
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone: TZ_LEYENDA,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  }).format(instant);
+}
+
 const PERMISO_POR_ESTACION: { test: (n: string) => boolean; permiso: string }[] = [
   { test: (n) => /santa\s*irene|gsi/i.test(n), permiso: 'PL/2840/EXP/ES/2015' },
-  { test: (n) => /pozole|gpo/i.test(n), permiso: 'PL/23676/EXP/ES/2020' },
+  { test: (n) => /pozole|rusher|gpo/i.test(n), permiso: 'PL/23676/EXP/ES/2020' },
 ];
 
 const FETCH_HEADERS: Record<string, string> = {
@@ -34,8 +60,8 @@ type EstacionRow = {
 type PrecioRow = {
   id: string;
   label: string | null;
+  subtitulo: string | null;
   precio: number | string | null;
-  updated_at?: string | null;
 };
 
 export type SyncPreciosUpdate = {
@@ -88,6 +114,30 @@ function extractCardPrice(html: string, cardClass: string): string | null {
   return m[1].trim();
 }
 
+/** Variantes de clase en gasolinamexico.com.mx para la tarjeta de diesel. */
+const DIESEL_CARD_CLASSES = [
+  'diesel',
+  'diesel-uba',
+  'diesel_uba',
+  'diesel-industrial',
+  'dieselindustrial',
+  'diésel',
+];
+
+function extractDieselPrice(html: string): string | null {
+  for (const cls of DIESEL_CARD_CLASSES) {
+    const v = parsePriceFromSource(extractCardPrice(html, cls));
+    if (v) return v;
+  }
+  const re = /<div class="([^"]*\bdiesel[^"]*)"[\s\S]*?<p>([^<]*)<\/p>/gi;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(html))) {
+    const v = parsePriceFromSource(m[2]?.trim() ?? null);
+    if (v) return v;
+  }
+  return null;
+}
+
 function parsePriceFromSource(raw: string | null | undefined): string | null {
   if (raw == null) return null;
   const t = String(raw).trim();
@@ -123,7 +173,7 @@ async function scrapeByPermisos(permisos: string[]): Promise<Record<string, Fuel
     out[perm] = {
       magna: parsePriceFromSource(extractCardPrice(html, 'magna')),
       premium: parsePriceFromSource(extractCardPrice(html, 'premium')),
-      diesel: parsePriceFromSource(extractCardPrice(html, 'diesel')),
+      diesel: extractDieselPrice(html),
     };
     pending.delete(perm);
     await sleep(75);
@@ -141,21 +191,6 @@ function permisoDesdeNombre(nombre: string): string | null {
   for (const { test, permiso } of PERMISO_POR_ESTACION) {
     if (test(n)) return permiso;
   }
-  return null;
-}
-
-function normalizeLabelForMatch(label: string | null | undefined): string {
-  return String(label || '')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/\p{M}/gu, '');
-}
-
-function kindFromLabel(label: string | null | undefined): 'diesel' | 'premium' | 'magna' | null {
-  const n = normalizeLabelForMatch(label);
-  if (n.includes('diesel')) return 'diesel';
-  if (n.includes('premium')) return 'premium';
-  if (n.includes('magna')) return 'magna';
   return null;
 }
 
@@ -233,6 +268,11 @@ export async function runSyncPreciosCombustible(): Promise<SyncPreciosResult> {
   }
 
   const now = new Date().toISOString();
+  const instantLeyenda = new Date();
+  const fecha_actualizacion =
+    process.env.PREC_SYNC_FECHA_ACTUALIZACION?.trim() || leyendaFechaMazatlanLocal(instantLeyenda);
+  const hora_actualizacion =
+    process.env.PREC_SYNC_HORA_ACTUALIZACION?.trim() || leyendaHoraMazatlanLocal(instantLeyenda);
   let hadError = false;
   const updates: SyncPreciosUpdate[] = [];
   const warnings: string[] = [];
@@ -248,7 +288,7 @@ export async function runSyncPreciosCombustible(): Promise<SyncPreciosResult> {
 
     const { data: precRows, error: e2 } = await supabase
       .from('precios_combustible')
-      .select('id,label,precio,updated_at')
+      .select('id,label,subtitulo,precio')
       .eq('estacion_id', est.id);
 
     if (e2) {
@@ -264,7 +304,7 @@ export async function runSyncPreciosCombustible(): Promise<SyncPreciosResult> {
     }
 
     for (const row of precRows as PrecioRow[]) {
-      const kind = kindFromLabel(row.label);
+      const kind = fuelKindFromParts(row.label, row.subtitulo);
       if (!kind) {
         warnings.push(`[${est.nombre}] Etiqueta no reconocida: ${row.label}`);
         continue;
@@ -277,7 +317,12 @@ export async function runSyncPreciosCombustible(): Promise<SyncPreciosResult> {
 
       const { error: e3 } = await supabase
         .from('precios_combustible')
-        .update({ precio: Number(nuevo), updated_at: now })
+        .update({
+          precio: Number(nuevo),
+          updated_at: now,
+          fecha_actualizacion,
+          hora_actualizacion,
+        })
         .eq('id', row.id);
 
       if (e3) {

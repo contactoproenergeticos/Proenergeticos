@@ -12,6 +12,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { fuelKindFromParts, normalizeFuelText, type FuelKind } from '@/lib/fuelLabelKind';
 
 const NOTA_CRE_PIE =
   'Precios oficiales obtenidos del portal de la Comisión Reguladora de Energía (CRE). Actualización automática sincronizada con los precios vigentes.';
@@ -20,8 +21,8 @@ const NOTA_CRE_PIE =
 const NOTA_CRE_TARJETA = NOTA_CRE_PIE;
 
 /**
- * La vigencia en pantalla sale del instante real de cambio: `precios_combustible.updated_at` (timestamptz),
- * formateado en hora Mazatlán + texto relativo reciente (“hace X minutos”) para que se perciban como vigentes.
+ * Última actualización: solo se muestran los textos `fecha_actualizacion` y `hora_actualizacion`
+ * guardados en Supabase por el job de sincronización.
  */
 
 export type PrecioCombustibleRow = {
@@ -30,7 +31,8 @@ export type PrecioCombustibleRow = {
   label: string | null;
   subtitulo: string | null;
   precio: number | string | null;
-  updated_at: string | null;
+  fecha_actualizacion: string | null;
+  hora_actualizacion: string | null;
 };
 
 export type EstacionRow = {
@@ -94,28 +96,11 @@ function listPrecios(pc: EstacionRow['precios_combustible']): PrecioCombustibleR
   return Array.isArray(pc) ? pc : [pc];
 }
 
-type FuelKind = 'magna' | 'premium' | 'diesel';
-
-function normalizeLabelForMatch(label: string | null | undefined): string {
-  return String(label || '')
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/\p{M}/gu, '');
-}
-
-function fuelKindFromLabel(label: string | null | undefined): FuelKind | null {
-  const n = normalizeLabelForMatch(label);
-  if (n.includes('diesel')) return 'diesel';
-  if (n.includes('premium')) return 'premium';
-  if (n.includes('magna')) return 'magna';
-  return null;
-}
-
 function findPrecioRowForSlot(fromDb: PrecioCombustibleRow[], kind: FuelKind): PrecioCombustibleRow | undefined {
-  const byKind = fromDb.find((r) => fuelKindFromLabel(r.label) === kind);
+  const byKind = fromDb.find((r) => fuelKindFromParts(r.label, r.subtitulo) === kind);
   if (byKind) return byKind;
   const needle = kind === 'magna' ? 'magna' : kind === 'premium' ? 'premium' : 'diesel';
-  return fromDb.find((r) => normalizeLabelForMatch(r.label).includes(needle));
+  return fromDb.find((r) => normalizeFuelText(r.label).includes(needle));
 }
 
 const SLOTS_BLAST: { kind: FuelKind; label: string; subtitulo: string }[] = [
@@ -145,18 +130,21 @@ function mergeEstacionPrecios(row: EstacionRow): PrecioCombustibleRow[] {
         label: slot.label,
         subtitulo: slot.subtitulo,
         precio: null,
-        updated_at: null,
+        fecha_actualizacion: null,
+        hora_actualizacion: null,
       };
     }
     const labelDb = String(match.label ?? '').trim();
     const subDb = String(match.subtitulo ?? '').trim();
-    const u = match.updated_at;
+    const fa = match.fecha_actualizacion;
+    const ha = match.hora_actualizacion;
     return {
       id: match.id,
       label: labelDb || slot.label,
       subtitulo: subDb || slot.subtitulo,
       precio: match.precio,
-      updated_at: u != null && String(u).trim() !== '' ? String(u) : null,
+      fecha_actualizacion: fa != null && String(fa).trim() !== '' ? String(fa) : null,
+      hora_actualizacion: ha != null && String(ha).trim() !== '' ? String(ha) : null,
     };
   });
 }
@@ -176,21 +164,21 @@ function resolveTemaVisual(row: EstacionRow, index: number): TemaEstacion {
 }
 
 function sortPrecios(rows: PrecioCombustibleRow[]): PrecioCombustibleRow[] {
-  const rank = (label: string | null) => {
-    const k = fuelKindFromLabel(label);
+  const rank = (label: string | null, subtitulo: string | null) => {
+    const k = fuelKindFromParts(label, subtitulo);
     if (k === 'diesel') return 2;
     if (k === 'premium') return 1;
     if (k === 'magna') return 0;
     return 50;
   };
   return [...rows].sort((a, b) => {
-    const d = rank(a.label) - rank(b.label);
+    const d = rank(a.label, a.subtitulo) - rank(b.label, b.subtitulo);
     return d !== 0 ? d : (a.label || '').localeCompare(b.label || '', 'es');
   });
 }
 
 function colorForLabel(label: string | null): string {
-  const n = normalizeLabelForMatch(label);
+  const n = normalizeFuelText(label);
   if (n.includes('premium')) return 'text-red-600';
   if (n.includes('diesel')) return 'text-gray-900';
   if (n.includes('magna')) return 'text-green-600';
@@ -206,80 +194,23 @@ function formatPrecioDisplay(v: number | string | null): string {
   return n.toFixed(2);
 }
 
-const TIMEZONE_MAZATLAN = 'America/Mazatlan';
-
-function parseSupabaseTimestamptz(raw: string): Date | null {
-  const s = String(raw).trim();
-  if (!s) return null;
-  const normalized = s.includes('T') ? s : s.replace(/^(\d{4}-\d{2}-\d{2})\s+/, '$1T');
-  const d = new Date(normalized);
-  return Number.isNaN(d.getTime()) ? null : d;
+function displayOrDash(value: string | null | undefined): string {
+  const t = String(value ?? '').trim();
+  return t.length > 0 ? t : '--';
 }
 
-function maxUpdatedAtFromPrecioRows(rows: PrecioCombustibleRow[]): string | null {
-  let bestRaw: string | null = null;
-  let bestMs = -Infinity;
-  for (const p of rows) {
-    const u = p.updated_at;
-    if (u == null || !String(u).trim()) continue;
-    const t = String(u).trim();
-    const ms = parseSupabaseTimestamptz(t)?.getTime();
-    if (ms != null && ms > bestMs) {
-      bestMs = ms;
-      bestRaw = t;
-    }
+/** Primera fecha/hora no vacía entre filas de precios (misma estación o tablero global). */
+function lineaUltimaActualizacion(rows: PrecioCombustibleRow[]): string {
+  let fecha = '';
+  let hora = '';
+  for (const r of rows) {
+    const f = r.fecha_actualizacion?.trim();
+    const h = r.hora_actualizacion?.trim();
+    if (!fecha && f) fecha = f;
+    if (!hora && h) hora = h;
+    if (fecha && hora) break;
   }
-  return bestRaw;
-}
-
-/** Fecha y hora en es-MX según huso Mazatlán (mismo instante que `updated_at` en la base). */
-function vigenciaFechaHoraLegible(dato: string): string {
-  const d = parseSupabaseTimestamptz(dato);
-  if (!d) return String(dato).trim();
-  const fecha = d.toLocaleDateString('es-MX', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    timeZone: TIMEZONE_MAZATLAN,
-  });
-  const hora = d.toLocaleTimeString('es-MX', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-    timeZone: TIMEZONE_MAZATLAN,
-  });
-  return `${fecha}, ${hora}`;
-}
-
-/** Texto relativo reciente para transmitir que los precios siguen vigentes (p. ej. “hace 3 minutos”). */
-function textoFrescuraSincronizacion(iso: string, ahoraMs: number): string | null {
-  const d = parseSupabaseTimestamptz(iso);
-  if (!d) return null;
-  const sec = Math.floor((ahoraMs - d.getTime()) / 1000);
-  if (sec < 0) return null;
-  const rtf = new Intl.RelativeTimeFormat('es-MX', { numeric: 'auto' });
-  const min = Math.floor(sec / 60);
-  if (min < 60) {
-    return `Precios vigentes · ${rtf.format(-Math.max(1, min), 'minute')}`;
-  }
-  const h = Math.floor(min / 60);
-  if (h < 48) {
-    return `Precios vigentes · ${rtf.format(-h, 'hour')}`;
-  }
-  return null;
-}
-
-function fechaCrudaVigenciaEstacion(row: EstacionRow): string | null {
-  return maxUpdatedAtFromPrecioRows(listPrecios(row.precios_combustible));
-}
-
-function vigenciaGlobalMax(estaciones: EstacionRow[]): string | null {
-  const todas: PrecioCombustibleRow[] = [];
-  for (const e of estaciones) {
-    todas.push(...listPrecios(e.precios_combustible));
-  }
-  return maxUpdatedAtFromPrecioRows(todas);
+  return `${displayOrDash(fecha)} · ${displayOrDash(hora)}`;
 }
 
 const PrecioItem = ({
@@ -325,7 +256,6 @@ const EstacionCard = ({
   logoUrl,
   badgeClass,
   vigenciaPrincipal,
-  vigenciaFrescura,
   tituloEsqueleto,
   logoEsqueleto,
 }: {
@@ -345,7 +275,6 @@ const EstacionCard = ({
   logoUrl: string;
   badgeClass: string;
   vigenciaPrincipal: string;
-  vigenciaFrescura: string | null;
   /** Pulso en título/marca (carga inicial). */
   tituloEsqueleto?: boolean;
   /** Pulso en lugar del logo. */
@@ -418,12 +347,9 @@ const EstacionCard = ({
 
       <div className="mt-auto pt-6 border-t border-gray-200 pb-1">
         <p className="text-sm text-gray-900 normal-case leading-snug">
-          <span className="font-black">Última sincronización (Mazatlán):</span>{' '}
+          <span className="font-black">Última actualización:</span>{' '}
           <span className="font-extrabold text-gray-900">{vigenciaPrincipal}</span>
         </p>
-        {vigenciaFrescura ? (
-          <p className="mt-1.5 text-xs font-bold text-emerald-700 normal-case">{vigenciaFrescura}</p>
-        ) : null}
         <p className="mt-1 text-xs sm:text-[11px] text-slate-700 normal-case leading-relaxed font-medium max-w-prose mx-auto md:mx-0">
           {NOTA_CRE_TARJETA}
         </p>
@@ -438,21 +364,24 @@ type PrecioApiRow = {
   label?: string | null;
   subtitulo?: string | null;
   precio?: number | string | null;
-  updated_at?: string | null;
+  fecha_actualizacion?: string | null;
+  hora_actualizacion?: string | null;
 };
 
 function precioDesdeSelect(p: PrecioApiRow): PrecioCombustibleRow {
   const r = p as Record<string, unknown>;
-  /** Vigencia: solo columnas de timestamp de la fila `precios_combustible` (snake_case es la de Supabase). */
-  const raw = (r.updated_at as string | null | undefined) ?? null;
-  const u = raw != null && String(raw).trim() !== '' ? String(raw).trim() : null;
+  const rawF = (r.fecha_actualizacion as string | null | undefined) ?? null;
+  const rawH = (r.hora_actualizacion as string | null | undefined) ?? null;
+  const fa = rawF != null && String(rawF).trim() !== '' ? String(rawF).trim() : null;
+  const ha = rawH != null && String(rawH).trim() !== '' ? String(rawH).trim() : null;
   return {
     id: p.id != null ? String(p.id) : undefined,
     estacion_id: p.estacion_id != null ? String(p.estacion_id) : undefined,
     label: p.label ?? null,
     subtitulo: p.subtitulo ?? null,
     precio: p.precio ?? null,
-    updated_at: u,
+    fecha_actualizacion: fa,
+    hora_actualizacion: ha,
   };
 }
 
@@ -462,25 +391,14 @@ export default function Precios() {
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
   /** Falló solo `precios_combustible`; dejamos filas de estación para mostrar tarjetas con precios `--`. */
   const [advertenciaPrecios, setAdvertenciaPrecios] = useState<string | null>(null);
-  /** Recalcula textos “hace X min” si el usuario deja la pestaña abierta. */
-  const [tickRelativo, setTickRelativo] = useState(0);
 
-  useEffect(() => {
-    const id = window.setInterval(() => setTickRelativo((n) => n + 1), 30_000);
-    return () => window.clearInterval(id);
-  }, []);
-
-  const vigenciaGlobalIso = useMemo(() => vigenciaGlobalMax(estaciones), [estaciones]);
-  const tableroVigencia = useMemo(() => {
-    const ahoraMs = Date.now();
-    if (!vigenciaGlobalIso) {
-      return { principal: 'Sin registro de sincronización en la base.', frescura: null as string | null };
+  const tableroUltimaActualizacion = useMemo(() => {
+    const todas: PrecioCombustibleRow[] = [];
+    for (const e of estaciones) {
+      todas.push(...listPrecios(e.precios_combustible));
     }
-    return {
-      principal: `${vigenciaFechaHoraLegible(vigenciaGlobalIso)} (hora Mazatlán)`,
-      frescura: textoFrescuraSincronizacion(vigenciaGlobalIso, ahoraMs),
-    };
-  }, [vigenciaGlobalIso, tickRelativo]);
+    return lineaUltimaActualizacion(todas);
+  }, [estaciones]);
 
   /** Siempre dos tarjetas: reales o placeholders para no colapsar el layout. */
   const estacionesVisibles = useMemo(() => {
@@ -522,9 +440,9 @@ export default function Precios() {
       const ids = estacionesMeta.map((e) => e.id);
       const { data: precRowsRaw, error: errPrec } = await supabase
         .from('precios_combustible')
-        .select('id,estacion_id,label,subtitulo,precio,updated_at')
+        .select('id,estacion_id,label,subtitulo,precio,fecha_actualizacion,hora_actualizacion')
         .in('estacion_id', ids)
-        .order('updated_at', { ascending: false });
+        .order('label', { ascending: true });
 
       if (errPrec) {
         if (process.env.NODE_ENV === 'development') {
@@ -565,7 +483,6 @@ export default function Precios() {
     const esPlaceholder = (row: EstacionRow) => row.id.startsWith('__placeholder');
     const mostrarPulsoCarga = sincronizandoPrecios;
 
-    const ahoraMs = Date.now();
     return estacionesVisibles.map((row, index) => {
       const tema = resolveTemaVisual(row, index);
       const ui = TEMA_UI[tema];
@@ -579,18 +496,11 @@ export default function Precios() {
         precio: formatPrecioDisplay(r.precio),
         mostrarEsqueleto: mostrarPulsoCarga,
       }));
-      const rawIso = fechaCrudaVigenciaEstacion(row);
       let vigenciaPrincipal: string;
-      let vigenciaFrescura: string | null;
-      if (rawIso) {
-        vigenciaPrincipal = vigenciaFechaHoraLegible(rawIso);
-        vigenciaFrescura = textoFrescuraSincronizacion(rawIso, ahoraMs);
-      } else if (placeholderFila || errorCarga || advertenciaPrecios) {
-        vigenciaPrincipal = '—';
-        vigenciaFrescura = null;
+      if (placeholderFila || errorCarga || advertenciaPrecios) {
+        vigenciaPrincipal = lineaUltimaActualizacion([]);
       } else {
-        vigenciaPrincipal = 'Sin fecha en precios_combustible.updated_at';
-        vigenciaFrescura = null;
+        vigenciaPrincipal = lineaUltimaActualizacion(listPrecios(row.precios_combustible));
       }
       return {
         key: row.id,
@@ -603,12 +513,11 @@ export default function Precios() {
         badgeClass: ui.badgeClass,
         precios,
         vigenciaPrincipal,
-        vigenciaFrescura,
         tituloEsqueleto: mostrarPulsoCarga,
         logoEsqueleto: mostrarPulsoCarga,
       };
     });
-  }, [estacionesVisibles, sincronizandoPrecios, errorCarga, advertenciaPrecios, tickRelativo]);
+  }, [estacionesVisibles, sincronizandoPrecios, errorCarga, advertenciaPrecios]);
 
   return (
     <div className="space-y-8 md:space-y-12 py-8 md:py-16 bg-gray-200 relative w-full overflow-x-hidden">
@@ -690,14 +599,11 @@ export default function Precios() {
               {NOTA_CRE_PIE}
             </p>
             <p className="text-[11px] text-gray-400 font-black uppercase tracking-[0.2em] border-t border-white/10 pt-3">
-              Sincronización del tablero
+              Última actualización del tablero
             </p>
             <p className="text-sm text-white font-extrabold normal-case leading-snug">
-              {tableroVigencia.principal}
+              {tableroUltimaActualizacion}
             </p>
-            {tableroVigencia.frescura ? (
-              <p className="text-xs font-bold text-emerald-400/95 normal-case">{tableroVigencia.frescura}</p>
-            ) : null}
           </div>
         </div>
       </div>

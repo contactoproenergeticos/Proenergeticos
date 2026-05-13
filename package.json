@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "clean": "next clean",
-    "sync:precios": "node --env-file=.env.local node_modules/tsx/dist/cli.mjs scripts/sync-precios-cli.ts"
+    "sync:precios": "node --env-file=.env.local scripts/sync-precios-combustible.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.17.0",
