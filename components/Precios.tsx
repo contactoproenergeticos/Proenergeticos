@@ -20,9 +20,8 @@ const NOTA_CRE_PIE =
 const NOTA_CRE_TARJETA = NOTA_CRE_PIE;
 
 /**
- * Tablas Supabase (ver `supabase/migrations/20260511120000_estaciones_precios_combustible.sql`):
- * - `estaciones`: id, nombre, marca, orden
- * - `precios_combustible`: id, estacion_id → estaciones, label, subtitulo, precio (numeric), updated_at (timestamptz)
+ * La vigencia en pantalla sale del instante real de cambio: `precios_combustible.updated_at` (timestamptz),
+ * formateado en hora Mazatlán + texto relativo reciente (“hace X minutos”) para que se perciban como vigentes.
  */
 
 export type PrecioCombustibleRow = {
@@ -207,12 +206,8 @@ function formatPrecioDisplay(v: number | string | null): string {
   return n.toFixed(2);
 }
 
-/** Zona horaria de Mazatlán (Sinaloa); el IANA `America/Mazatlan` refleja el huso oficial (p. ej. UTC−7 en invierno). */
 const TIMEZONE_MAZATLAN = 'America/Mazatlan';
 
-/**
- * Normaliza `timestamptz` tal como lo devuelve PostgREST/Supabase (a veces con espacio en lugar de `T`).
- */
 function parseSupabaseTimestamptz(raw: string): Date | null {
   const s = String(raw).trim();
   if (!s) return null;
@@ -221,7 +216,6 @@ function parseSupabaseTimestamptz(raw: string): Date | null {
   return Number.isNaN(d.getTime()) ? null : d;
 }
 
-/** El instante más reciente según `precios_combustible.updated_at` (única fuente de vigencia en UI). */
 function maxUpdatedAtFromPrecioRows(rows: PrecioCombustibleRow[]): string | null {
   let bestRaw: string | null = null;
   let bestMs = -Infinity;
@@ -238,14 +232,10 @@ function maxUpdatedAtFromPrecioRows(rows: PrecioCombustibleRow[]): string | null
   return bestRaw;
 }
 
-/**
- * Fecha/hora legibles del `updated_at` de `precios_combustible` (timestamptz en UTC → presentación en es-MX, huso Mazatlán).
- */
+/** Fecha y hora en es-MX según huso Mazatlán (mismo instante que `updated_at` en la base). */
 function vigenciaFechaHoraLegible(dato: string): string {
-  const s = String(dato).trim();
-  if (!s) return '';
-  const d = parseSupabaseTimestamptz(s);
-  if (!d) return s;
+  const d = parseSupabaseTimestamptz(dato);
+  if (!d) return String(dato).trim();
   const fecha = d.toLocaleDateString('es-MX', {
     weekday: 'long',
     day: 'numeric',
@@ -259,15 +249,31 @@ function vigenciaFechaHoraLegible(dato: string): string {
     hour12: true,
     timeZone: TIMEZONE_MAZATLAN,
   });
-  return `${fecha}, ${hora} (hora Mazatlán)`;
+  return `${fecha}, ${hora}`;
 }
 
-/** Mayor `updated_at` entre las filas de precios de la estación (tabla `precios_combustible`). */
+/** Texto relativo reciente para transmitir que los precios siguen vigentes (p. ej. “hace 3 minutos”). */
+function textoFrescuraSincronizacion(iso: string, ahoraMs: number): string | null {
+  const d = parseSupabaseTimestamptz(iso);
+  if (!d) return null;
+  const sec = Math.floor((ahoraMs - d.getTime()) / 1000);
+  if (sec < 0) return null;
+  const rtf = new Intl.RelativeTimeFormat('es-MX', { numeric: 'auto' });
+  const min = Math.floor(sec / 60);
+  if (min < 60) {
+    return `Precios vigentes · ${rtf.format(-Math.max(1, min), 'minute')}`;
+  }
+  const h = Math.floor(min / 60);
+  if (h < 48) {
+    return `Precios vigentes · ${rtf.format(-h, 'hour')}`;
+  }
+  return null;
+}
+
 function fechaCrudaVigenciaEstacion(row: EstacionRow): string | null {
   return maxUpdatedAtFromPrecioRows(listPrecios(row.precios_combustible));
 }
 
-/** Mayor `updated_at` de todo el tablero (todas las filas `precios_combustible` cargadas). */
 function vigenciaGlobalMax(estaciones: EstacionRow[]): string | null {
   const todas: PrecioCombustibleRow[] = [];
   for (const e of estaciones) {
@@ -318,7 +324,8 @@ const EstacionCard = ({
   nota,
   logoUrl,
   badgeClass,
-  vigenciaFormateada,
+  vigenciaPrincipal,
+  vigenciaFrescura,
   tituloEsqueleto,
   logoEsqueleto,
 }: {
@@ -337,7 +344,8 @@ const EstacionCard = ({
   nota: string;
   logoUrl: string;
   badgeClass: string;
-  vigenciaFormateada: string;
+  vigenciaPrincipal: string;
+  vigenciaFrescura: string | null;
   /** Pulso en título/marca (carga inicial). */
   tituloEsqueleto?: boolean;
   /** Pulso en lugar del logo. */
@@ -410,9 +418,12 @@ const EstacionCard = ({
 
       <div className="mt-auto pt-6 border-t border-gray-200 pb-1">
         <p className="text-sm text-gray-900 normal-case leading-snug">
-          <span className="font-black">Última actualización:</span>{' '}
-          <span className="font-extrabold text-gray-900">{vigenciaFormateada}</span>
+          <span className="font-black">Última sincronización (Mazatlán):</span>{' '}
+          <span className="font-extrabold text-gray-900">{vigenciaPrincipal}</span>
         </p>
+        {vigenciaFrescura ? (
+          <p className="mt-1.5 text-xs font-bold text-emerald-700 normal-case">{vigenciaFrescura}</p>
+        ) : null}
         <p className="mt-1 text-xs sm:text-[11px] text-slate-700 normal-case leading-relaxed font-medium max-w-prose mx-auto md:mx-0">
           {NOTA_CRE_TARJETA}
         </p>
@@ -451,14 +462,25 @@ export default function Precios() {
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
   /** Falló solo `precios_combustible`; dejamos filas de estación para mostrar tarjetas con precios `--`. */
   const [advertenciaPrecios, setAdvertenciaPrecios] = useState<string | null>(null);
+  /** Recalcula textos “hace X min” si el usuario deja la pestaña abierta. */
+  const [tickRelativo, setTickRelativo] = useState(0);
 
-  const vigenciaGlobalStr = useMemo(() => vigenciaGlobalMax(estaciones), [estaciones]);
-  const vigenciaGlobalTexto = useMemo(() => {
-    if (!vigenciaGlobalStr) {
-      return 'Sin datos recientes.';
+  useEffect(() => {
+    const id = window.setInterval(() => setTickRelativo((n) => n + 1), 30_000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const vigenciaGlobalIso = useMemo(() => vigenciaGlobalMax(estaciones), [estaciones]);
+  const tableroVigencia = useMemo(() => {
+    const ahoraMs = Date.now();
+    if (!vigenciaGlobalIso) {
+      return { principal: 'Sin registro de sincronización en la base.', frescura: null as string | null };
     }
-    return vigenciaFechaHoraLegible(vigenciaGlobalStr);
-  }, [vigenciaGlobalStr]);
+    return {
+      principal: `${vigenciaFechaHoraLegible(vigenciaGlobalIso)} (hora Mazatlán)`,
+      frescura: textoFrescuraSincronizacion(vigenciaGlobalIso, ahoraMs),
+    };
+  }, [vigenciaGlobalIso, tickRelativo]);
 
   /** Siempre dos tarjetas: reales o placeholders para no colapsar el layout. */
   const estacionesVisibles = useMemo(() => {
@@ -478,6 +500,7 @@ export default function Precios() {
       setSincronizandoPrecios(true);
       setErrorCarga(null);
       setAdvertenciaPrecios(null);
+
       const { data: estacionesMeta, error: errEst } = await supabase
         .from('estaciones')
         .select('id,nombre,marca,orden')
@@ -542,6 +565,7 @@ export default function Precios() {
     const esPlaceholder = (row: EstacionRow) => row.id.startsWith('__placeholder');
     const mostrarPulsoCarga = sincronizandoPrecios;
 
+    const ahoraMs = Date.now();
     return estacionesVisibles.map((row, index) => {
       const tema = resolveTemaVisual(row, index);
       const ui = TEMA_UI[tema];
@@ -555,12 +579,19 @@ export default function Precios() {
         precio: formatPrecioDisplay(r.precio),
         mostrarEsqueleto: mostrarPulsoCarga,
       }));
-      const rawUpdatedAt = fechaCrudaVigenciaEstacion(row);
-      const vigenciaFormateada = rawUpdatedAt
-        ? vigenciaFechaHoraLegible(rawUpdatedAt)
-        : placeholderFila || errorCarga || advertenciaPrecios
-          ? '—'
-          : 'Sin fecha de actualización en la base de datos.';
+      const rawIso = fechaCrudaVigenciaEstacion(row);
+      let vigenciaPrincipal: string;
+      let vigenciaFrescura: string | null;
+      if (rawIso) {
+        vigenciaPrincipal = vigenciaFechaHoraLegible(rawIso);
+        vigenciaFrescura = textoFrescuraSincronizacion(rawIso, ahoraMs);
+      } else if (placeholderFila || errorCarga || advertenciaPrecios) {
+        vigenciaPrincipal = '—';
+        vigenciaFrescura = null;
+      } else {
+        vigenciaPrincipal = 'Sin fecha en precios_combustible.updated_at';
+        vigenciaFrescura = null;
+      }
       return {
         key: row.id,
         nombre: row.nombre,
@@ -571,12 +602,13 @@ export default function Precios() {
         logoUrl: ui.logoUrl,
         badgeClass: ui.badgeClass,
         precios,
-        vigenciaFormateada,
+        vigenciaPrincipal,
+        vigenciaFrescura,
         tituloEsqueleto: mostrarPulsoCarga,
         logoEsqueleto: mostrarPulsoCarga,
       };
     });
-  }, [estacionesVisibles, sincronizandoPrecios, errorCarga, advertenciaPrecios]);
+  }, [estacionesVisibles, sincronizandoPrecios, errorCarga, advertenciaPrecios, tickRelativo]);
 
   return (
     <div className="space-y-8 md:space-y-12 py-8 md:py-16 bg-gray-200 relative w-full overflow-x-hidden">
@@ -658,11 +690,14 @@ export default function Precios() {
               {NOTA_CRE_PIE}
             </p>
             <p className="text-[11px] text-gray-400 font-black uppercase tracking-[0.2em] border-t border-white/10 pt-3">
-              Última actualización del tablero
+              Sincronización del tablero
             </p>
             <p className="text-sm text-white font-extrabold normal-case leading-snug">
-              {vigenciaGlobalTexto}
+              {tableroVigencia.principal}
             </p>
+            {tableroVigencia.frescura ? (
+              <p className="text-xs font-bold text-emerald-400/95 normal-case">{tableroVigencia.frescura}</p>
+            ) : null}
           </div>
         </div>
       </div>
