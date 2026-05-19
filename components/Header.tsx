@@ -240,27 +240,31 @@ const Header: React.FC = () => {
             />
 
             <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
+              initial={{ x: '105%', opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: '105%', opacity: 0 }}
               transition={{ type: 'spring', damping: 26, stiffness: 220 }}
-              className="fixed right-0 top-0 h-full w-[78%] max-w-[340px] z-[120] flex flex-col shadow-2xl border-l-4 border-[#E30613] bg-gradient-to-br from-gray-900/92 via-gray-900/88 to-black/95 backdrop-blur-2xl overflow-hidden"
+              className="fixed right-3 top-3 bottom-3 w-[78%] max-w-[320px] z-[120] flex flex-col rounded-2xl overflow-hidden shadow-2xl shadow-black/60 ring-1 ring-white/10 bg-gradient-to-br from-gray-900/65 via-slate-900/55 to-black/70 backdrop-blur-2xl"
             >
               {/* Línea acento superior */}
               <div
-                className="pointer-events-none absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#E30613] via-red-400 to-[#E30613]"
+                className="pointer-events-none absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#E30613] via-red-400 to-[#E30613]"
                 aria-hidden
               />
               {/* Resplandor decorativo sutil */}
               <div
-                className="pointer-events-none absolute -top-24 -right-20 w-56 h-56 rounded-full bg-[#E30613]/20 blur-3xl"
+                className="pointer-events-none absolute -top-20 -right-16 w-48 h-48 rounded-full bg-[#E30613]/20 blur-3xl"
+                aria-hidden
+              />
+              <div
+                className="pointer-events-none absolute -bottom-24 -left-16 w-48 h-48 rounded-full bg-[#E30613]/10 blur-3xl"
                 aria-hidden
               />
 
               {/* HEADER DEL DRAWER */}
-              <div className="relative flex justify-between items-center px-4 py-4 border-b border-white/10">
+              <div className="relative flex justify-between items-center px-4 py-3 border-b border-white/10">
                 <div className="flex items-center gap-2 min-w-0">
-                  <div className="relative w-9 h-9 shrink-0">
+                  <div className="relative w-8 h-8 shrink-0">
                     <Image
                       src="/images/logotipos/ProEner_bco.png"
                       alt="Logo ProEnergéticos"
@@ -269,37 +273,37 @@ const Header: React.FC = () => {
                     />
                   </div>
                   <div className="flex flex-col leading-none min-w-0">
-                    <span className="text-[15px] font-black italic tracking-tighter text-white uppercase leading-none">
+                    <span className="text-[13px] font-black italic tracking-tighter text-white uppercase leading-none">
                       GRUPO
                     </span>
-                    <span className="text-[15px] font-black italic text-white uppercase leading-none truncate">
+                    <span className="text-[13px] font-black italic text-white uppercase leading-none truncate">
                       PRO<span className="text-[#E30613]">ENERGÉTICOS</span>
                     </span>
                   </div>
                 </div>
                 <button
                   onClick={toggleDrawer}
-                  className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors shrink-0"
+                  className="p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors shrink-0"
                   aria-label="Cerrar menú"
                 >
-                  <X size={20} />
+                  <X size={18} />
                 </button>
               </div>
 
               {/* CTA FACTURACIÓN — siempre visible en la parte superior */}
-              <div className="relative px-4 py-3 border-b border-white/10 shrink-0">
+              <div className="relative px-3 py-2.5 border-b border-white/10 shrink-0">
                 <a
                   href="/facturacion"
                   onClick={handleNavClick}
-                  className="flex items-center justify-center gap-2 w-full bg-[#E30613] hover:bg-red-700 active:scale-[0.98] text-white text-center font-black py-3 px-3 rounded-xl uppercase tracking-[0.18em] text-[11px] sm:text-xs shadow-lg shadow-red-500/30 transition-all duration-200"
+                  className="flex items-center justify-center gap-2 w-full bg-[#E30613] hover:bg-red-700 active:scale-[0.98] text-white text-center font-black py-2.5 px-3 rounded-lg uppercase tracking-[0.18em] text-[11px] shadow-lg shadow-red-500/30 transition-all duration-200"
                 >
-                  <Receipt size={15} className="shrink-0" aria-hidden />
+                  <Receipt size={14} className="shrink-0" aria-hidden />
                   <span>Facturación en Línea</span>
                 </a>
               </div>
 
               {/* OPCIONES DEL MENÚ */}
-              <nav className="relative flex-grow overflow-y-auto py-3 px-2 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
+              <nav className="relative flex-grow overflow-y-auto py-2 px-2 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
                 <ul className="flex flex-col space-y-0.5">
                   {menuOptions.map((option) => {
                     const { Icon } = option;
@@ -309,20 +313,20 @@ const Header: React.FC = () => {
                         <a
                           href={option.href}
                           onClick={handleNavClick}
-                          className={`group w-full py-2.5 pl-3 pr-3 rounded-lg flex items-center justify-end gap-3 normal-case font-black italic tracking-tight transition-all duration-200 text-[15px] leading-tight
+                          className={`group w-full py-2 pl-3 pr-3 rounded-lg flex items-center justify-end gap-3 normal-case font-black italic tracking-tight transition-all duration-200 text-[14px] leading-tight
                             ${isActive
-                              ? 'bg-[#E30613]/15 text-[#E30613] ring-1 ring-[#E30613]/40 shadow-sm'
-                              : 'text-white/85 hover:bg-white/5 hover:text-white active:bg-white/10'}`}
+                              ? 'bg-[#E30613]/15 text-[#E30613] ring-1 ring-[#E30613]/40'
+                              : 'text-white/85 hover:bg-white/10 hover:text-white active:bg-white/15'}`}
                         >
                           <span className="text-right break-words">{option.label}</span>
                           <span
-                            className={`flex items-center justify-center w-8 h-8 rounded-md shrink-0 transition-colors
+                            className={`flex items-center justify-center w-7 h-7 rounded-md shrink-0 transition-colors
                               ${isActive
                                 ? 'bg-[#E30613]/25 text-[#E30613]'
-                                : 'bg-white/5 text-white/65 group-hover:bg-[#E30613]/20 group-hover:text-[#E30613]'}`}
+                                : 'bg-white/10 text-white/70 group-hover:bg-[#E30613]/25 group-hover:text-[#E30613]'}`}
                             aria-hidden
                           >
-                            <Icon size={16} strokeWidth={2.25} />
+                            <Icon size={14} strokeWidth={2.25} />
                           </span>
                         </a>
                       </li>
@@ -332,7 +336,7 @@ const Header: React.FC = () => {
               </nav>
 
               {/* PIE DECORATIVO */}
-              <div className="relative px-4 py-3 border-t border-white/10 text-center">
+              <div className="relative px-4 py-2 border-t border-white/10 text-center">
                 <p className="text-[8px] text-white/40 font-bold uppercase tracking-[0.3em]">
                   © Proenergéticos · Sinaloa
                 </p>
