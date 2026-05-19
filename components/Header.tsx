@@ -11,7 +11,6 @@ import {
   MapPin,
   Factory,
   BadgeDollarSign,
-  HeartHandshake,
   MessageSquare,
   Receipt,
   type LucideIcon,
@@ -49,7 +48,6 @@ const Header: React.FC = () => {
     { href: '/estaciones', label: 'Estaciones de Servicio', shortLabel: 'Estaciones', Icon: MapPin },
     { href: '/corporativo', label: 'Planta de Distribución', shortLabel: 'Planta', Icon: Factory },
     { href: '/precios', label: 'Precios', Icon: BadgeDollarSign },
-    { href: '/comunidad', label: 'Comunidad', Icon: HeartHandshake },
     { href: '/contacto', label: 'Quejas y Sugerencias', shortLabel: 'Quejas', Icon: MessageSquare },
   ];
 

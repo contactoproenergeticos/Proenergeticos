@@ -71,8 +71,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
                 <ul className="space-y-4 text-gray-400 text-[11px] font-bold uppercase italic tracking-tighter">
                   <li><a href="#" className="hover:text-white transition-colors">NUESTRA HISTORIA</a></li>
                   <li><a href="#" className="hover:text-white transition-colors">PRECIOS VIGENTES</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">COMUNIDAD</a></li>
-                  <li><a href="#" className="hover:text-white transition-colors">CONTACTO</a></li>
+                  <li><a href="/contacto" className="hover:text-white transition-colors">CONTACTO</a></li>
                 </ul>
               </div>
 

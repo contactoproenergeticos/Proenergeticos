@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ArrowRight, Fuel, Briefcase, DollarSign, Users } from 'lucide-react';
+import { ArrowRight, Fuel, Briefcase, DollarSign } from 'lucide-react';
 import SiteShell from '@/components/SiteShell';
 
 const items = [
@@ -22,12 +22,6 @@ const items = [
     icon: DollarSign,
     title: 'Precios Vigentes',
     desc: 'Consulta el tablero actualizado de precios por estación.',
-  },
-  {
-    href: '/comunidad',
-    icon: Users,
-    title: 'Comunidad y Valores',
-    desc: 'Iniciativas sociales, fe y programas para la comunidad.',
   },
 ];
 
