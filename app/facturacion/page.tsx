@@ -3,7 +3,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import SiteShell from '@/components/SiteShell';
-import { supabase } from '@/lib/supabase';
 
 type ClaveEstacion = 'GSI' | 'GPO';
 
@@ -35,29 +34,9 @@ const ESTACIONES: EstacionFacturacion[] = [
   },
 ];
 
-/**
- * Normaliza la URL guardada en Supabase. Si no incluye protocolo,
- * se le antepone `https://` para evitar enlaces relativos al portal interno.
- */
-function normalizarUrl(valor: unknown): string | null {
-  if (typeof valor !== 'string') return null;
-  const limpio = valor.trim();
-  if (!limpio) return null;
-  if (/^https?:\/\//i.test(limpio)) return limpio;
-  return `https://${limpio}`;
-}
-
-/**
- * Busca el valor de la columna sin importar mayúsculas/minúsculas
- * (la tabla está creada con identificadores en mayúscula: "GSI" y "GPO").
- */
-function valorPorClave(fila: Record<string, unknown>, clave: ClaveEstacion): string | null {
-  const objetivo = clave.toLowerCase();
-  for (const [k, v] of Object.entries(fila)) {
-    if (k.toLowerCase() === objetivo) return normalizarUrl(v);
-  }
-  return null;
-}
+type ApiFacturacionOk = { ok: true; GSI?: string | null; GPO?: string | null };
+type ApiFacturacionErr = { ok: false; error?: string };
+type ApiFacturacion = ApiFacturacionOk | ApiFacturacionErr;
 
 export default function FacturacionPage() {
   const [links, setLinks] = useState<Record<ClaveEstacion, string | null>>({
@@ -72,27 +51,26 @@ export default function FacturacionPage() {
       setCargando(true);
       setError(null);
 
-      const { data, error: errFact } = await supabase
-        .from('facturacion')
-        .select('*')
-        .limit(1)
-        .maybeSingle();
+      try {
+        const res = await fetch('/api/facturacion-links', { cache: 'no-store' });
+        const body = (await res.json()) as ApiFacturacion;
 
-      if (errFact) {
-        if (process.env.NODE_ENV === 'development') {
-          console.warn('[Facturacion] error:', errFact.message);
+        if (!res.ok || !body.ok) {
+          const errBody = body as ApiFacturacionErr;
+          setError(errBody.error ?? `HTTP ${res.status}`);
+          setCargando(false);
+          return;
         }
-        setError(errFact.message);
-        setCargando(false);
-        return;
-      }
 
-      const fila = (data ?? {}) as Record<string, unknown>;
-      setLinks({
-        GSI: valorPorClave(fila, 'GSI'),
-        GPO: valorPorClave(fila, 'GPO'),
-      });
-      setCargando(false);
+        setLinks({
+          GSI: body.GSI ?? null,
+          GPO: body.GPO ?? null,
+        });
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Error de red');
+      } finally {
+        setCargando(false);
+      }
     };
 
     void cargar();
@@ -193,7 +171,9 @@ export default function FacturacionPage() {
               role="status"
               aria-live="polite"
             >
-              Conexión temporal con el portal de facturación interrumpida.
+              {process.env.NODE_ENV === 'development'
+                ? `No se pudieron cargar los enlaces: ${error}`
+                : 'No se pudieron cargar los enlaces de facturación. Verifique que el despliegue tenga SUPABASE_SERVICE_ROLE_KEY y que la tabla facturacion tenga al menos una fila con las columnas GSI y GPO.'}
             </p>
           ) : null}
         </div>
