@@ -14,6 +14,7 @@ import {
   Zap, 
   XCircle 
 } from 'lucide-react';
+import PlantaDistribucionSection from '@/components/PlantaDistribucionSection';
 
 const CorporativoCard = ({ icon: Icon, title, desc }: { icon: any; title: string; desc: string }) => (
   <div className="bg-white p-10 rounded-[40px] shadow-2xl border border-gray-100 hover:border-[#E30613]/20 transition-all group">
@@ -126,10 +127,13 @@ export default function Corporativo() {
               <span className="text-lg font-black text-[#E30613] uppercase tracking-[0.5em]">Socio Estratégico</span>
             </div>
             <h2 className="text-4xl md:text-7xl font-black text-white mb-8 tracking-tighter leading-none uppercase italic">
-              Soluciones para tu <br /> <span className="text-[#E30613]">Flota y Empresa</span>
+              Planta de <span className="text-[#E30613]">Distribución</span> <br />
+              y soluciones corporativas
             </h2>
           </div>
         </section>
+
+        <PlantaDistribucionSection />
 
         {/* Cards de Servicios */}
         <div className="grid md:grid-cols-3 gap-12">

@@ -3,8 +3,8 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { 
-  MapPin, Store, Clock, Truck, Briefcase, Fuel, 
-  ChevronRight, Zap, Wind, Droplets, Bath, Info, Gauge,
+  MapPin, Store, Clock, 
+  ChevronRight, Wind, Droplets, Bath, Info, Gauge,
   ShieldCheck, ZapIcon, BarChart3
 } from 'lucide-react';
 import Image from 'next/image';
@@ -109,16 +109,6 @@ export default function EstacionesPage() {
       estacionLogo: '/images/logotipos/GPO.png', 
       servicios: [{ icon: Store, label: 'Kiosko', color: 'text-orange-600' }, { icon: Clock, label: '24/7', color: 'text-green-600' }, ...serviciosBasicos] 
     },
-    { 
-      nombre: 'PLANTA DE DISTRIBUCIÓN', 
-      marca: 'Centro Logístico', 
-      direccion: 'Sur, México 15 1002, Urías, 82070 Mazatlán, Sin.', 
-      mapLink: 'https://maps.google.com/?cid=14017863012502601436&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNl', // Enlace real 
-      isFeatured: true, 
-      imagen: '/images/gasolinera/PLANTA/Planta3.jpg', 
-      estacionLogo: '/images/logotipos/ProEner.png', 
-      servicios: [{ icon: Truck, label: 'Logística', color: 'text-blue-600' }, { icon: Briefcase, label: 'Industrial', color: 'text-[#E30613]' }, { icon: Fuel, label: 'Suministro', color: 'text-gray-700' }, { icon: Bath, label: 'Baños', color: 'text-gray-500' }] 
-    },
   ];
 
   return (
@@ -126,7 +116,7 @@ export default function EstacionesPage() {
       <div className="py-12 bg-gray-100 min-h-screen">
         <div className="max-w-7xl mx-auto px-4 space-y-16">
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 max-w-5xl mx-auto">
             {unidades.map((u, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
                 <EstacionCard {...u} />
