@@ -244,7 +244,7 @@ const Header: React.FC = () => {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: '105%', opacity: 0 }}
               transition={{ type: 'spring', damping: 26, stiffness: 220 }}
-              className="fixed right-3 top-3 bottom-3 w-[78%] max-w-[320px] z-[120] flex flex-col rounded-2xl overflow-hidden shadow-2xl shadow-black/60 ring-1 ring-white/10 bg-gradient-to-br from-gray-900/65 via-slate-900/55 to-black/70 backdrop-blur-2xl"
+              className="fixed right-3 top-3 max-h-[calc(100vh-1.5rem)] w-[78%] max-w-[320px] z-[120] flex flex-col rounded-2xl overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-white/15 bg-gradient-to-br from-gray-900/35 via-slate-900/30 to-black/40 backdrop-blur-2xl"
             >
               {/* Línea acento superior */}
               <div
@@ -262,7 +262,7 @@ const Header: React.FC = () => {
               />
 
               {/* HEADER DEL DRAWER */}
-              <div className="relative flex justify-between items-center px-4 py-3 border-b border-white/10">
+              <div className="relative shrink-0 flex justify-between items-center px-4 py-3 border-b border-white/10">
                 <div className="flex items-center gap-2 min-w-0">
                   <div className="relative w-8 h-8 shrink-0">
                     <Image
@@ -291,7 +291,7 @@ const Header: React.FC = () => {
               </div>
 
               {/* CTA FACTURACIÓN — siempre visible en la parte superior */}
-              <div className="relative px-3 py-2.5 border-b border-white/10 shrink-0">
+              <div className="relative shrink-0 px-3 py-2.5 border-b border-white/10">
                 <a
                   href="/facturacion"
                   onClick={handleNavClick}
@@ -302,8 +302,12 @@ const Header: React.FC = () => {
                 </a>
               </div>
 
-              {/* OPCIONES DEL MENÚ */}
-              <nav className="relative flex-grow overflow-y-auto py-2 px-2 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
+              {/* OPCIONES DEL MENÚ
+                  Sin flex-grow: el nav toma su altura natural para que el panel
+                  no se estire más allá de la última opción. `min-h-0` + el
+                  `max-h` del contenedor padre habilitan scroll solo si el
+                  teléfono es demasiado bajo y no caben todas las opciones. */}
+              <nav className="relative min-h-0 overflow-y-auto py-2 px-2 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
                 <ul className="flex flex-col space-y-0.5">
                   {menuOptions.map((option) => {
                     const { Icon } = option;
@@ -336,8 +340,8 @@ const Header: React.FC = () => {
               </nav>
 
               {/* PIE DECORATIVO */}
-              <div className="relative px-4 py-2 border-t border-white/10 text-center">
-                <p className="text-[8px] text-white/40 font-bold uppercase tracking-[0.3em]">
+              <div className="relative shrink-0 px-4 py-2 border-t border-white/10 text-center">
+                <p className="text-[8px] text-white/50 font-bold uppercase tracking-[0.3em]">
                   © Proenergéticos · Sinaloa
                 </p>
               </div>
