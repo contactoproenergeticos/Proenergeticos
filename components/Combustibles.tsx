@@ -185,7 +185,7 @@ export default function Combustibles() {
 
             {/* Leyenda Corregida */}
             <p className="text-xl md:text-3xl font-medium text-white leading-tight max-w-3xl">
-              En Mazatlán, <span className="text-[#E30613] font-black italic">Proenergéticos</span> ha sido un pilar fundamental desde el año 2015, evolucionando para garantizar la certeza del suministro nacional.
+              En Grupo <span className="text-[#E30613] font-black italic">Proenergéticos</span> ha sido un pilar fundamental desde el año 2015, evolucionando para garantizar la certeza del suministro nacional.
             </p>
           </div>
 

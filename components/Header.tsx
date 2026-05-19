@@ -19,16 +19,19 @@ const Header: React.FC = () => {
   /** Nodos a los que aplicamos estilos de impresión (header + contenedor fixed/sticky, p. ej. nav de SiteShell) */
   const printAdjustedRefs = useRef<HTMLElement[]>([]);
 
-  // Menú de opciones
-  const menuOptions = [
+  // Menú de opciones.
+  // `shortLabel` se usa en el nav de escritorio en anchos intermedios (lg) donde
+  // el texto completo no cabe; el `label` completo se muestra en xl/2xl y en el
+  // drawer móvil (donde hay espacio de sobra).
+  const menuOptions: { href: string; label: string; shortLabel?: string }[] = [
     { href: '/', label: 'Inicio' },
     { href: '/nosotros', label: 'Nosotros' },
     { href: '/combustible', label: 'Combustible' },
-    { href: '/estaciones', label: 'Estaciones' },
-    { href: '/corporativo', label: 'Corporativo' },
+    { href: '/estaciones', label: 'Estaciones de Servicio', shortLabel: 'Estaciones' },
+    { href: '/corporativo', label: 'Planta de Distribución', shortLabel: 'Planta' },
     { href: '/precios', label: 'Precios' },
     { href: '/comunidad', label: 'Comunidad' },
-    { href: '/contacto', label: 'Contacto' },
+    { href: '/contacto', label: 'Quejas y Sugerencias', shortLabel: 'Quejas' },
   ];
 
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
@@ -162,19 +165,22 @@ const Header: React.FC = () => {
             </a>
 
             <nav className="w-full min-w-0 flex justify-end overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-              <ul className="flex flex-nowrap items-center justify-end gap-x-3 lg:gap-x-4 xl:gap-x-5 shrink-0">
+              <ul className="flex flex-nowrap items-center justify-end gap-x-2 lg:gap-x-3 xl:gap-x-5 2xl:gap-x-6 shrink-0">
                 {menuOptions.map((option) => {
                   const isActive = pathname === option.href;
+                  const shortLabel = option.shortLabel ?? option.label;
                   return (
                     <li key={option.href} className="shrink-0">
                       <a
                         href={option.href}
-                        className={`text-[12px] lg:text-[15px] font-black italic tracking-wider normal-case transition-all duration-300 py-1 border-b-2 whitespace-nowrap
-                          ${isActive 
-                            ? 'text-[#E30613] border-[#E30613]' 
+                        title={option.label}
+                        className={`text-[11px] lg:text-[12px] xl:text-[14px] 2xl:text-[15px] font-black italic tracking-wide xl:tracking-wider normal-case transition-all duration-300 py-1 border-b-2 whitespace-nowrap
+                          ${isActive
+                            ? 'text-[#E30613] border-[#E30613]'
                             : 'text-gray-600 border-transparent hover:text-[#E30613]'}`}
                       >
-                        {option.label}
+                        <span className="xl:hidden">{shortLabel}</span>
+                        <span className="hidden xl:inline">{option.label}</span>
                       </a>
                     </li>
                   );
@@ -238,8 +244,8 @@ const Header: React.FC = () => {
                 </button>
               </div>
 
-              <nav className="flex-grow overflow-y-auto py-8 px-8 text-right">
-                <ul className="flex flex-col space-y-2">
+              <nav className="flex-grow overflow-y-auto py-6 px-6 sm:px-8 text-right">
+                <ul className="flex flex-col space-y-1">
                   {menuOptions.map((option) => {
                     const isActive = pathname === option.href;
                     return (
@@ -247,7 +253,7 @@ const Header: React.FC = () => {
                         <a
                           href={option.href}
                           onClick={handleNavClick}
-                          className={`w-full py-4 text-2xl font-black italic tracking-tighter flex items-center justify-end gap-4 normal-case
+                          className={`w-full py-3 text-xl sm:text-2xl font-black italic tracking-tighter flex items-center justify-end gap-4 normal-case leading-tight break-words
                             ${isActive ? 'text-[#E30613]' : 'text-gray-600'}`}
                         >
                           {option.label}

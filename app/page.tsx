@@ -36,7 +36,7 @@ export default function Page() {
             <div className="flex items-center gap-4 mb-4 md:mb-6">
               <div className="h-[2px] w-8 md:w-12 bg-[#E30613]"></div>
               <span className="text-[#E30613] text-[15px] md:text-sm font-black uppercase tracking-[0.2em] md:tracking-[0.4em] italic">
-                — PROENERGETICOS —
+                — GRUPO PROENERGETICOS —
               </span>
             </div>
 
