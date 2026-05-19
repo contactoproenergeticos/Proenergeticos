@@ -2,7 +2,20 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
-import { Menu, X } from 'lucide-react';
+import {
+  Menu,
+  X,
+  Home,
+  Users,
+  Fuel,
+  MapPin,
+  Factory,
+  BadgeDollarSign,
+  HeartHandshake,
+  MessageSquare,
+  Receipt,
+  type LucideIcon,
+} from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -23,15 +36,21 @@ const Header: React.FC = () => {
   // `shortLabel` se usa en el nav de escritorio en anchos intermedios (lg) donde
   // el texto completo no cabe; el `label` completo se muestra en xl/2xl y en el
   // drawer móvil (donde hay espacio de sobra).
-  const menuOptions: { href: string; label: string; shortLabel?: string }[] = [
-    { href: '/', label: 'Inicio' },
-    { href: '/nosotros', label: 'Nosotros' },
-    { href: '/combustible', label: 'Combustible' },
-    { href: '/estaciones', label: 'Estaciones de Servicio', shortLabel: 'Estaciones' },
-    { href: '/corporativo', label: 'Planta de Distribución', shortLabel: 'Planta' },
-    { href: '/precios', label: 'Precios' },
-    { href: '/comunidad', label: 'Comunidad' },
-    { href: '/contacto', label: 'Quejas y Sugerencias', shortLabel: 'Quejas' },
+  // `Icon` se muestra junto a cada opción en el drawer móvil.
+  const menuOptions: {
+    href: string;
+    label: string;
+    shortLabel?: string;
+    Icon: LucideIcon;
+  }[] = [
+    { href: '/', label: 'Inicio', Icon: Home },
+    { href: '/nosotros', label: 'Nosotros', Icon: Users },
+    { href: '/combustible', label: 'Combustible', Icon: Fuel },
+    { href: '/estaciones', label: 'Estaciones de Servicio', shortLabel: 'Estaciones', Icon: MapPin },
+    { href: '/corporativo', label: 'Planta de Distribución', shortLabel: 'Planta', Icon: Factory },
+    { href: '/precios', label: 'Precios', Icon: BadgeDollarSign },
+    { href: '/comunidad', label: 'Comunidad', Icon: HeartHandshake },
+    { href: '/contacto', label: 'Quejas y Sugerencias', shortLabel: 'Quejas', Icon: MessageSquare },
   ];
 
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
@@ -217,46 +236,94 @@ const Header: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={toggleDrawer}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110]"
+              className="fixed inset-0 bg-black/55 backdrop-blur-sm z-[110]"
             />
 
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 h-full w-[85%] max-w-sm bg-white z-[120] shadow-2xl flex flex-col"
+              transition={{ type: 'spring', damping: 26, stiffness: 220 }}
+              className="fixed right-0 top-0 h-full w-[78%] max-w-[340px] z-[120] flex flex-col shadow-2xl border-l-4 border-[#E30613] bg-gradient-to-br from-gray-900/92 via-gray-900/88 to-black/95 backdrop-blur-2xl overflow-hidden"
             >
-              <div className="flex justify-between items-center p-6 border-b border-gray-100">
+              {/* Línea acento superior */}
+              <div
+                className="pointer-events-none absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#E30613] via-red-400 to-[#E30613]"
+                aria-hidden
+              />
+              {/* Resplandor decorativo sutil */}
+              <div
+                className="pointer-events-none absolute -top-24 -right-20 w-56 h-56 rounded-full bg-[#E30613]/20 blur-3xl"
+                aria-hidden
+              />
+
+              {/* HEADER DEL DRAWER */}
+              <div className="relative flex justify-between items-center px-4 py-4 border-b border-white/10">
                 <div className="flex items-center gap-2 min-w-0">
-                  <Image src="/images/logotipos/ProEner_negro.png" alt="Logo" width={40} height={40} className="h-10 w-auto" />
-                  <div className="flex flex-col leading-none">
-                    <span className="text-lg font-black italic tracking-tighter text-slate-900 uppercase leading-none">
+                  <div className="relative w-9 h-9 shrink-0">
+                    <Image
+                      src="/images/logotipos/ProEner_bco.png"
+                      alt="Logo ProEnergéticos"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                  <div className="flex flex-col leading-none min-w-0">
+                    <span className="text-[15px] font-black italic tracking-tighter text-white uppercase leading-none">
                       GRUPO
                     </span>
-                    <span className="text-lg font-black italic text-slate-900 uppercase leading-none">
+                    <span className="text-[15px] font-black italic text-white uppercase leading-none truncate">
                       PRO<span className="text-[#E30613]">ENERGÉTICOS</span>
                     </span>
                   </div>
                 </div>
-                <button onClick={toggleDrawer} className="p-2 text-gray-500 hover:bg-gray-100 rounded-full">
-                  <X size={24} />
+                <button
+                  onClick={toggleDrawer}
+                  className="p-2 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors shrink-0"
+                  aria-label="Cerrar menú"
+                >
+                  <X size={20} />
                 </button>
               </div>
 
-              <nav className="flex-grow overflow-y-auto py-6 px-6 sm:px-8 text-right">
-                <ul className="flex flex-col space-y-1">
+              {/* CTA FACTURACIÓN — siempre visible en la parte superior */}
+              <div className="relative px-4 py-3 border-b border-white/10 shrink-0">
+                <a
+                  href="/facturacion"
+                  onClick={handleNavClick}
+                  className="flex items-center justify-center gap-2 w-full bg-[#E30613] hover:bg-red-700 active:scale-[0.98] text-white text-center font-black py-3 px-3 rounded-xl uppercase tracking-[0.18em] text-[11px] sm:text-xs shadow-lg shadow-red-500/30 transition-all duration-200"
+                >
+                  <Receipt size={15} className="shrink-0" aria-hidden />
+                  <span>Facturación en Línea</span>
+                </a>
+              </div>
+
+              {/* OPCIONES DEL MENÚ */}
+              <nav className="relative flex-grow overflow-y-auto py-3 px-2 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
+                <ul className="flex flex-col space-y-0.5">
                   {menuOptions.map((option) => {
+                    const { Icon } = option;
                     const isActive = pathname === option.href;
                     return (
                       <li key={option.href}>
                         <a
                           href={option.href}
                           onClick={handleNavClick}
-                          className={`w-full py-3 text-xl sm:text-2xl font-black italic tracking-tighter flex items-center justify-end gap-4 normal-case leading-tight break-words
-                            ${isActive ? 'text-[#E30613]' : 'text-gray-600'}`}
+                          className={`group w-full py-2.5 pl-3 pr-3 rounded-lg flex items-center justify-end gap-3 normal-case font-black italic tracking-tight transition-all duration-200 text-[15px] leading-tight
+                            ${isActive
+                              ? 'bg-[#E30613]/15 text-[#E30613] ring-1 ring-[#E30613]/40 shadow-sm'
+                              : 'text-white/85 hover:bg-white/5 hover:text-white active:bg-white/10'}`}
                         >
-                          {option.label}
+                          <span className="text-right break-words">{option.label}</span>
+                          <span
+                            className={`flex items-center justify-center w-8 h-8 rounded-md shrink-0 transition-colors
+                              ${isActive
+                                ? 'bg-[#E30613]/25 text-[#E30613]'
+                                : 'bg-white/5 text-white/65 group-hover:bg-[#E30613]/20 group-hover:text-[#E30613]'}`}
+                            aria-hidden
+                          >
+                            <Icon size={16} strokeWidth={2.25} />
+                          </span>
                         </a>
                       </li>
                     );
@@ -264,14 +331,11 @@ const Header: React.FC = () => {
                 </ul>
               </nav>
 
-              <div className="p-6 border-t border-gray-100 bg-gray-50">
-                <a
-                  href="/facturacion"
-                  onClick={handleNavClick}
-                  className="block w-full bg-[#E30613] text-white text-center font-black py-4 rounded-xl uppercase tracking-widest text-sm"
-                >
-                  Facturación en Línea
-                </a>
+              {/* PIE DECORATIVO */}
+              <div className="relative px-4 py-3 border-t border-white/10 text-center">
+                <p className="text-[8px] text-white/40 font-bold uppercase tracking-[0.3em]">
+                  © Proenergéticos · Sinaloa
+                </p>
               </div>
             </motion.div>
           </>
