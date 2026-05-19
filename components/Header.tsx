@@ -244,7 +244,7 @@ const Header: React.FC = () => {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: '105%', opacity: 0 }}
               transition={{ type: 'spring', damping: 26, stiffness: 220 }}
-              className="fixed right-3 top-3 max-h-[calc(100vh-1.5rem)] w-[78%] max-w-[320px] z-[120] flex flex-col rounded-2xl overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-white/15 bg-gradient-to-br from-gray-900/35 via-slate-900/30 to-black/40 backdrop-blur-2xl"
+              className="fixed right-3 top-3 max-h-[calc(100vh-1.5rem)] w-[78%] max-w-[320px] z-[120] flex flex-col rounded-2xl overflow-hidden shadow-2xl shadow-black/15 border-l-4 border-[#E30613] bg-gradient-to-br from-white/75 via-white/70 to-white/65 backdrop-blur-2xl"
             >
               {/* Línea acento superior */}
               <div
@@ -253,37 +253,32 @@ const Header: React.FC = () => {
               />
               {/* Resplandor decorativo sutil */}
               <div
-                className="pointer-events-none absolute -top-20 -right-16 w-48 h-48 rounded-full bg-[#E30613]/20 blur-3xl"
+                className="pointer-events-none absolute -top-20 -right-16 w-48 h-48 rounded-full bg-[#E30613]/10 blur-3xl"
                 aria-hidden
               />
-              <div
-                className="pointer-events-none absolute -bottom-24 -left-16 w-48 h-48 rounded-full bg-[#E30613]/10 blur-3xl"
-                aria-hidden
-              />
-
               {/* HEADER DEL DRAWER */}
-              <div className="relative shrink-0 flex justify-between items-center px-4 py-3 border-b border-white/10">
+              <div className="relative shrink-0 flex justify-between items-center px-4 py-3 border-b border-gray-200/80">
                 <div className="flex items-center gap-2 min-w-0">
                   <div className="relative w-8 h-8 shrink-0">
                     <Image
-                      src="/images/logotipos/ProEner_bco.png"
+                      src="/images/logotipos/ProEner_negro.png"
                       alt="Logo ProEnergéticos"
                       fill
                       className="object-contain"
                     />
                   </div>
                   <div className="flex flex-col leading-none min-w-0">
-                    <span className="text-[13px] font-black italic tracking-tighter text-white uppercase leading-none">
+                    <span className="text-[13px] font-black italic tracking-tighter text-slate-900 uppercase leading-none">
                       GRUPO
                     </span>
-                    <span className="text-[13px] font-black italic text-white uppercase leading-none truncate">
+                    <span className="text-[13px] font-black italic text-slate-900 uppercase leading-none truncate">
                       PRO<span className="text-[#E30613]">ENERGÉTICOS</span>
                     </span>
                   </div>
                 </div>
                 <button
                   onClick={toggleDrawer}
-                  className="p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors shrink-0"
+                  className="p-1.5 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors shrink-0"
                   aria-label="Cerrar menú"
                 >
                   <X size={18} />
@@ -291,7 +286,7 @@ const Header: React.FC = () => {
               </div>
 
               {/* CTA FACTURACIÓN — siempre visible en la parte superior */}
-              <div className="relative shrink-0 px-3 py-2.5 border-b border-white/10">
+              <div className="relative shrink-0 px-3 py-2.5 border-b border-gray-200/80">
                 <a
                   href="/facturacion"
                   onClick={handleNavClick}
@@ -307,7 +302,7 @@ const Header: React.FC = () => {
                   no se estire más allá de la última opción. `min-h-0` + el
                   `max-h` del contenedor padre habilitan scroll solo si el
                   teléfono es demasiado bajo y no caben todas las opciones. */}
-              <nav className="relative min-h-0 overflow-y-auto py-2 px-2 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.2)_transparent]">
+              <nav className="relative min-h-0 overflow-y-auto py-2 px-2 [scrollbar-width:thin] [scrollbar-color:rgba(0,0,0,0.15)_transparent]">
                 <ul className="flex flex-col space-y-0.5">
                   {menuOptions.map((option) => {
                     const { Icon } = option;
@@ -319,15 +314,15 @@ const Header: React.FC = () => {
                           onClick={handleNavClick}
                           className={`group w-full py-2 pl-3 pr-3 rounded-lg flex items-center justify-end gap-3 normal-case font-black italic tracking-tight transition-all duration-200 text-[14px] leading-tight
                             ${isActive
-                              ? 'bg-[#E30613]/15 text-[#E30613] ring-1 ring-[#E30613]/40'
-                              : 'text-white/85 hover:bg-white/10 hover:text-white active:bg-white/15'}`}
+                              ? 'bg-[#E30613]/10 text-[#E30613] ring-1 ring-[#E30613]/30'
+                              : 'text-gray-900 hover:bg-gray-100/80 hover:text-gray-900 active:bg-gray-200/60'}`}
                         >
                           <span className="text-right break-words">{option.label}</span>
                           <span
                             className={`flex items-center justify-center w-7 h-7 rounded-md shrink-0 transition-colors
                               ${isActive
-                                ? 'bg-[#E30613]/25 text-[#E30613]'
-                                : 'bg-white/10 text-white/70 group-hover:bg-[#E30613]/25 group-hover:text-[#E30613]'}`}
+                                ? 'bg-[#E30613]/15 text-[#E30613]'
+                                : 'bg-gray-100 text-gray-800 group-hover:bg-[#E30613]/15 group-hover:text-[#E30613]'}`}
                             aria-hidden
                           >
                             <Icon size={14} strokeWidth={2.25} />
@@ -340,8 +335,8 @@ const Header: React.FC = () => {
               </nav>
 
               {/* PIE DECORATIVO */}
-              <div className="relative shrink-0 px-4 py-2 border-t border-white/10 text-center">
-                <p className="text-[8px] text-white/50 font-bold uppercase tracking-[0.3em]">
+              <div className="relative shrink-0 px-4 py-2 border-t border-gray-200/80 text-center">
+                <p className="text-[8px] text-gray-500 font-bold uppercase tracking-[0.3em]">
                   © Proenergéticos · Sinaloa
                 </p>
               </div>
