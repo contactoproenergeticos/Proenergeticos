@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import AccessibilityButton from '../components/AccessibilityButton'; // Importación directa
 import InstallPWA from '../components/InstallPWA';
+import SplashGate from '../components/SplashGate';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -14,7 +15,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#0f172a' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0c' },
   ],
 };
 
@@ -50,7 +51,7 @@ export default function RootLayout({
     <html lang="es">
       <GoogleTagManager gtmId="GTM-P53V68D7" />
       <body className={inter.className}>
-        {children}
+        <SplashGate>{children}</SplashGate>
         <InstallPWA />
         <AccessibilityButton />
       </body>
