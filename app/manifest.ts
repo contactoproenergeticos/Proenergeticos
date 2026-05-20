@@ -6,7 +6,7 @@ import type { MetadataRoute } from 'next';
  */
 export default function manifest(): MetadataRoute.Manifest {
   const icon = '/images/logotipos/ProEner.png';
-  const adminIcon = '/icon-admin.svg';
+  const adminIcon = '/icon-admin.png';
 
   return {
     name: 'Grupo Proenergéticos — Estaciones de servicio',
@@ -44,8 +44,14 @@ export default function manifest(): MetadataRoute.Manifest {
         icons: [
           {
             src: adminIcon,
-            sizes: '192x192 512x512',
-            type: 'image/svg+xml',
+            sizes: '192x192',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: adminIcon,
+            sizes: '512x512',
+            type: 'image/png',
             purpose: 'any',
           },
         ],

@@ -10,7 +10,8 @@
     "start": "next start",
     "lint": "eslint .",
     "clean": "node scripts/clean-next.mjs",
-    "sync:precios": "node --env-file=.env.local scripts/sync-precios-combustible.mjs"
+    "sync:precios": "node --env-file=.env.local scripts/sync-precios-combustible.mjs",
+    "icon:admin-png": "node scripts/generate-icon-admin-png.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.17.0",

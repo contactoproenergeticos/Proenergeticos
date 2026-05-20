@@ -1,74 +1,87 @@
 'use client';
 
 import { useEffect } from 'react';
+import { ADMIN_PWA_ICON, ADMIN_PWA_TITLE, ADMIN_PWA_THEME } from '@/lib/adminPwaConfig';
 
-const ADMIN_ICON = '/icon-admin.svg';
-const ADMIN_THEME = '#E30613';
+const DATA_ATTR = 'data-admin-pwa-head';
 
 /**
- * Refuerza iconos distintos al anclar /admin-precios en iOS y navegadores que lean
- * link[rel=apple-touch-icon] del DOM (el manifest shortcut cubre Android/Chrome).
+ * Inyecta en <head> iconos PNG y meta de Apple solo en /admin-precios.
+ * iOS no admite SVG en apple-touch-icon; PNG evita el icono vacío.
  */
 export default function AdminPwaIcons() {
   useEffect(() => {
-    const previousTitle = document.title;
+    const created: HTMLElement[] = [];
+
+    const add = (el: HTMLElement) => {
+      el.setAttribute(DATA_ATTR, '1');
+      document.head.appendChild(el);
+      created.push(el);
+    };
+
+    const linkDefault = document.createElement('link');
+    linkDefault.rel = 'apple-touch-icon';
+    linkDefault.href = ADMIN_PWA_ICON;
+    add(linkDefault);
+
+    const link180 = document.createElement('link');
+    link180.rel = 'apple-touch-icon';
+    link180.href = ADMIN_PWA_ICON;
+    link180.sizes = '180x180';
+    add(link180);
+
+    const link192 = document.createElement('link');
+    link192.rel = 'apple-touch-icon';
+    link192.href = ADMIN_PWA_ICON;
+    link192.sizes = '192x192';
+    add(link192);
+
+    const iconPng = document.createElement('link');
+    iconPng.rel = 'icon';
+    iconPng.type = 'image/png';
+    iconPng.href = ADMIN_PWA_ICON;
+    add(iconPng);
+
+    const shortcut = document.createElement('link');
+    shortcut.rel = 'shortcut icon';
+    shortcut.type = 'image/png';
+    shortcut.href = ADMIN_PWA_ICON;
+    add(shortcut);
+
+    const metaCapable = document.createElement('meta');
+    metaCapable.name = 'apple-mobile-web-app-capable';
+    metaCapable.content = 'yes';
+    add(metaCapable);
+
+    const metaTitle = document.createElement('meta');
+    metaTitle.name = 'apple-mobile-web-app-title';
+    metaTitle.content = ADMIN_PWA_TITLE;
+    add(metaTitle);
 
     const metaTheme = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
     const prevTheme = metaTheme?.getAttribute('content');
-    if (metaTheme) metaTheme.setAttribute('content', ADMIN_THEME);
-
-    const links: HTMLLinkElement[] = [];
-    const specs: { rel: string; type?: string; sizes?: string }[] = [
-      { rel: 'icon', type: 'image/svg+xml' },
-      { rel: 'apple-touch-icon', sizes: '180x180' },
-      { rel: 'apple-touch-icon', sizes: '192x192' },
-      { rel: 'apple-touch-icon', sizes: '512x512' },
-      { rel: 'shortcut icon', type: 'image/svg+xml' },
-    ];
-
-    for (const spec of specs) {
-      const link = document.createElement('link');
-      link.rel = spec.rel;
-      link.href = ADMIN_ICON;
-      if (spec.type) link.type = spec.type;
-      if (spec.sizes) link.sizes = spec.sizes;
-      link.setAttribute('data-admin-pwa-icon', '1');
-      document.head.appendChild(link);
-      links.push(link);
-    }
+    if (metaTheme) metaTheme.setAttribute('content', ADMIN_PWA_THEME);
 
     let appName = document.querySelector<HTMLMetaElement>('meta[name="application-name"]');
     const createdAppName = !appName;
     if (!appName) {
       appName = document.createElement('meta');
-      appName.setAttribute('name', 'application-name');
-      document.head.appendChild(appName);
+      appName.name = 'application-name';
+      add(appName);
     }
     const prevAppName = appName.getAttribute('content');
-    appName.setAttribute('content', 'Admin Precios');
-
-    let appleTitle = document.querySelector<HTMLMetaElement>('meta[name="apple-mobile-web-app-title"]');
-    const createdAppleTitle = !appleTitle;
-    if (!appleTitle) {
-      appleTitle = document.createElement('meta');
-      appleTitle.setAttribute('name', 'apple-mobile-web-app-title');
-      document.head.appendChild(appleTitle);
-    }
-    const prevAppleTitle = appleTitle.getAttribute('content');
-    appleTitle.setAttribute('content', 'Admin Precios');
+    appName.content = ADMIN_PWA_TITLE;
 
     return () => {
-      links.forEach((l) => l.remove());
+      created.forEach((el) => el.remove());
       if (metaTheme && prevTheme != null) metaTheme.setAttribute('content', prevTheme);
       if (appName) {
-        if (createdAppName) appName.remove();
-        else if (prevAppName != null) appName.setAttribute('content', prevAppName);
+        if (createdAppName) {
+          /* ya removido con created */
+        } else if (prevAppName != null) {
+          appName.setAttribute('content', prevAppName);
+        }
       }
-      if (appleTitle) {
-        if (createdAppleTitle) appleTitle.remove();
-        else if (prevAppleTitle != null) appleTitle.setAttribute('content', prevAppleTitle);
-      }
-      document.title = previousTitle;
     };
   }, []);
 
