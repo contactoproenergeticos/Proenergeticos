@@ -1,6 +1,8 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  /** Si `.next` queda bloqueado en Windows: `$env:NEXT_DIST_DIR=".next-fresh"; npm run dev` */
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   typescript: {
     // Salta la validación de tipos para finalizar el despliegue de Proenergéticos
     ignoreBuildErrors: true,
