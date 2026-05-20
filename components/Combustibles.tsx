@@ -2,10 +2,20 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Fuel, Zap, Ship, Shield, History, CheckCircle2, Droplets, Leaf, 
-  Factory, Sprout, Pickaxe, HardHat, Anchor, 
-  Hotel, Truck, Hospital
+import {
+  Fuel,
+  Zap,
+  Ship,
+  Shield,
+  History,
+  Factory,
+  Sprout,
+  Pickaxe,
+  HardHat,
+  Anchor,
+  Hotel,
+  Truck,
+  Hospital,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -13,13 +23,14 @@ import Image from 'next/image';
 import HistoriaAsimetricoSlider from './HistoriaAsimetricoSlider';
 import MagnaPremiumSlider from './MagnaPremiumSlider';
 import DieselSlider from './DieselSlider';
+import GasolinasSlider from './GasolinasSlider';
+import AditecPanel from './AditecPanel';
 
 type TabId = 'aditec' | 'gasolinas' | 'diesel' | 'magna_premium' | 'historia';
 
 const basePath = '/assets/combustibles'; 
 const imagenesCombustible = {
   hero_bg: `${basePath}/hero-bg.jpg`,
-  magna_premium: `${basePath}/magna-premium.jpg`,
 };
 
 const SafeImage = ({ src, alt, className, text }: { src: string; alt: string; className?: string; text?: string }) => {
@@ -44,22 +55,6 @@ const SafeImage = ({ src, alt, className, text }: { src: string; alt: string; cl
     </div>
   );
 };
-
-const AditecAgent = ({ title, description }: { title: string; description: string }) => (
-  <div className="bg-white p-3 border-2 border-gray-100 rounded-2xl shadow-sm hover:border-[#E30613] transition-all group w-full flex flex-col justify-center min-h-[70px]">
-    <h4 className="text-[#E30613] font-black text-[9px] md:text-xs mb-1 uppercase italic tracking-tighter leading-none">{title}</h4>
-    <p className="text-[8px] md:text-[10px] text-gray-500 leading-tight font-medium">{description}</p>
-  </div>
-);
-
-const MetricCard = ({ value, label, sublabel, icon: Icon }: { value: string; label: string; sublabel: string; icon: any }) => (
-  <div className="bg-white border border-gray-100 p-4 rounded-2xl text-center shadow-sm w-full">
-    <Icon className="w-4 h-4 md:w-5 md:h-5 text-[#E30613] mx-auto mb-2" />
-    <span className="block text-xl md:text-3xl font-black text-[#E30613] tracking-tighter">{value}</span>
-    <span className="text-[9px] md:text-[10px] text-gray-900 uppercase font-black tracking-widest block">{label}</span>
-    <p className="text-[8px] md:text-[9px] text-gray-400 font-bold leading-tight mt-1">{sublabel}</p>
-  </div>
-);
 
 const tabs = [
   { id: 'aditec', label: 'Aditec®', icon: Zap },
@@ -87,58 +82,9 @@ export default function Combustibles() {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'aditec':
-        return (
-          <div className="space-y-8">
-            <div className="text-center md:text-left">
-               <p className="text-base md:text-lg text-gray-600 font-medium">
-                Tecnología de última generación con <span className="text-[#E30613] font-black italic">8 agentes activos</span>.
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              <MetricCard value="+5%" label="Rendimiento" sublabel="Metodología EPA" icon={Zap} />
-              <MetricCard value="83%" label="Limpieza" sublabel="en válvulas" icon={Droplets} />
-              <MetricCard value="99%" label="Protección" sublabel="NACE corrosión" icon={Shield} />
-              <MetricCard value="-5%" label="CO2" sublabel="Huella Carbono" icon={Leaf} />
-            </div>
-
-            <div className="space-y-4">
-               <h4 className="text-xs font-black text-gray-400 uppercase tracking-[0.2em] text-center md:text-left">Agentes de Desempeño</h4>
-               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
-                <AditecAgent title="Detergencia" description="Mantiene limpio el sistema de admisión." />
-                <AditecAgent title="Anticorrosivo" description="Protege contra la herrumbre." />
-                <AditecAgent title="Antioxidante" description="Evita la degradación del combustible." />
-                <AditecAgent title="Solvente" description="Disuelve depósitos existentes." />
-                <AditecAgent title="Fluido Portador" description="Transporta los activos eficientemente." />
-                <AditecAgent title="Co-Solvente" description="Mejora la estabilidad de la mezcla." />
-                <AditecAgent title="Desemulsionante" description="Separa el agua del combustible." />
-                <AditecAgent title="Inhibidor" description="Reduce el desgaste del metal." />
-              </div>
-            </div>
-          </div>
-        );
+        return <AditecPanel />;
       case 'gasolinas':
-        return (
-          <div className="grid lg:grid-cols-2 gap-8 items-center">
-            <div className="space-y-4 text-left">
-              <div className="bg-white p-6 rounded-2xl shadow-md border-l-4 border-[#E30613] w-full">
-                <h3 className="text-2xl font-black text-gray-900 italic uppercase">Pemex Premium®</h3>
-                <p className="text-xs font-bold text-red-600 mb-4 tracking-widest">91 OCTANOS</p>
-                <div className="flex items-center gap-2 text-xs font-bold text-gray-700 uppercase">
-                  <CheckCircle2 className="w-4 h-4 text-[#E30613]" /> Motores Turbo e Inyección Directa
-                </div>
-              </div>
-              <div className="bg-white p-6 rounded-2xl shadow-md border-l-4 border-green-600 w-full">
-                <h3 className="text-2xl font-black text-gray-900 italic uppercase">Pemex Magna®</h3>
-                <p className="text-xs font-bold text-green-600 mb-4 tracking-widest">87 OCTANOS</p>
-                <div className="flex items-center gap-2 text-xs font-bold text-gray-700 uppercase">
-                  <CheckCircle2 className="w-4 h-4 text-green-600" /> Rendimiento diario optimizado
-                </div>
-              </div>
-            </div>
-            <SafeImage src={imagenesCombustible.magna_premium} alt="Gasolinas" className="aspect-video rounded-3xl shadow-lg" />
-          </div>
-        );
+        return <GasolinasSlider />;
       case 'diesel': return <DieselSlider />;
       case 'magna_premium': return <MagnaPremiumSlider />;
       case 'historia': return <HistoriaAsimetricoSlider />;
