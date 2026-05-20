@@ -250,8 +250,8 @@ export default function Splash({ onComplete }: SplashProps) {
                     animate={{ opacity: [0.2, 0.55, 0.25] }}
                     transition={{ duration: 1.8, repeat: Infinity, repeatType: 'reverse' }}
                   />
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
 
               {/* Reflejo en “suelo” */}
               <motion.div
@@ -265,7 +265,7 @@ export default function Splash({ onComplete }: SplashProps) {
                 transition={{ delay: 0.9, duration: 0.5 }}
               />
             </motion.div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Textos */}
@@ -311,7 +311,7 @@ export default function Splash({ onComplete }: SplashProps) {
             )}
           </AnimatePresence>
         </motion.div>
-      </motion.div>
+      </div>
 
       {/* Brillo inferior cinematográfico */}
       <div

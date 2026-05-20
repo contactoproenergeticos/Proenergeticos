@@ -142,12 +142,12 @@ const Header: React.FC = () => {
         className={`${HEADER_ENABLE_PRINT_UNSTICK ? 'proenergeticos-header-print ' : ''}sticky top-0 z-[100] w-full bg-white shadow-sm border-b border-gray-100`}
       >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center gap-3 lg:gap-4 h-20 md:h-24 lg:h-28 xl:h-32">
+        <div className="flex justify-between items-stretch gap-3 lg:gap-4 h-20 md:h-24 lg:h-28 xl:h-32">
           
           {/* SECCIÓN LOGOTIPO - USANDO ProEner_negro.png sobre fondo blanco */}
           <a
             href="/"
-            className="flex-shrink-0 cursor-pointer flex items-center gap-1.5 sm:gap-2 lg:gap-2 xl:gap-3 max-w-[42%] lg:max-w-[38%] xl:max-w-none"
+            className="flex-shrink-0 cursor-pointer flex items-center gap-1.5 sm:gap-2 lg:gap-2 xl:gap-3 self-center max-w-[48%] lg:max-w-[32%] xl:max-w-[28%]"
             onClick={handleNavClick}
           >
             <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-16 lg:h-16 xl:w-20 xl:h-20">
@@ -172,13 +172,20 @@ const Header: React.FC = () => {
             </div>
           </a>
 
-          {/* NAVEGACIÓN DESKTOP: menú desde Inicio + CTA en la misma fila */}
-          <div className="hidden lg:flex flex-1 items-center gap-2 xl:gap-4 min-w-0 ml-1 xl:ml-3">
+          {/* NAVEGACIÓN DESKTOP: CTA arriba, menú abajo (renglón inferior) */}
+          <div className="hidden lg:flex flex-1 flex-col justify-end items-end gap-2 min-w-0 pb-0.5 lg:pb-1">
+            <a
+              href="/facturacion"
+              className="bg-[#E30613] text-white font-black px-5 lg:px-6 xl:px-8 py-2 rounded-full hover:bg-gray-900 transition-all duration-300 text-[9px] lg:text-[10px] xl:text-xs tracking-[0.15em] xl:tracking-[0.2em] uppercase shadow-lg active:scale-95 text-center shrink-0 whitespace-nowrap"
+            >
+              Facturación en Línea
+            </a>
+
             <nav
-              className="flex-1 min-w-0 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+              className="w-full min-w-0 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
               aria-label="Menú principal"
             >
-              <ul className="flex w-max flex-nowrap items-center justify-start gap-x-2 lg:gap-x-2.5 xl:gap-x-3 2xl:gap-x-5 pr-1">
+              <ul className="flex w-max max-w-full ml-auto flex-nowrap items-center justify-end gap-x-2.5 lg:gap-x-3 xl:gap-x-3.5 2xl:gap-x-5">
                 {menuOptions.map((option) => {
                   const isActive = pathname === option.href;
                   const shortLabel = option.shortLabel ?? option.label;
@@ -187,7 +194,7 @@ const Header: React.FC = () => {
                       <a
                         href={option.href}
                         title={option.label}
-                        className={`text-[10px] lg:text-[11px] xl:text-[12px] 2xl:text-[14px] font-black italic tracking-tight xl:tracking-wide normal-case transition-all duration-300 py-1 border-b-2 whitespace-nowrap
+                        className={`text-xs lg:text-[13px] xl:text-sm 2xl:text-[15px] font-black italic tracking-tight normal-case transition-all duration-300 py-1 border-b-2 whitespace-nowrap
                           ${isActive
                             ? 'text-[#E30613] border-[#E30613]'
                             : 'text-gray-600 border-transparent hover:text-[#E30613]'}`}
@@ -200,13 +207,6 @@ const Header: React.FC = () => {
                 })}
               </ul>
             </nav>
-
-            <a
-              href="/facturacion"
-              className="bg-[#E30613] text-white font-black px-4 lg:px-5 xl:px-8 py-2 rounded-full hover:bg-gray-900 transition-all duration-300 text-[9px] lg:text-[10px] xl:text-xs tracking-[0.12em] xl:tracking-[0.2em] uppercase shadow-lg active:scale-95 text-center shrink-0 whitespace-nowrap"
-            >
-              Facturación en Línea
-            </a>
           </div>
 
           {/* CONTROLES MÓVIL */}
