@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Fuel,
   Zap,
   Ship,
   Shield,
@@ -23,10 +22,9 @@ import Image from 'next/image';
 import HistoriaAsimetricoSlider from './HistoriaAsimetricoSlider';
 import MagnaPremiumSlider from './MagnaPremiumSlider';
 import DieselSlider from './DieselSlider';
-import GasolinasSlider from './GasolinasSlider';
 import AditecPanel from './AditecPanel';
 
-type TabId = 'aditec' | 'gasolinas' | 'diesel' | 'magna_premium' | 'historia';
+type TabId = 'aditec' | 'diesel' | 'magna_premium' | 'historia';
 
 const basePath = '/assets/combustibles'; 
 const imagenesCombustible = {
@@ -57,11 +55,10 @@ const SafeImage = ({ src, alt, className, text }: { src: string; alt: string; cl
 };
 
 const tabs = [
-  { id: 'aditec', label: 'Aditec®', icon: Zap },
-  { id: 'gasolinas', label: 'Gasolinas', icon: Fuel },
-  { id: 'diesel', label: 'Diésel', icon: Ship },
-  { id: 'magna_premium', label: '¿Magna/Premium?', icon: Shield },
   { id: 'historia', label: 'Historia', icon: History },
+  { id: 'magna_premium', label: '¿Magna/Premium?', icon: Shield },
+  { id: 'diesel', label: 'Diésel', icon: Ship },
+  { id: 'aditec', label: 'Aditec®', icon: Zap },
 ] as const;
 
 const sectores = [
@@ -77,14 +74,12 @@ const sectores = [
 ];
 
 export default function Combustibles() {
-  const [activeTab, setActiveTab] = useState<TabId>('aditec');
+  const [activeTab, setActiveTab] = useState<TabId>('historia');
 
   const renderTabContent = () => {
     switch (activeTab) {
       case 'aditec':
         return <AditecPanel />;
-      case 'gasolinas':
-        return <GasolinasSlider />;
       case 'diesel': return <DieselSlider />;
       case 'magna_premium': return <MagnaPremiumSlider />;
       case 'historia': return <HistoriaAsimetricoSlider />;
@@ -144,17 +139,19 @@ export default function Combustibles() {
 
         {/* Navigation Tabs - TODO ESTO QUEDA IGUAL */}
         <div className="bg-white rounded-[24px] shadow-xl overflow-hidden p-3 md:p-8 mb-10 border border-gray-100">
-          <div className="flex flex-wrap justify-center gap-2 mb-8 bg-gray-100 p-2 rounded-2xl">
+          <div className="flex flex-wrap justify-center gap-2 mb-8 bg-gray-100 p-2 sm:p-3 rounded-2xl">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as TabId)}
-                className={`flex-1 min-w-[100px] md:min-w-0 flex flex-col md:flex-row items-center justify-center gap-2 py-3 px-2 rounded-xl transition-all font-black uppercase text-[8px] md:text-[10px] leading-tight text-center ${
-                  activeTab === tab.id ? 'bg-gray-900 text-white shadow-md' : 'text-gray-400 hover:bg-gray-200'
+                className={`flex-1 min-w-[120px] sm:min-w-[140px] md:min-w-0 flex flex-col md:flex-row items-center justify-center gap-1.5 sm:gap-2 py-3.5 sm:py-4 px-2 sm:px-3 rounded-xl transition-all font-black uppercase text-[11px] sm:text-xs md:text-sm leading-snug text-center tracking-wide ${
+                  activeTab === tab.id
+                    ? 'bg-gray-900 text-white shadow-md'
+                    : 'text-gray-600 hover:bg-gray-200 hover:text-gray-800'
                 }`}
               >
-                <tab.icon className="w-3 h-3 md:w-4 md:h-4" />
-                <span>{tab.label}</span>
+                <tab.icon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+                <span className="px-0.5">{tab.label}</span>
               </button>
             ))}
           </div>
