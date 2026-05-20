@@ -8,6 +8,8 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import ws from 'ws';
 import { fuelKindFromParts } from './fuelLabelKind';
+import { leyendaFechaMazatlanLocal, leyendaHoraMazatlanLocal } from './preciosLeyenda';
+import { isCapturaManualActiva } from './preciosModoCaptura';
 
 const LIST_URL = 'https://www.gasolinamexico.com.mx/estados/sinaloa/mazatlan/';
 
@@ -16,26 +18,6 @@ const LIST_URL = 'https://www.gasolinamexico.com.mx/estados/sinaloa/mazatlan/';
  * y las pasa por `PREC_SYNC_*`. Si faltan (p. ej. cron en Vercel), se recalculan aquí con
  * la misma convención que el `.mjs`.
  */
-const TZ_LEYENDA = 'America/Mazatlan';
-
-function leyendaFechaMazatlanLocal(instant: Date): string {
-  const weekday = new Intl.DateTimeFormat('es-MX', { timeZone: TZ_LEYENDA, weekday: 'long' }).format(
-    instant
-  );
-  const day = new Intl.DateTimeFormat('es-MX', { timeZone: TZ_LEYENDA, day: 'numeric' }).format(instant);
-  const month = new Intl.DateTimeFormat('es-MX', { timeZone: TZ_LEYENDA, month: 'long' }).format(instant);
-  return `${weekday.toLowerCase()}, ${day} de ${month}`;
-}
-
-function leyendaHoraMazatlanLocal(instant: Date): string {
-  return new Intl.DateTimeFormat('en-US', {
-    timeZone: TZ_LEYENDA,
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true,
-  }).format(instant);
-}
-
 const PERMISO_POR_ESTACION: { test: (n: string) => boolean; permiso: string }[] = [
   { test: (n) => /santa\s*irene|gsi/i.test(n), permiso: 'PL/2840/EXP/ES/2015' },
   { test: (n) => /pozole|rusher|gpo/i.test(n), permiso: 'PL/23676/EXP/ES/2020' },
@@ -278,6 +260,17 @@ export async function runSyncPreciosCombustible(): Promise<SyncPreciosResult> {
       ? { realtime: { transport: ws as never } }
       : {}),
   });
+
+  if (await isCapturaManualActiva(supabase)) {
+    return {
+      ok: true,
+      error: undefined,
+      warnings: [
+        'Modo manual activo en configuraciones_globales (precios_modo_captura). Sincronización CRE omitida.',
+      ],
+      durationMs: Date.now() - t0,
+    };
+  }
 
   const { data: estaciones, error: e1 } = await supabase
     .from('estaciones')
