@@ -60,15 +60,15 @@ export default function PinPad({
             key={i}
             className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 transition-all duration-200 ${
               i < value.length
-                ? 'bg-[#FF0000] border-[#FF0000] scale-110'
-                : 'bg-transparent border-white/30'
+                ? 'bg-[#E30613] border-[#E30613] scale-110'
+                : 'bg-white border-gray-300'
             }`}
           />
         ))}
       </div>
 
       {error ? (
-        <p className="text-center text-[#FF0000] text-sm font-bold mb-4" role="alert">
+        <p className="text-center text-[#E30613] text-sm font-bold mb-4" role="alert">
           {error}
         </p>
       ) : null}
@@ -80,7 +80,7 @@ export default function PinPad({
             type="button"
             disabled={disabled}
             onClick={() => pushDigit(d)}
-            className="h-14 sm:h-16 rounded-2xl bg-white/10 hover:bg-[#FF0000] active:scale-95 text-white text-2xl font-black transition-all disabled:opacity-40 border border-white/10"
+            className="h-14 sm:h-16 rounded-2xl bg-gray-100 hover:bg-[#E30613] hover:text-white active:scale-95 text-gray-900 text-2xl font-black transition-all disabled:opacity-40 border border-gray-200 shadow-sm"
           >
             {d}
           </button>
@@ -89,7 +89,7 @@ export default function PinPad({
           type="button"
           disabled={disabled}
           onClick={backspace}
-          className="h-14 sm:h-16 rounded-2xl bg-white/5 hover:bg-white/15 text-white flex items-center justify-center transition-all disabled:opacity-40 border border-white/10"
+          className="h-14 sm:h-16 rounded-2xl bg-white hover:bg-gray-100 text-gray-700 flex items-center justify-center transition-all disabled:opacity-40 border border-gray-200 shadow-sm"
           aria-label="Borrar"
         >
           <Delete className="w-6 h-6" />
@@ -98,7 +98,7 @@ export default function PinPad({
           type="button"
           disabled={disabled}
           onClick={() => pushDigit('0')}
-          className="h-14 sm:h-16 rounded-2xl bg-white/10 hover:bg-[#FF0000] active:scale-95 text-white text-2xl font-black transition-all disabled:opacity-40 border border-white/10"
+          className="h-14 sm:h-16 rounded-2xl bg-gray-100 hover:bg-[#E30613] hover:text-white active:scale-95 text-gray-900 text-2xl font-black transition-all disabled:opacity-40 border border-gray-200 shadow-sm"
         >
           0
         </button>
@@ -106,7 +106,7 @@ export default function PinPad({
           type="button"
           disabled={disabled || value.length < MAX_PIN}
           onClick={() => value.length === MAX_PIN && onComplete?.(value)}
-          className="h-14 sm:h-16 rounded-2xl bg-[#FF0000] hover:bg-red-700 text-white flex items-center justify-center transition-all disabled:opacity-40 shadow-lg shadow-red-600/30"
+          className="h-14 sm:h-16 rounded-2xl bg-[#E30613] hover:bg-gray-900 text-white flex items-center justify-center transition-all disabled:opacity-40 shadow-lg shadow-red-500/25"
           aria-label="Confirmar PIN"
         >
           <Lock className="w-6 h-6" />

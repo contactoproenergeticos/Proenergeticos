@@ -16,10 +16,10 @@ type PrecioFormState = Record<string, string>;
 
 function colorForFuel(label: string, subtitulo: string | null): string {
   const k = fuelKindFromParts(label, subtitulo);
-  if (k === 'magna') return 'text-green-400';
-  if (k === 'premium') return 'text-[#FF0000]';
-  if (k === 'diesel') return 'text-gray-300';
-  return 'text-white';
+  if (k === 'magna') return 'text-green-600';
+  if (k === 'premium') return 'text-[#E30613]';
+  if (k === 'diesel') return 'text-gray-900';
+  return 'text-gray-900';
 }
 
 function estacionTitulo(nombre: string): string {
@@ -177,25 +177,25 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white pb-28 lg:pb-12">
+    <div className="min-h-screen bg-gray-200 text-gray-900 pb-28 lg:pb-12">
       {toast ? (
         <div
-          className="fixed top-4 left-4 right-4 z-50 mx-auto max-w-md rounded-2xl bg-white text-gray-900 px-5 py-4 shadow-2xl border-l-4 border-[#FF0000] flex items-center gap-3"
+          className="fixed top-4 left-4 right-4 z-50 mx-auto max-w-md rounded-2xl bg-white text-gray-900 px-5 py-4 shadow-2xl border-l-4 border-[#E30613] flex items-center gap-3"
           role="status"
         >
-          <CheckCircle2 className="w-6 h-6 text-[#FF0000] shrink-0" />
+          <CheckCircle2 className="w-6 h-6 text-[#E30613] shrink-0" />
           <span className="font-bold text-sm sm:text-base">{toast}</span>
         </div>
       ) : null}
 
-      <header className="border-b border-white/10 bg-black/60 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-3">
+      <header className="bg-gray-950 text-white shadow-lg sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 py-5 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-[10px] uppercase tracking-[0.35em] text-[#FF0000] font-black">
+            <p className="text-[10px] uppercase tracking-[0.35em] text-[#E30613] font-black">
               Panel interno
             </p>
-            <h1 className="text-xl sm:text-2xl font-black italic uppercase tracking-tight">
-              Captura de <span className="text-[#FF0000]">Precios</span>
+            <h1 className="text-xl sm:text-2xl font-black italic uppercase tracking-tight text-white">
+              Captura de <span className="text-[#E30613]">Precios</span>
             </h1>
           </div>
           <div className="flex items-center gap-2">
@@ -203,7 +203,7 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
               type="button"
               onClick={() => cargarDatos()}
               disabled={cargando}
-              className="p-2.5 rounded-xl border border-white/15 hover:border-[#FF0000] transition-colors disabled:opacity-50"
+              className="p-2.5 rounded-xl border border-white/20 hover:border-[#E30613] hover:bg-white/5 transition-colors disabled:opacity-50 text-white"
               aria-label="Recargar"
             >
               <RefreshCw className={`w-5 h-5 ${cargando ? 'animate-spin' : ''}`} />
@@ -211,7 +211,7 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
             <button
               type="button"
               onClick={onLogout}
-              className="text-xs font-black uppercase tracking-widest px-4 py-2.5 rounded-xl border border-white/20 hover:bg-white/10"
+              className="text-xs font-black uppercase tracking-widest px-4 py-2.5 rounded-xl border border-white/25 hover:bg-white/10 text-white"
             >
               Salir
             </button>
@@ -222,40 +222,40 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
       <main className="max-w-7xl mx-auto px-4 py-8 space-y-8">
         {avisoConfig ? (
           <div
-            className="rounded-xl bg-amber-500/15 border border-amber-500/50 text-amber-100 px-4 py-3 text-sm leading-relaxed"
+            className="rounded-2xl bg-amber-50 border border-amber-200 text-amber-950 px-4 py-3 text-sm leading-relaxed shadow-sm"
             role="status"
           >
-            <p className="font-black uppercase tracking-wide text-amber-400 text-xs mb-1">
+            <p className="font-black uppercase tracking-wide text-amber-700 text-xs mb-1">
               Configuración pendiente en Supabase
             </p>
             <p>{avisoConfig}</p>
-            <p className="mt-2 text-xs text-amber-200/80">
-              Archivo: <code className="text-white">supabase/setup-admin-precios.sql</code> → pégalo en SQL
+            <p className="mt-2 text-xs text-amber-800/80">
+              Archivo: <code className="bg-white px-1 rounded">supabase/setup-admin-precios.sql</code> → pégalo en SQL
               Editor → Run. Luego recarga esta página.
             </p>
           </div>
         ) : null}
 
         {errorGlobal ? (
-          <p className="rounded-xl bg-[#FF0000]/15 border border-[#FF0000]/40 text-[#FF0000] px-4 py-3 text-sm font-bold">
+          <p className="rounded-2xl bg-red-50 border border-red-200 text-[#E30613] px-4 py-3 text-sm font-bold shadow-sm">
             {errorGlobal}
           </p>
         ) : null}
 
         {/* Switch modo */}
-        <section className="rounded-2xl sm:rounded-3xl border border-white/10 bg-gradient-to-br from-gray-900 to-black p-5 sm:p-8 shadow-xl">
-          <p className="text-center text-gray-400 text-xs sm:text-sm font-bold uppercase tracking-widest mb-4">
+        <section className="rounded-2xl sm:rounded-[2rem] border border-gray-100 bg-white p-5 sm:p-8 shadow-xl">
+          <p className="text-center text-gray-500 text-xs sm:text-sm font-bold uppercase tracking-widest mb-4">
             Modo de operación
           </p>
-          <div className="flex flex-col sm:flex-row max-w-2xl mx-auto rounded-2xl overflow-hidden border border-white/15">
+          <div className="flex flex-col sm:flex-row max-w-2xl mx-auto rounded-2xl overflow-hidden border border-gray-200 shadow-inner bg-gray-100 p-1 gap-1 sm:gap-0 sm:p-1">
             <button
               type="button"
               disabled={cambiandoModo || tablaConfigFaltante}
               onClick={() => modo !== 'automatico' && cambiarModo('automatico')}
-              className={`flex-1 py-4 px-4 text-xs sm:text-sm font-black uppercase tracking-wide transition-all ${
+              className={`flex-1 py-4 px-4 rounded-xl sm:rounded-l-xl sm:rounded-r-none text-xs sm:text-sm font-black uppercase tracking-wide transition-all ${
                 modo === 'automatico'
-                  ? 'bg-[#FF0000] text-white'
-                  : 'bg-white/5 text-gray-400 hover:text-white'
+                  ? 'bg-[#E30613] text-white shadow-md'
+                  : 'bg-transparent text-gray-500 hover:text-gray-900'
               } disabled:opacity-60`}
             >
               Modo Automático
@@ -267,10 +267,10 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
               type="button"
               disabled={cambiandoModo || tablaConfigFaltante}
               onClick={() => modo !== 'manual' && cambiarModo('manual')}
-              className={`flex-1 py-4 px-4 text-xs sm:text-sm font-black uppercase tracking-wide transition-all border-t sm:border-t-0 sm:border-l border-white/10 ${
+              className={`flex-1 py-4 px-4 rounded-xl sm:rounded-r-xl sm:rounded-l-none text-xs sm:text-sm font-black uppercase tracking-wide transition-all ${
                 modo === 'manual'
-                  ? 'bg-[#FF0000] text-white'
-                  : 'bg-white/5 text-gray-400 hover:text-white'
+                  ? 'bg-[#E30613] text-white shadow-md'
+                  : 'bg-transparent text-gray-500 hover:text-gray-900'
               } disabled:opacity-60`}
             >
               Modo Manual
@@ -280,8 +280,8 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
             </button>
           </div>
           {cambiandoModo ? (
-            <p className="text-center text-gray-500 text-xs mt-3 flex items-center justify-center gap-2">
-              <Loader2 className="w-4 h-4 animate-spin" /> Actualizando modo…
+            <p className="text-center text-gray-400 text-xs mt-3 flex items-center justify-center gap-2">
+              <Loader2 className="w-4 h-4 animate-spin text-[#E30613]" /> Actualizando modo…
             </p>
           ) : (
             <p className="text-center text-gray-500 text-xs mt-3">
@@ -294,21 +294,21 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
 
         {cargando ? (
           <div className="flex justify-center py-20">
-            <Loader2 className="w-10 h-10 animate-spin text-[#FF0000]" />
+            <Loader2 className="w-10 h-10 animate-spin text-[#E30613]" />
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {estaciones.map((est) => (
               <article
                 key={est.id}
-                className="rounded-2xl sm:rounded-3xl border border-white/10 bg-gray-900/80 p-5 sm:p-7 shadow-lg"
+                className="rounded-2xl sm:rounded-[2rem] border border-gray-100 bg-white p-5 sm:p-7 shadow-xl"
               >
-                <header className="mb-6 pb-4 border-b border-white/10">
-                  <h2 className="text-lg sm:text-xl font-black italic uppercase text-white">
+                <header className="mb-6 pb-4 border-b border-gray-100">
+                  <h2 className="text-lg sm:text-xl font-black italic uppercase text-gray-900">
                     {estacionTitulo(est.nombre)}
                   </h2>
                   {est.marca ? (
-                    <p className="text-[11px] sm:text-xs text-gray-400 mt-1 uppercase tracking-wide">
+                    <p className="text-[11px] sm:text-xs text-[#E30613] mt-1 uppercase tracking-wide font-bold">
                       {est.marca}
                     </p>
                   ) : null}
@@ -325,12 +325,12 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
                             {p.label}
                           </span>
                           {p.subtitulo ? (
-                            <span className="block text-[11px] text-gray-500 uppercase tracking-wider mt-0.5">
+                            <span className="block text-[11px] text-gray-400 uppercase tracking-wider mt-0.5">
                               {p.subtitulo}
                             </span>
                           ) : null}
                           <div className="mt-2 flex items-center gap-2">
-                            <span className="text-gray-500 font-black text-lg">$</span>
+                            <span className="text-gray-400 font-black text-lg">$</span>
                             <input
                               type="number"
                               inputMode="decimal"
@@ -350,15 +350,15 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
                                   return next;
                                 });
                               }}
-                              className={`flex-1 rounded-xl bg-black/50 border-2 px-4 py-3 text-lg sm:text-xl font-black text-white outline-none transition-all ${
+                              className={`flex-1 rounded-xl bg-gray-50 border-2 px-4 py-3 text-lg sm:text-xl font-black text-gray-900 outline-none transition-all ${
                                 err
-                                  ? 'border-[#FF0000] ring-2 ring-[#FF0000]/30'
-                                  : 'border-white/15 focus:border-[#FF0000]'
-                              } disabled:opacity-45 disabled:cursor-not-allowed`}
+                                  ? 'border-[#E30613] ring-2 ring-[#E30613]/20'
+                                  : 'border-gray-200 focus:border-[#E30613] focus:bg-white'
+                              } disabled:opacity-50 disabled:bg-gray-100 disabled:cursor-not-allowed`}
                             />
                           </div>
                           {err ? (
-                            <p className="text-[#FF0000] text-xs font-bold mt-1">{err}</p>
+                            <p className="text-[#E30613] text-xs font-bold mt-1">{err}</p>
                           ) : null}
                         </label>
                       </li>
@@ -367,7 +367,7 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
                 </ul>
 
                 {est.precios[0]?.fecha_actualizacion ? (
-                  <p className="text-[10px] text-gray-600 mt-6 uppercase tracking-wide">
+                  <p className="text-[10px] text-gray-400 mt-6 uppercase tracking-wide border-t border-gray-100 pt-4">
                     Última vigencia: {est.precios[0].fecha_actualizacion} ·{' '}
                     {est.precios[0].hora_actualizacion ?? '--'}
                   </p>
@@ -379,12 +379,12 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
       </main>
 
       {/* Guardar: fijo en móvil */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 lg:static lg:mt-0 p-4 lg:p-0 lg:max-w-7xl lg:mx-auto lg:px-4 lg:pb-10 bg-gradient-to-t from-gray-950 via-gray-950 to-transparent lg:bg-none border-t border-white/10 lg:border-0">
+      <div className="fixed bottom-0 left-0 right-0 z-40 lg:static lg:mt-0 p-4 lg:p-0 lg:max-w-7xl lg:mx-auto lg:px-4 lg:pb-10 bg-gradient-to-t from-gray-200 via-gray-200/95 to-transparent lg:bg-none border-t border-gray-200 lg:border-0">
         <button
           type="button"
           onClick={guardar}
           disabled={!manual || guardando || cargando}
-          className="w-full lg:max-w-md lg:mx-auto flex items-center justify-center gap-3 rounded-2xl bg-[#FF0000] hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black uppercase tracking-[0.2em] py-4 sm:py-5 shadow-xl shadow-red-600/25 transition-all active:scale-[0.98]"
+          className="w-full lg:max-w-md lg:mx-auto flex items-center justify-center gap-3 rounded-2xl bg-[#E30613] hover:bg-gray-900 disabled:opacity-40 disabled:cursor-not-allowed text-white font-black uppercase tracking-[0.2em] py-4 sm:py-5 shadow-xl shadow-red-500/20 transition-all active:scale-[0.98]"
         >
           {guardando ? (
             <Loader2 className="w-5 h-5 animate-spin" />

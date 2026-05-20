@@ -6,6 +6,7 @@ import type { MetadataRoute } from 'next';
  */
 export default function manifest(): MetadataRoute.Manifest {
   const icon = '/images/logotipos/ProEner.png';
+  const adminIcon = '/icon-admin.svg';
 
   return {
     name: 'Grupo Proenergéticos — Estaciones de servicio',
@@ -32,6 +33,22 @@ export default function manifest(): MetadataRoute.Manifest {
         sizes: '512x512',
         type: 'image/png',
         purpose: 'any',
+      },
+    ],
+    shortcuts: [
+      {
+        name: 'Administrar Precios',
+        short_name: 'Admin Precios',
+        description: 'Panel de control secreto para la captura manual de precios',
+        url: '/admin-precios',
+        icons: [
+          {
+            src: adminIcon,
+            sizes: '192x192 512x512',
+            type: 'image/svg+xml',
+            purpose: 'any',
+          },
+        ],
       },
     ],
   };

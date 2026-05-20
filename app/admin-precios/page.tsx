@@ -50,33 +50,40 @@ export default function AdminPreciosPage() {
   }
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-gray-950 flex flex-col items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md text-center mb-10">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#FF0000]/20 border border-[#FF0000]/40 mb-6">
-          <Shield className="w-8 h-8 text-[#FF0000]" />
+    <div className="min-h-screen min-h-[100dvh] bg-gray-200 flex flex-col items-center justify-center px-4 py-10">
+      <div className="w-full max-w-md">
+        <div className="rounded-[2rem] overflow-hidden shadow-2xl border border-gray-100 bg-white">
+          <div className="bg-gray-950 px-6 py-8 text-center">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#E30613]/20 border border-[#E30613]/50 mb-4">
+              <Shield className="w-7 h-7 text-[#E30613]" />
+            </div>
+            <p className="text-[10px] uppercase tracking-[0.4em] text-gray-400 font-black mb-2">
+              Acceso restringido
+            </p>
+            <h1 className="text-2xl sm:text-3xl font-black italic uppercase text-white tracking-tight">
+              Panel de <span className="text-[#E30613]">Precios</span>
+            </h1>
+          </div>
+
+          <div className="px-6 py-8 sm:py-10">
+            <p className="text-gray-500 text-sm text-center mb-8">
+              Ingresa tu PIN de 4 dígitos. En escritorio también puedes usar el teclado.
+            </p>
+
+            <PinPad
+              value={pin}
+              onChange={setPin}
+              onComplete={verificarPin}
+              disabled={verificando}
+              error={pinError}
+            />
+
+            {verificando ? (
+              <p className="text-gray-400 text-xs mt-6 text-center animate-pulse">Verificando…</p>
+            ) : null}
+          </div>
         </div>
-        <p className="text-[10px] uppercase tracking-[0.4em] text-gray-500 font-black mb-2">
-          Acceso restringido
-        </p>
-        <h1 className="text-2xl sm:text-3xl font-black italic uppercase text-white tracking-tight">
-          Panel de <span className="text-[#FF0000]">Precios</span>
-        </h1>
-        <p className="text-gray-500 text-sm mt-3 max-w-xs mx-auto">
-          Ingresa tu PIN de 4 dígitos. En escritorio también puedes usar el teclado.
-        </p>
       </div>
-
-      <PinPad
-        value={pin}
-        onChange={setPin}
-        onComplete={verificarPin}
-        disabled={verificando}
-        error={pinError}
-      />
-
-      {verificando ? (
-        <p className="text-gray-500 text-xs mt-6 animate-pulse">Verificando…</p>
-      ) : null}
     </div>
   );
 }
