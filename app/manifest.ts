@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
   const icon = '/images/logotipos/ProEner.png';
 
   return {
-    name: 'Proenergéticos — Estaciones de servicio',
-    short_name: 'Proenergéticos',
+    name: 'Grupo Proenergéticos — Estaciones de servicio',
+    short_name: 'Grupo Proenergéticos',
     description:
       'Combustibles de alta calidad y servicio en Mazatlán, Sinaloa. Consulta precios, estaciones y facturación.',
     start_url: '/',

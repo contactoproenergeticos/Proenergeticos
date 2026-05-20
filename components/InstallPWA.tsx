@@ -229,7 +229,7 @@ export default function InstallPWA() {
                   Instalación rápida
                 </p>
                 <h2 className="text-lg font-black italic tracking-tight text-slate-900 sm:text-xl">
-                  Proenergéticos <span className="text-[#E30613]">App</span>
+                  Grupo Proenergéticos <span className="text-[#E30613]">App</span>
                 </h2>
               </div>
             </div>

@@ -80,7 +80,7 @@ const TEMA_UI: Record<
   proener: {
     borderColor: 'border-gray-900',
     marcaColor: 'text-gray-900',
-    logoUrl: '/images/logotipos/ProEner_negro.png',
+    logoUrl: '/images/logotipos/GPO.png',
     badgeClass: 'bg-gray-100 text-gray-900',
     nota: 'Garantía de Origen',
   },
@@ -226,14 +226,14 @@ const PrecioItem = ({
   subtitulo: string;
   mostrarEsqueleto?: boolean;
 }) => (
-  <div className="flex flex-col items-center justify-center py-4 border-b border-gray-100 last:border-0 transition-colors hover:bg-gray-50/50">
-    <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">
+  <div className="flex flex-col items-center justify-center py-2 md:py-2.5 border-b border-gray-100 last:border-0 transition-colors hover:bg-gray-50/50">
+    <span className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-0.5">
       {subtitulo}
     </span>
-    <h4 className="text-lg font-black text-gray-900 tracking-tighter uppercase italic mb-1">
+    <h4 className="text-lg font-black text-gray-900 tracking-tighter uppercase italic mb-0.5">
       {label}
     </h4>
-    <div className="flex min-h-[3rem] items-center justify-center gap-1">
+    <div className="flex min-h-[2.25rem] items-center justify-center gap-1">
       {mostrarEsqueleto ? (
         <span className="inline-block h-12 w-28 rounded-xl bg-gray-200 animate-pulse" aria-hidden />
       ) : (
@@ -284,20 +284,20 @@ const EstacionCard = ({
     initial={{ opacity: 0, y: 30 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    className="bg-white rounded-[40px] shadow-2xl overflow-hidden border border-gray-100 flex flex-col relative h-full min-h-[420px] md:min-h-[480px] group"
+    className="bg-white rounded-[40px] shadow-2xl overflow-hidden border border-gray-100 flex flex-col relative h-full group"
   >
     <div className={`h-3 w-full ${borderColor}`}></div>
-    <div className="p-6 md:p-10 flex-grow flex flex-col">
-      <div className="flex flex-col md:flex-row items-center justify-between mb-8 md:mb-12 min-h-[100px] gap-6">
-        <div className="flex-1 text-center md:text-left w-full min-h-[4.5rem] flex flex-col justify-center">
+    <div className="p-4 md:p-6 flex-grow flex flex-col">
+      <div className="flex flex-col md:flex-row items-center justify-between mb-4 md:mb-5 gap-3">
+        <div className="flex-1 text-center md:text-left w-full flex flex-col justify-center">
           {tituloEsqueleto ? (
             <>
-              <span className="block h-9 md:h-11 w-3/4 max-w-xs mx-auto md:mx-0 rounded-lg bg-gray-200 animate-pulse mb-3" />
+              <span className="block h-9 md:h-11 w-3/4 max-w-xs mx-auto md:mx-0 rounded-lg bg-gray-200 animate-pulse mb-2" />
               <span className="block h-4 w-1/2 max-w-[12rem] mx-auto md:mx-0 rounded-md bg-gray-100 animate-pulse" />
             </>
           ) : (
             <>
-              <h3 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tighter uppercase italic leading-tight mb-2">
+              <h3 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tighter uppercase italic leading-tight mb-1">
                 {nombre}
               </h3>
               <p className={`text-[11px] md:text-sm font-black tracking-widest uppercase ${marcaColor}`}>
@@ -308,7 +308,7 @@ const EstacionCard = ({
         </div>
 
         <div className="flex-1 flex justify-center items-center">
-          <div className="w-28 md:w-40 h-20 md:h-24 flex items-center justify-center relative transition-transform duration-500 group-hover:scale-110">
+          <div className="w-24 md:w-32 h-16 md:h-20 flex items-center justify-center relative transition-transform duration-500 group-hover:scale-110">
             {logoEsqueleto ? (
               <span className="inline-block w-24 md:w-32 h-16 md:h-20 rounded-2xl bg-gray-200 animate-pulse" aria-hidden />
             ) : (
@@ -325,16 +325,16 @@ const EstacionCard = ({
         </div>
       </div>
 
-      <div className="space-y-3 flex-1 min-h-0">
+      <div className="flex-1 min-h-0">
         {precios.map(({ rowKey, mostrarEsqueleto, ...p }) => (
           <PrecioItem key={rowKey} {...p} mostrarEsqueleto={mostrarEsqueleto} />
         ))}
       </div>
 
-      <div className="mt-8 pt-6 border-t border-gray-100">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${badgeClass}`}>
+      <div className="mt-4 pt-3 border-t border-gray-100">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <div className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${badgeClass}`}>
               {nota}
             </div>
             <div className="flex items-center gap-1.5 text-[10px] font-black text-gray-400 uppercase tracking-widest">
@@ -345,12 +345,12 @@ const EstacionCard = ({
         </div>
       </div>
 
-      <div className="mt-auto pt-6 border-t border-gray-200 pb-1">
+      <div className="mt-auto pt-3 border-t border-gray-200">
         <p className="text-sm text-gray-900 normal-case leading-snug">
           <span className="font-black">Última actualización:</span>{' '}
           <span className="font-extrabold text-gray-900">{vigenciaPrincipal}</span>
         </p>
-        <p className="mt-1 text-xs sm:text-[11px] text-slate-700 normal-case leading-relaxed font-medium max-w-prose mx-auto md:mx-0">
+        <p className="mt-0.5 text-xs sm:text-[11px] text-slate-700 normal-case leading-relaxed font-medium max-w-prose mx-auto md:mx-0">
           {NOTA_CRE_TARJETA}
         </p>
       </div>
@@ -521,32 +521,36 @@ export default function Precios() {
 
   return (
     <div className="space-y-8 md:space-y-12 py-8 md:py-16 bg-gray-200 relative w-full overflow-x-hidden">
-      <div className="text-center max-w-4xl mx-auto pt-4 md:pt-8 px-4">
-        <h2 className="text-5xl md:text-7xl font-black text-gray-900 tracking-tighter uppercase italic mb-6 leading-none">
-          Tablero de <span className="text-[#E30613]">Precios</span>
-        </h2>
+      <div className="space-y-3 md:space-y-4">
+        <div className="text-center max-w-4xl mx-auto pt-4 md:pt-8 px-4">
+          <h2 className="text-5xl md:text-7xl font-black text-gray-900 tracking-tighter uppercase italic mb-6 leading-none">
+            Tablero de <span className="text-[#E30613]">Precios</span>
+          </h2>
 
-        <p className="text-lg md:text-xl text-gray-500 font-bold leading-tight max-w-2xl mx-auto uppercase tracking-tight italic mb-10">
-          Combustibles de alta calidad con garantía de litraje exacto en Mazatlán.
-        </p>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 relative">
-        <div className="mb-4 flex min-h-[1.25rem] items-center justify-center">
-          {avisoDiscreto ? (
-            <p
-              className="text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-500"
-              role="status"
-              aria-live="polite"
-            >
-              {avisoDiscreto}
-            </p>
-          ) : null}
+          <p className="text-lg md:text-xl text-gray-500 font-bold leading-tight max-w-2xl mx-auto uppercase tracking-tight italic mb-0">
+            Combustibles de alta calidad con garantía de litraje exacto en Mazatlán.
+          </p>
         </div>
-        <div className="grid lg:grid-cols-2 gap-10">
-          {tarjetas.map(({ key: stationKey, ...card }) => (
-            <EstacionCard key={stationKey} {...card} />
-          ))}
+
+        <div className="max-w-7xl mx-auto px-4 relative">
+          <div
+            className={`flex items-center justify-center ${avisoDiscreto ? 'mb-3 min-h-[1.25rem]' : 'mb-0 min-h-0'}`}
+          >
+            {avisoDiscreto ? (
+              <p
+                className="text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-500"
+                role="status"
+                aria-live="polite"
+              >
+                {avisoDiscreto}
+              </p>
+            ) : null}
+          </div>
+          <div className="grid lg:grid-cols-2 gap-10">
+            {tarjetas.map(({ key: stationKey, ...card }) => (
+              <EstacionCard key={stationKey} {...card} />
+            ))}
+          </div>
         </div>
       </div>
 

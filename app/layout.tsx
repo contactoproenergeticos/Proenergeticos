@@ -20,13 +20,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Proenergéticos - Estaciones de Servicio',
-  description: 'Sistema de gestión y monitoreo para estaciones de servicio Proenergéticos.',
-  applicationName: 'Proenergéticos',
+  title: 'Grupo Proenergéticos - Estaciones de Servicio',
+  description: 'Sistema de gestión y monitoreo para estaciones de servicio Grupo Proenergéticos.',
+  applicationName: 'Grupo Proenergéticos',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Proenergéticos',
+    title: 'Grupo Proenergéticos',
   },
   formatDetection: {
     telephone: false,

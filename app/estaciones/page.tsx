@@ -215,8 +215,10 @@ export default function EstacionesPage() {
                   Red de estaciones
                 </span>
               </div>
-              <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-white mb-5 md:mb-6 tracking-tighter leading-[0.95] uppercase italic">
-                Grupo <span className="text-[#E30613]">Proenergéticos</span>
+              <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black mb-5 md:mb-6 tracking-tighter leading-[0.95] uppercase italic">
+                <span className="text-white">Grupo </span>
+                <span className="text-white">Pro</span>
+                <span className="text-[#E30613]">energéticos</span>
               </h1>
               <p className="text-base md:text-xl text-gray-300 font-medium leading-relaxed italic max-w-3xl">
                 Somos una empresa sinaloense dedicada a la{' '}

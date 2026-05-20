@@ -194,10 +194,10 @@ const Header: React.FC = () => {
                       <a
                         href={option.href}
                         title={option.label}
-                        className={`text-xs lg:text-[13px] xl:text-sm 2xl:text-[15px] font-black italic tracking-tight normal-case transition-all duration-300 py-1 border-b-2 whitespace-nowrap
+                        className={`text-xs lg:text-[13px] xl:text-sm 2xl:text-[15px] font-black italic tracking-tight normal-case transition-all duration-300 whitespace-nowrap
                           ${isActive
-                            ? 'text-[#E30613] border-[#E30613]'
-                            : 'text-gray-600 border-transparent hover:text-[#E30613]'}`}
+                            ? 'py-1.5 px-3 xl:px-4 rounded-full text-white bg-[#E30613]'
+                            : 'py-1 px-2 xl:px-2.5 rounded-full border-b-2 text-gray-600 border-transparent hover:text-[#E30613]'}`}
                       >
                         <span className="2xl:hidden">{shortLabel}</span>
                         <span className="hidden 2xl:inline">{option.label}</span>
@@ -338,7 +338,7 @@ const Header: React.FC = () => {
               {/* PIE DECORATIVO */}
               <div className="relative shrink-0 px-4 py-2 border-t border-gray-200/80 text-center">
                 <p className="text-[8px] text-gray-500 font-bold uppercase tracking-[0.3em]">
-                  © Proenergéticos · Sinaloa
+                  © Grupo Proenergéticos · Sinaloa
                 </p>
               </div>
             </motion.div>

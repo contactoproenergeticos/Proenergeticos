@@ -32,7 +32,7 @@ export default function Page() {
         <div className="max-w-5xl mx-auto space-y-10 text-center">
           <div>
             <h1 className="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter uppercase italic leading-tight">
-              Servicios <span className="text-[#E30613]">Proenergéticos</span>
+              Servicios <span className="text-[#E30613]">Grupo Proenergéticos</span>
             </h1>
             <p className="mt-4 text-base md:text-xl text-gray-500 font-medium">
               Elige la sección que mejor se adapta a lo que necesitas hoy.

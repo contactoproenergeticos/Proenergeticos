@@ -21,7 +21,7 @@ export default function Page() {
           <div className="absolute inset-0 z-0">
             <Image
               src="/images/gasolinera/PLANTA/Planta4.jpg"
-              alt="Planta de Almacenamiento Proenergéticos"
+              alt="Planta de Almacenamiento Grupo Proenergéticos"
               fill
               priority
               sizes="100vw"
@@ -50,7 +50,7 @@ export default function Page() {
               <div className="relative w-24 h-24 md:w-36 md:h-36 lg:w-44 lg:h-44">
                 <Image
                   src="/images/logotipos/ProEner.png"
-                  alt="Logo Proenergéticos"
+                  alt="Logo Grupo Proenergéticos"
                   fill
                   className="object-contain drop-shadow-2xl"
                 />

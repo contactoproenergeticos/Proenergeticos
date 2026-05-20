@@ -73,7 +73,7 @@ export default function HistoriaAsimetricoSlider() {
               <span className="text-[#E30613]">La Energía de México</span>
             </h2>
             <p className="text-white text-[18px] leading-relaxed max-w-md font-medium">
-              Desde 1938, trabajamos incansablemente por el desarrollo y la innovación tecnológica de los combustibles en nuestro país.
+              Desde 1938, el combustible en México ha evolucionado con innovación y calidad. En Grupo Proenergéticos somos distribuidores: llevamos esa evolución a la red de estaciones y a quienes confían en nosotros.
             </p>
           </div>
 

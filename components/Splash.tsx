@@ -155,7 +155,7 @@ export default function Splash({ onComplete }: SplashProps) {
     <motion.div
       className="fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-hidden splash-scene"
       role="dialog"
-      aria-label="Bienvenida Proenergéticos"
+      aria-label="Bienvenida Grupo Proenergéticos"
       initial={{ opacity: 1 }}
       animate={{ opacity: phase === 'exit' ? 0 : 1 }}
       transition={{ duration: 0.45, ease: 'easeInOut' }}

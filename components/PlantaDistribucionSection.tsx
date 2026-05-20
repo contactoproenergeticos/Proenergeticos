@@ -98,7 +98,7 @@ export default function PlantaDistribucionSection() {
           <div className="relative h-56 w-full overflow-hidden">
             <Image
               src="/images/gasolinera/PLANTA/Planta3.jpg"
-              alt="Planta de Distribución Proenergéticos"
+              alt="Planta de Distribución Grupo Proenergéticos"
               fill
               className="object-cover transition-transform duration-1000 group-hover:scale-110"
               unoptimized
@@ -172,7 +172,7 @@ export default function PlantaDistribucionSection() {
             </div>
             <div className="relative flex-grow min-h-[320px] bg-gray-100">
               <iframe
-                title="Mapa — Planta de Distribución Proenergéticos"
+                title="Mapa — Planta de Distribución Grupo Proenergéticos"
                 src={PLANTA_MAP_EMBED}
                 className="absolute inset-0 w-full h-full border-0"
                 loading="lazy"

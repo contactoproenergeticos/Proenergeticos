@@ -114,7 +114,7 @@ export default function Corporativo() {
           <div className="absolute inset-0 opacity-40">
             <Image 
               src="/images/gasolinera/PLANTA/Planta1.JPG"
-              alt="Planta Proenergéticos" 
+              alt="Planta Grupo Proenergéticos" 
               fill
               className="object-cover"
               priority

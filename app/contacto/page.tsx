@@ -85,7 +85,7 @@ export default function Page() {
           mensaje: formData.mensaje,
           tipo: 'QUEJAS_SUGERENCIAS',
           categoria: etiquetaCategoria,
-          asunto: `${etiquetaCategoria} — Buzón web Proenergéticos`,
+          asunto: `${etiquetaCategoria} — Buzón web Grupo Proenergéticos`,
         }),
       });
 

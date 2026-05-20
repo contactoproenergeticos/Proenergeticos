@@ -29,7 +29,7 @@ export default function Nosotros() {
               Más de una década <br /> <span className="text-[#E30613]">de Excelencia</span>
             </h2>
             <p className="text-lg md:text-2xl text-gray-300 font-medium leading-relaxed italic">
-              En Proenergéticos, nos dedicamos a impulsar el movimiento de Mazatlán y el sur de Sinaloa con soluciones energéticas de vanguardia.
+              En Grupo Proenergéticos, nos dedicamos a impulsar el movimiento de Mazatlán y el sur de Sinaloa con soluciones energéticas de vanguardia.
             </p>
           </div>
         </section>
