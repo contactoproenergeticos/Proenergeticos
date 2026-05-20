@@ -13,6 +13,7 @@ import {
   BadgeDollarSign,
   MessageSquare,
   Receipt,
+  Mail,
   type LucideIcon,
 } from 'lucide-react';
 import Image from 'next/image';
@@ -46,7 +47,13 @@ const Header: React.FC = () => {
     { href: '/estaciones', label: 'Estaciones de Servicio', shortLabel: 'Estaciones', Icon: MapPin },
     { href: '/corporativo', label: 'Planta de Distribución', shortLabel: 'Planta', Icon: Factory },
     { href: '/precios', label: 'Precios', shortLabel: 'Precios', Icon: BadgeDollarSign },
-    { href: '/contacto', label: 'Quejas y Sugerencias', shortLabel: 'Quejas', Icon: MessageSquare },
+    {
+      href: '/quejas-y-sugerencias',
+      label: 'Quejas y Sugerencias',
+      shortLabel: 'Quejas',
+      Icon: MessageSquare,
+    },
+    { href: '/contacto', label: 'Contacto', shortLabel: 'Contacto', Icon: Mail },
   ];
 
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);

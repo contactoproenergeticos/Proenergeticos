@@ -5,7 +5,20 @@ const resend = new Resend('re_QYWTfnF7_Q6u2JF9KJjJbKpy3AZj2LPgh');
 
 export async function POST(req: Request) {
   try {
-    const { nombre, correo, mensaje, tipo, categoria, asunto } = await req.json();
+    const {
+      nombre,
+      correo,
+      mensaje,
+      tipo,
+      categoria,
+      asunto,
+      telefono,
+      estacion,
+      motivo,
+      fechaHecho,
+      horaHecho,
+      dispensario,
+    } = await req.json();
 
     const esCotizacion = tipo === 'COTIZACION';
     const esQuejas = tipo === 'QUEJAS_SUGERENCIAS';
@@ -14,7 +27,7 @@ export async function POST(req: Request) {
     const tituloCorreo = esCotizacion
       ? 'SOLICITUD DE COTIZACIÓN'
       : esQuejas
-        ? 'BUZÓN DE QUEJAS Y SUGERENCIAS'
+        ? 'BUZÓN DE QUEJAS Y SUGERENCIAS (NOM-016)'
         : 'CONSULTA GENERAL';
     const prefijoAsunto = esCotizacion
       ? '💼 COTIZACIÓN'
@@ -24,8 +37,18 @@ export async function POST(req: Request) {
     const origenCorreo = esCotizacion
       ? 'Sección Corporativa'
       : esQuejas
-        ? 'Buzón de Quejas y Sugerencias'
+        ? 'Buzón NOM-016-CRE-2016 — Estaciones de servicio'
         : 'Formulario de Contacto';
+
+    const filasQuejas =
+      esQuejas &&
+      `
+                ${motivo ? `<p style="color: #6b7280; font-size: 11px; text-transform: uppercase; font-weight: bold; margin: 0 0 5px 0;">Motivo / tema NOM</p><p style="color: #111827; font-size: 16px; font-weight: bold; margin: 0 0 20px 0;">${motivo}</p>` : ''}
+                ${estacion ? `<p style="color: #6b7280; font-size: 11px; text-transform: uppercase; font-weight: bold; margin: 0 0 5px 0;">Estación</p><p style="color: #111827; font-size: 16px; font-weight: bold; margin: 0 0 20px 0;">${estacion}</p>` : ''}
+                ${fechaHecho ? `<p style="color: #6b7280; font-size: 11px; text-transform: uppercase; font-weight: bold; margin: 0 0 5px 0;">Fecha del hecho</p><p style="color: #111827; font-size: 16px; font-weight: bold; margin: 0 0 20px 0;">${fechaHecho}${horaHecho ? ` — ${horaHecho}` : ''}</p>` : ''}
+                ${dispensario ? `<p style="color: #6b7280; font-size: 11px; text-transform: uppercase; font-weight: bold; margin: 0 0 5px 0;">Dispensario</p><p style="color: #111827; font-size: 16px; font-weight: bold; margin: 0 0 20px 0;">${dispensario}</p>` : ''}
+                ${telefono ? `<p style="color: #6b7280; font-size: 11px; text-transform: uppercase; font-weight: bold; margin: 0 0 5px 0;">Teléfono</p><p style="color: #111827; font-size: 16px; font-weight: bold; margin: 0 0 20px 0;">${telefono}</p>` : ''}
+                `;
 
     const data = await resend.emails.send({
       from: 'Web Grupo Proenergéticos <onboarding@resend.dev>',
@@ -50,7 +73,8 @@ export async function POST(req: Request) {
                 <p style="color: #6b7280; font-size: 11px; text-transform: uppercase; font-weight: bold; margin-bottom: 5px;">Correo de Respuesta</p>
                 <p style="color: ${esCotizacion ? '#E30613' : esQuejas ? '#B91C1C' : '#3b82f6'}; font-size: 18px; font-weight: bold; margin: 0 0 25px 0;">${correo}</p>
                 ${esQuejas && categoria ? `<p style="color: #6b7280; font-size: 11px; text-transform: uppercase; font-weight: bold; margin: 0 0 5px 0;">Tipo de mensaje</p><p style="color: #111827; font-size: 16px; font-weight: bold; margin: 0 0 25px 0;">${categoria}</p>` : ''}
-                <div style="background-color: #f9fafb; border-left: 6px solid ${colorHeader}; padding: 25px; border-radius: 0 15px 15px 0; margin-top: 30px;">
+                ${filasQuejas || ''}
+                <div style="background-color: #f9fafb; border-left: 6px solid ${colorHeader}; padding: 25px; border-radius: 0 15px 15px 0; margin-top: 10px;">
                   <p style="color: #6b7280; font-size: 11px; text-transform: uppercase; font-weight: bold; margin: 0 0 10px 0;">Detalles del Mensaje:</p>
                   <p style="color: #374151; font-size: 16px; line-height: 1.6; margin: 0;">${mensaje}</p>
                 </div>

@@ -10,8 +10,6 @@ import {
   Loader2,
   CheckCircle2,
   XCircle,
-  MessageSquare,
-  AlertCircle,
 } from 'lucide-react';
 import SiteShell from '@/components/SiteShell';
 
@@ -39,28 +37,25 @@ const ContactInfo = ({
   </div>
 );
 
-type CategoriaBuzon = 'queja' | 'sugerencia';
-
 export default function Page() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [ultimaCategoria, setUltimaCategoria] = useState<CategoriaBuzon>('queja');
   const [formData, setFormData] = useState({
     nombre: '',
     correo: '',
-    categoria: 'queja' as CategoriaBuzon,
+    asunto: '',
     mensaje: '',
   });
 
   const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-  const isNombreValid = formData.nombre.trim().length >= 3;
+  const hasNumbersInNombre = /\d/.test(formData.nombre);
+  const isNombreValid = formData.nombre.trim().length >= 3 && !hasNumbersInNombre;
   const isCorreoValid = validateEmail(formData.correo);
-  const isMensajeValid = formData.mensaje.trim().length >= 15;
-  const isFormValid = isNombreValid && isCorreoValid && isMensajeValid;
+  const isAsuntoValid = formData.asunto.trim().length >= 5;
+  const isMensajeValid = formData.mensaje.trim().length >= 10;
+  const isFormValid = isNombreValid && isCorreoValid && isAsuntoValid && isMensajeValid;
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     if (status !== 'idle') setStatus('idle');
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -72,26 +67,20 @@ export default function Page() {
     setLoading(true);
     setStatus('idle');
 
-    const etiquetaCategoria = formData.categoria === 'queja' ? 'Queja' : 'Sugerencia';
-    setUltimaCategoria(formData.categoria);
-
     try {
       const response = await fetch('/api/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          nombre: formData.nombre,
-          correo: formData.correo,
-          mensaje: formData.mensaje,
-          tipo: 'QUEJAS_SUGERENCIAS',
-          categoria: etiquetaCategoria,
-          asunto: `${etiquetaCategoria} — Buzón web Grupo Proenergéticos`,
+          ...formData,
+          tipo: 'CONTACTO',
+          asunto: formData.asunto,
         }),
       });
 
       if (response.ok) {
         setStatus('success');
-        setFormData({ nombre: '', correo: '', categoria: 'queja', mensaje: '' });
+        setFormData({ nombre: '', correo: '', asunto: '', mensaje: '' });
       } else {
         setStatus('error');
       }
@@ -114,11 +103,10 @@ export default function Page() {
                     <CheckCircle2 className="text-green-600 w-12 h-12" />
                   </div>
                   <h3 className="text-2xl font-black text-gray-900 uppercase italic mb-2">
-                    Recibido
+                    Mensaje enviado
                   </h3>
                   <p className="text-gray-500 font-medium mb-8">
-                    Tu {ultimaCategoria === 'queja' ? 'queja' : 'sugerencia'} fue enviada al buzón
-                    corporativo. Te contactaremos a la brevedad.
+                    Gracias por contactarnos. Hemos recibido tu mensaje y te responderemos a la brevedad.
                   </p>
                 </>
               ) : (
@@ -130,7 +118,7 @@ export default function Page() {
                     No se pudo enviar
                   </h3>
                   <p className="text-gray-500 font-medium mb-8">
-                    Hubo un problema al registrar tu mensaje. Intenta de nuevo en unos minutos.
+                    Hubo un problema al enviar tu mensaje. Intenta de nuevo en unos minutos.
                   </p>
                 </>
               )}
@@ -148,17 +136,24 @@ export default function Page() {
         <div className="max-w-6xl mx-auto px-4 space-y-12 md:space-y-16">
           <div className="text-center max-w-3xl mx-auto px-2">
             <div className="inline-flex items-center gap-2 bg-[#E30613]/10 px-4 py-2 rounded-full border border-[#E30613]/20 mb-4">
-              <MessageSquare className="w-4 h-4 text-[#E30613]" />
+              <Mail className="w-4 h-4 text-[#E30613]" />
               <span className="text-[#E30613] font-black text-[10px] uppercase tracking-[0.25em]">
-                Atención al cliente
+                Canal de contacto
               </span>
             </div>
             <h1 className="text-3xl md:text-6xl font-black text-gray-900 tracking-tighter uppercase italic mb-4 md:mb-6 leading-none">
-              Quejas y <span className="text-[#E30613]">Sugerencias</span>
+              Estamos <span className="text-[#E30613]">Contigo</span>
             </h1>
             <p className="text-sm md:text-xl text-gray-500 font-medium leading-relaxed">
-              Utiliza nuestro buzón para compartir una queja o una sugerencia. Tu opinión nos ayuda
-              a mejorar el servicio en nuestras estaciones y oficinas corporativas.
+              ¿Tienes alguna duda o necesitas una solución energética a medida? Nuestro equipo está listo
+              para atenderte en horario de oficina.
+            </p>
+            <p className="mt-3 text-xs md:text-sm text-gray-400 font-medium italic">
+              Para quejas o sugerencias relacionadas con combustibles y estaciones de servicio, utiliza el{' '}
+              <a href="/quejas-y-sugerencias" className="text-[#E30613] font-bold hover:underline">
+                buzón conforme a la NOM-016-CRE-2016
+              </a>
+              .
             </p>
           </div>
 
@@ -167,39 +162,13 @@ export default function Page() {
               <div className="absolute top-0 right-0 w-40 h-40 bg-[#E30613]/15 rounded-full -mr-20 -mt-20 blur-3xl pointer-events-none" />
               <div className="relative z-10 flex flex-col h-full">
                 <p className="text-[#E30613] font-black uppercase tracking-widest text-[10px] mb-2 italic">
-                  Buzón corporativo
+                  Canal directo
                 </p>
-                <h2 className="text-2xl md:text-3xl font-black text-white uppercase italic mb-2">
-                  Envía tu mensaje
+                <h2 className="text-2xl md:text-3xl font-black text-white uppercase italic mb-6 md:mb-8">
+                  Envíanos un mensaje
                 </h2>
-                <p className="text-gray-400 text-sm font-medium mb-8 leading-relaxed">
-                  Los campos son obligatorios. Tu información se trata de forma confidencial.
-                </p>
 
                 <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5 flex-1 flex flex-col">
-                  <div>
-                    <label
-                      htmlFor="categoria"
-                      className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-1.5 block"
-                    >
-                      Tipo de mensaje
-                    </label>
-                    <select
-                      id="categoria"
-                      name="categoria"
-                      value={formData.categoria}
-                      onChange={handleChange}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white font-bold text-sm outline-none focus:bg-white focus:text-gray-900 transition-all cursor-pointer"
-                    >
-                      <option value="queja" className="text-gray-900">
-                        Queja
-                      </option>
-                      <option value="sugerencia" className="text-gray-900">
-                        Sugerencia
-                      </option>
-                    </select>
-                  </div>
-
                   <input
                     name="nombre"
                     required
@@ -217,22 +186,22 @@ export default function Page() {
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white font-bold text-sm outline-none focus:bg-white focus:text-gray-900 transition-all"
                     placeholder="Correo electrónico"
                   />
+                  <input
+                    name="asunto"
+                    required
+                    value={formData.asunto}
+                    onChange={handleChange}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white font-bold text-sm outline-none focus:bg-white focus:text-gray-900 transition-all"
+                    placeholder="Asunto"
+                  />
                   <textarea
                     name="mensaje"
                     required
                     value={formData.mensaje}
                     onChange={handleChange}
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white font-bold text-sm outline-none resize-none focus:bg-white focus:text-gray-900 min-h-[140px]"
-                    placeholder="Describe tu queja o sugerencia (fecha, estación, folio, etc.)"
+                    placeholder="¿En qué podemos ayudarte?"
                   />
-
-                  <div className="flex items-start gap-2 text-gray-500 text-[11px] leading-snug">
-                    <AlertCircle className="w-4 h-4 shrink-0 text-[#E30613] mt-0.5" />
-                    <span>
-                      Para emergencias en estación o facturación urgente, comunícate también por
-                      teléfono en horario de oficina.
-                    </span>
-                  </div>
 
                   <button
                     type="submit"
@@ -243,7 +212,7 @@ export default function Page() {
                       <Loader2 className="w-6 h-6 animate-spin" />
                     ) : (
                       <>
-                        <Send size={18} /> Enviar al buzón
+                        <Send size={18} /> Enviar mensaje
                       </>
                     )}
                   </button>

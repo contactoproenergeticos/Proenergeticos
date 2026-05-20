@@ -174,7 +174,7 @@ export default function EstacionesPage() {
       imagen: '/images/gasolinera/GSI/gsi3.jpeg',
       estacionLogo: '/images/logotipos/BLAST.png',
       servicios: [
-        { icon: Store, label: 'OXXO', color: 'text-red-600' },
+        { icon: Store, label: 'TIENDAS DE CONVENIENCIAS', color: 'text-red-600' },
         { icon: Clock, label: '24/7', color: 'text-green-600' },
         ...serviciosBasicos,
       ],
@@ -189,7 +189,7 @@ export default function EstacionesPage() {
       imagen: '/images/gasolinera/GPO/GPO2.jpg',
       estacionLogo: '/images/logotipos/GPO.png',
       servicios: [
-        { icon: Store, label: 'Kiosko', color: 'text-orange-600' },
+        { icon: Store, label: 'TIENDAS DE CONVENIENCIAS', color: 'text-orange-600' },
         { icon: Clock, label: '24/7', color: 'text-green-600' },
         ...serviciosBasicos,
       ],

@@ -72,8 +72,13 @@ export default function HistoriaAsimetricoSlider() {
               <span className="text-white">Nuestra pasión:</span><br />
               <span className="text-[#E30613]">La Energía de México</span>
             </h2>
-            <p className="text-white text-[18px] leading-relaxed max-w-md font-medium">
-              Desde 1938, el combustible en México ha evolucionado con innovación y calidad. En Grupo Proenergéticos somos distribuidores: llevamos esa evolución a la red de estaciones y a quienes confían en nosotros.
+            <p className="text-white text-[18px] leading-relaxed max-w-md font-medium italic">
+              Desde 1938, el combustible en México ha evolucionado con innovación y calidad. En{' '}
+              <span className="font-black uppercase italic">
+                <span className="text-white">Grupo Pro</span>
+                <span className="text-[#E30613]">energeticos</span>
+              </span>{' '}
+              somos distribuidores: llevamos esa evolución a la red de estaciones y a quienes confían en nosotros.
             </p>
           </div>
 

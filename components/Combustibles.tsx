@@ -168,14 +168,19 @@ export default function Combustibles() {
               Historia en Mazatlán
             </h3>
 
-            <p className="text-base sm:text-xl md:text-3xl font-medium text-white leading-snug sm:leading-tight max-w-3xl">
-              En <span className="text-[#E30613] font-black italic">Grupo Proenergéticos</span> ha sido un pilar fundamental desde el año 2015, evolucionando para garantizar la certeza del suministro nacional.
+            <p className="text-base sm:text-xl md:text-3xl font-medium text-white leading-snug sm:leading-tight max-w-3xl italic">              
+              <span className="font-black uppercase italic">
+                <span className="text-white">Grupo Pro</span>
+                <span className="text-[#E30613]">energéticos</span>
+              </span>{' '}
+              ha sido un pilar fundamental desde el año 2015, evolucionando para garantizar la certeza del suministro nacional.
             </p>
           </div>
 
           <div className="absolute right-[-5%] bottom-[-10%] opacity-[0.03] select-none pointer-events-none hidden lg:block">
-            <span className="text-[12rem] font-black italic uppercase text-white leading-none">
-              GRUPO PROENERGÉTICOS
+            <span className="text-[12rem] font-black italic uppercase leading-none">
+              <span className="text-white">Grupo Pro</span>
+              <span className="text-[#E30613]">energeticos</span>
             </span>
           </div>
         </div>

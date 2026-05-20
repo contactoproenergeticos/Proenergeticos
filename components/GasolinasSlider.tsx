@@ -25,14 +25,14 @@ const gasolinasSlides: GasolinaSlide[] = [
     label: 'NUESTRAS GASOLINAS',
     title: 'PREMIUM Y MAGNA',
     subtitle:
-      'Combustibles ultra bajo azufre aditivados con Pemex Aditec® para máximo desempeño, limpieza y protección del motor.',
+      'Combustibles ultra bajo azufre aditivados con Aditec® para máximo desempeño, limpieza y protección del motor.',
     accent: 'neutral',
     image:
       'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=1920',
   },
   {
     id: 2,
-    label: 'PEMEX PREMIUM®',
+    label: 'PREMIUM®',
     title: '91 OCTANOS · ALTO DESEMPEÑO',
     subtitle: 'Gasolina ultra bajo azufre diseñada para motores exigentes.',
     accent: 'red',
@@ -41,7 +41,7 @@ const gasolinasSlides: GasolinaSlide[] = [
     logo: '/images/logotipos/Pemex-Premium.png',
     bullets: [
       { text: 'Gasolina ultra bajo azufre de 91 octanos.', highlight: '91 octanos' },
-      { text: 'Aditivada con Pemex Aditec®.', highlight: 'Pemex Aditec®' },
+      { text: 'Aditivada con Aditec®.', highlight: 'Aditec®' },
       {
         text: 'Para motores de alta compresión, inyección directa y turbo.',
         highlight: 'inyección directa y turbo',
@@ -55,7 +55,7 @@ const gasolinasSlides: GasolinaSlide[] = [
   },
   {
     id: 3,
-    label: 'PEMEX MAGNA®',
+    label: 'MAGNA®',
     title: '87 OCTANOS · USO DIARIO',
     subtitle: 'La opción eficiente para la mayoría de automóviles en circulación.',
     accent: 'green',
@@ -64,7 +64,7 @@ const gasolinasSlides: GasolinaSlide[] = [
     logo: '/images/logotipos/Pemex-Magna.png',
     bullets: [
       { text: 'Gasolina ultra bajo azufre de 87 octanos.', highlight: '87 octanos' },
-      { text: 'Aditivada con Pemex Aditec®.', highlight: 'Pemex Aditec®' },
+      { text: 'Aditivada con Aditec®.', highlight: 'Aditec®' },
       {
         text: 'Para motores de inyección multipunto y compresión media.',
         highlight: 'inyección multipunto',
@@ -81,7 +81,7 @@ const gasolinasSlides: GasolinaSlide[] = [
     label: 'PREMIUM®',
     title: 'ALCANZA EL MÁXIMO POTENCIAL',
     subtitle:
-      'Gasolina tipo premium de alto octanaje con Pemex Aditec®: máximo desempeño, limpieza eficiente y protección sólida del motor, con certeza en autenticidad y calidad.',
+      'Gasolina tipo premium de alto octanaje con Aditec®: máximo desempeño, limpieza eficiente y protección sólida del motor, con certeza en autenticidad y calidad.',
     accent: 'red',
     image:
       'https://images.unsplash.com/photo-1517400508447-f8dd518b86db?auto=format&fit=crop&q=80&w=1920',
@@ -92,7 +92,7 @@ const gasolinasSlides: GasolinaSlide[] = [
     label: 'MAGNA®',
     title: 'SIEMPRE CONTIGO',
     subtitle:
-      'Gasolina tipo regular de óptimo octanaje con Pemex Aditec®: desempeño confiable, limpieza del sistema y protección para el uso cotidiano de tu vehículo.',
+      'Gasolina tipo regular de óptimo octanaje con Aditec®: desempeño confiable, limpieza del sistema y protección para el uso cotidiano de tu vehículo.',
     accent: 'green',
     image:
       'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&q=80&w=1920',
@@ -100,19 +100,19 @@ const gasolinasSlides: GasolinaSlide[] = [
   },
   {
     id: 6,
-    label: 'CADENA PEMEX',
+    label: 'CADENA DE SUMINISTRO',
     title: 'DE LA EXTRACCIÓN A TU AUTO',
     subtitle:
-      'Pemex acompaña cada etapa: exploración, refinación, almacenamiento, aditivación con tecnología mexicana y despacho con calidad verificada en estación.',
+      'Cuidamos tu motor en cada paso de la cadena: garantizando el correcto almacenamiento, la aditivación tecnológica de vanguardia y un despacho con calidad verificada en cada litro.',
     accent: 'neutral',
     image:
       'https://images.unsplash.com/photo-1516937941344-00b4e0337589?auto=format&fit=crop&q=80&w=1920',
-    bullets: [
-      { text: '1. Exploramos y extraemos petróleo con infraestructura especializada.', highlight: 'Exploramos' },
-      { text: '2. Transportamos y refinamos en altos estándares de calidad.', highlight: 'refinamos' },
-      { text: '3. Almacenamos en terminales para abastecer gasolineras.', highlight: 'Almacenamos' },
-      { text: '4. Aditivamos con Pemex Aditec® antes del despacho.', highlight: 'Aditec®' },
-      { text: '5. Verificamos calidad con laboratorios móviles en cada visita.', highlight: 'laboratorios móviles' },
+    bullets: [     
+        { text: '1. Aseguramos el suministro desde el origen con infraestructura especializada.', highlight: 'Suministro' },
+        { text: '2. Transportamos y distribuimos bajo los más altos estándares de calidad.', highlight: 'estándares de calidad' },
+        { text: '3. Almacenamos en terminales certificadas para abastecer nuestras estaciones.', highlight: 'Almacenamos' },
+        { text: '4. Potenciamos el combustible con aditivo de última tecnología antes del despacho.', highlight: 'Aditec®' },
+        { text: '5. Verificamos la pureza con laboratorios móviles en cada visita.', highlight: 'laboratorios móviles' },     
     ],
   },
 ];
@@ -187,7 +187,7 @@ export default function GasolinasSlider() {
             {slide.id === 1 && (
               <motion.div className="space-y-3 pt-2">
                 <motion.div className="bg-white/5 border-l-4 border-[#E30613] p-4 rounded-r-xl">
-                  <h3 className="text-lg font-black text-white italic uppercase">Pemex Premium®</h3>
+                  <h3 className="text-lg font-black text-white italic uppercase">Premium®</h3>
                   <p className="text-[10px] font-bold text-red-400 tracking-widest mb-2">91 OCTANOS</p>
                   <p className="text-[11px] text-white/80 font-bold uppercase flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#E30613] shrink-0" />
@@ -195,7 +195,7 @@ export default function GasolinasSlider() {
                   </p>
                 </motion.div>
                 <motion.div className="bg-white/5 border-l-4 border-[#00843D] p-4 rounded-r-xl">
-                  <h3 className="text-lg font-black text-white italic uppercase">Pemex Magna®</h3>
+                  <h3 className="text-lg font-black text-white italic uppercase">Magna®</h3>
                   <p className="text-[10px] font-bold text-green-400 tracking-widest mb-2">87 OCTANOS</p>
                   <p className="text-[11px] text-white/80 font-bold uppercase flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-[#00843D] shrink-0" />
