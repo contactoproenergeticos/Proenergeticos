@@ -15,6 +15,9 @@ import {
   ShieldCheck,
   Zap as ZapIcon,
   BarChart3,
+  Truck,
+  Fuel,
+  Building2,
   type LucideIcon,
 } from 'lucide-react';
 import Image from 'next/image';
@@ -199,15 +202,80 @@ export default function EstacionesPage() {
     <SiteShell>
       <div className="py-10 md:py-14 bg-gray-100 min-h-screen">
         <motion.div className="max-w-6xl mx-auto px-4 space-y-12 md:space-y-16">
-          <header className="text-center max-w-2xl mx-auto">
-            <h1 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tighter uppercase italic leading-none">
-              Estaciones de <span className="text-[#E30613]">Servicio</span>
-            </h1>
-            <p className="mt-4 text-sm md:text-base text-gray-500 font-medium leading-relaxed">
-              Consulta servicios, formas de pago y ubicación de cada estación en Mazatlán y zona
-              conurbada.
+          {/* Presentación — estilo alineado con Nosotros / Corporativo */}
+          <section className="relative rounded-[30px] md:rounded-[60px] overflow-hidden shadow-2xl bg-gray-950 min-h-[340px] md:min-h-[460px] flex items-center">
+            <div
+              className="absolute inset-0 opacity-45 bg-cover bg-center scale-105"
+              style={{ backgroundImage: "url('/images/gasolinera/GSI/gsi3.jpeg')" }}
+              aria-hidden
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-950 via-gray-950/85 to-gray-950/40" />
+            <div className="relative z-10 p-8 md:p-16 lg:p-20 max-w-4xl">
+              <div className="flex items-center gap-3 md:gap-4 mb-5 md:mb-8">
+                <div className="h-1 md:h-2 w-10 md:w-16 bg-[#E30613]" />
+                <span className="text-xs md:text-sm font-black text-[#E30613] uppercase tracking-[0.3em] md:tracking-[0.45em] italic">
+                  Red de estaciones
+                </span>
+              </div>
+              <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-white mb-5 md:mb-6 tracking-tighter leading-[0.95] uppercase italic">
+                Grupo <span className="text-[#E30613]">Proenergéticos</span>
+              </h1>
+              <p className="text-base md:text-xl text-gray-300 font-medium leading-relaxed italic max-w-3xl">
+                Somos una empresa sinaloense dedicada a la{' '}
+                <span className="text-white font-black not-italic">distribución de combustibles</span>{' '}
+                en modalidad de <span className="text-[#E30613] font-black not-italic">mayoreo</span> y{' '}
+                <span className="text-[#E30613] font-black not-italic">medio mayoreo</span>, con red propia
+                de estaciones de servicio que atienden al público y a flotas en Mazatlán y la zona
+                conurbada.
+              </p>
+            </div>
+          </section>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            {[
+              {
+                icon: Truck,
+                title: 'Mayoreo',
+                desc: 'Suministro de volumen para empresas, transportistas e industria con logística confiable.',
+              },
+              {
+                icon: Building2,
+                title: 'Medio mayoreo',
+                desc: 'Soluciones flexibles para negocios y operadores que requieren cargas programadas.',
+              },
+              {
+                icon: Fuel,
+                title: 'Estaciones de servicio',
+                desc: 'Atención al usuario final con combustibles de calidad, servicios y facturación digital.',
+              },
+            ].map((item, i) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06 }}
+                className="bg-white p-6 md:p-8 rounded-[2rem] shadow-xl border border-gray-100"
+              >
+                <div className="bg-red-50 w-12 h-12 rounded-xl flex items-center justify-center mb-4">
+                  <item.icon className="w-6 h-6 text-[#E30613]" />
+                </div>
+                <h2 className="text-lg md:text-xl font-black text-gray-900 uppercase italic tracking-tighter mb-2">
+                  {item.title}
+                </h2>
+                <p className="text-sm text-gray-500 font-medium leading-relaxed">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="text-center max-w-2xl mx-auto pt-2">
+            <h2 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tighter uppercase italic leading-none">
+              Nuestras <span className="text-[#E30613]">Estaciones</span>
+            </h2>
+            <p className="mt-3 text-sm md:text-base text-gray-500 font-medium leading-relaxed">
+              Conoce ubicación, servicios, formas de pago y mapa de cada unidad.
             </p>
-          </header>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 items-stretch">
             {unidades.map((u, i) => (
