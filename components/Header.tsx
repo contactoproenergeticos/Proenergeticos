@@ -30,8 +30,6 @@ const Header: React.FC = () => {
   const headerRef = useRef<HTMLElement>(null);
   /** Nodos a los que aplicamos estilos de impresión (header + contenedor fixed/sticky, p. ej. nav de SiteShell) */
   const printAdjustedRefs = useRef<HTMLElement[]>([]);
-
-  // Menú de opciones.
   // `shortLabel` se usa en el nav de escritorio en anchos intermedios (lg) donde
   // el texto completo no cabe; el `label` completo se muestra en xl/2xl y en el
   // drawer móvil (donde hay espacio de sobra).
@@ -141,13 +139,13 @@ const Header: React.FC = () => {
         ref={HEADER_ENABLE_PRINT_UNSTICK ? headerRef : undefined}
         className={`${HEADER_ENABLE_PRINT_UNSTICK ? 'proenergeticos-header-print ' : ''}sticky top-0 z-[100] w-full bg-white shadow-sm border-b border-gray-100`}
       >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-5 lg:px-6 xl:px-8">
         <div className="flex justify-between items-stretch gap-3 lg:gap-4 h-20 md:h-24 lg:h-28 xl:h-32">
           
           {/* SECCIÓN LOGOTIPO - USANDO ProEner_negro.png sobre fondo blanco */}
           <a
             href="/"
-            className="flex-shrink-0 cursor-pointer flex items-center gap-1.5 sm:gap-2 lg:gap-2 xl:gap-3 self-center max-w-[48%] lg:max-w-[32%] xl:max-w-[28%]"
+            className="flex-shrink-0 cursor-pointer flex items-center gap-1.5 sm:gap-2 lg:gap-2 xl:gap-3 self-center min-w-0 max-w-[48%] lg:max-w-[28%] xl:max-w-[26%]"
             onClick={handleNavClick}
           >
             <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-16 lg:h-16 xl:w-20 xl:h-20">
@@ -172,7 +170,7 @@ const Header: React.FC = () => {
             </div>
           </a>
 
-          {/* NAVEGACIÓN DESKTOP: CTA arriba, menú abajo (renglón inferior) */}
+          {/* NAVEGACIÓN DESKTOP: fila 1 = Facturación · fila 2 = menú completo */}
           <div className="hidden lg:flex flex-1 flex-col justify-end items-end gap-2 min-w-0 pb-0.5 lg:pb-1">
             <a
               href="/facturacion"
@@ -182,25 +180,22 @@ const Header: React.FC = () => {
             </a>
 
             <nav
-              className="w-full min-w-0 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+              className="w-full min-w-0 overflow-x-auto overscroll-x-contain flex justify-end [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
               aria-label="Menú principal"
             >
-              <ul className="flex w-max max-w-full ml-auto flex-nowrap items-center justify-end gap-x-2.5 lg:gap-x-3 xl:gap-x-3.5 2xl:gap-x-5">
+              <ul className="flex flex-nowrap items-center gap-x-2.5 lg:gap-x-3 xl:gap-x-3.5 2xl:gap-x-4 w-max">
                 {menuOptions.map((option) => {
                   const isActive = pathname === option.href;
-                  const shortLabel = option.shortLabel ?? option.label;
                   return (
                     <li key={option.href} className="shrink-0">
                       <a
                         href={option.href}
-                        title={option.label}
                         className={`text-xs lg:text-[13px] xl:text-sm 2xl:text-[15px] font-black italic tracking-tight normal-case transition-all duration-300 whitespace-nowrap
                           ${isActive
                             ? 'py-1.5 px-3 xl:px-4 rounded-full text-white bg-[#E30613]'
                             : 'py-1 px-2 xl:px-2.5 rounded-full border-b-2 text-gray-600 border-transparent hover:text-[#E30613]'}`}
                       >
-                        <span className="2xl:hidden">{shortLabel}</span>
-                        <span className="hidden 2xl:inline">{option.label}</span>
+                        {option.label}
                       </a>
                     </li>
                   );

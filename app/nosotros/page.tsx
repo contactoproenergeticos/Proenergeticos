@@ -27,7 +27,12 @@ export default function Page() {
                 Más de una década <br /> <span className="text-[#E30613]">de Excelencia</span>
               </h2>
               <p className="text-lg md:text-2xl text-gray-300 font-medium leading-relaxed italic">
-                En <span className="text-[#E30613] font-black italic">Grupo Proenergéticos</span> nos dedicamos a impulsar el movimiento de Mazatlán y el sur de Sinaloa con soluciones energéticas de vanguardia.
+                En{' '}
+                <span className="font-black uppercase italic">
+                  <span className="text-white">Grupo Pro</span>
+                  <span className="text-[#E30613]">energeticos</span>
+                </span>{' '}
+                nos dedicamos a impulsar el movimiento de Mazatlán y el sur de Sinaloa con soluciones energéticas de vanguardia.
               </p>
             </div>
           </section>
