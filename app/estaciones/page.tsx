@@ -168,10 +168,9 @@ export default function EstacionesPage() {
       nombre: 'SANTA IRENE (GSI)',
       marca: 'Estación de Servicio',
       direccion: 'Luis Donaldo Colosio Murrieta 14101, Santa Laura, 82136 Mazatlán, Sin.',
-      mapLink:
-        'https://maps.google.com/?cid=6818530638675163216&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNl',
+      mapLink: 'https://maps.app.goo.gl/zErcC9Mv731aAmPRA',
       mapEmbed:
-        'https://www.google.com/maps?q=Luis+Donaldo+Colosio+Murrieta+14101,+Santa+Laura,+82136+Mazatl%C3%A1n,+Sin.&output=embed',
+        'https://www.google.com/maps?q=23.2561731,-106.405201&hl=es&z=16&output=embed',
       imagen: '/images/gasolinera/GSI/gsi3.jpeg',
       estacionLogo: '/images/logotipos/BLAST.png',
       servicios: [
@@ -184,10 +183,9 @@ export default function EstacionesPage() {
       nombre: 'EL POZOLE (GPO)',
       marca: 'Estación de Servicio',
       direccion: 'Carretera Internacional Sur Km. 60, El Pozole, Villa Unión, Sin.',
-      mapLink:
-        'https://maps.google.com/?cid=2912828460837729529&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNl',
+      mapLink: 'https://maps.app.goo.gl/TYiUjwbARVfAPhp16',
       mapEmbed:
-        'https://www.google.com/maps?q=Carretera+Internacional+Sur+Km+60,+El+Pozole,+Villa+Uni%C3%B3n,+Sinaloa,+M%C3%A9xico&output=embed',
+        'https://www.google.com/maps?q=23.1926548,-106.2382193&hl=es&z=16&output=embed',
       imagen: '/images/gasolinera/GPO/GPO2.jpg',
       estacionLogo: '/images/logotipos/GPO.png',
       servicios: [
