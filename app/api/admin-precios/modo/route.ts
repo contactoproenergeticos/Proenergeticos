@@ -31,7 +31,14 @@ export async function POST(req: Request) {
   const modo: ModoCapturaPrecios = normalizeModoCaptura(body.modo);
   const saved = await setModoCapturaPrecios(supabase, modo);
   if (!saved.ok) {
-    return Response.json({ ok: false, error: saved.error }, { status: 500 });
+    return Response.json(
+      {
+        ok: false,
+        error: saved.error,
+        tablaConfigFaltante: saved.tablaConfigFaltante ?? false,
+      },
+      { status: saved.tablaConfigFaltante ? 503 : 500 }
+    );
   }
 
   let sync: Awaited<ReturnType<typeof runSyncPreciosCombustible>> | undefined;

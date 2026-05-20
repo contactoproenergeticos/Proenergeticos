@@ -38,6 +38,8 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
   const [cambiandoModo, setCambiandoModo] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [errorGlobal, setErrorGlobal] = useState<string | null>(null);
+  const [avisoConfig, setAvisoConfig] = useState<string | null>(null);
+  const [tablaConfigFaltante, setTablaConfigFaltante] = useState(false);
 
   const manual = modo === 'manual';
 
@@ -55,6 +57,8 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
         throw new Error(json.error ?? 'No se pudieron cargar los datos.');
       }
       setModo(json.modo === 'manual' ? 'manual' : 'automatico');
+      setTablaConfigFaltante(Boolean(json.tablaConfigFaltante));
+      setAvisoConfig(typeof json.aviso === 'string' ? json.aviso : null);
       setEstaciones(json.estaciones ?? []);
       const next: PrecioFormState = {};
       for (const est of json.estaciones ?? []) {
@@ -151,9 +155,19 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
       const json = await res.json();
       if (!res.ok || !json.ok) {
         if (json.errores) setErrores(json.errores);
-        throw new Error(json.error ?? 'Error al guardar.');
+        const detalle =
+          json.errores && typeof json.errores === 'object'
+            ? Object.values(json.errores).slice(0, 2).join(' · ')
+            : '';
+        throw new Error(
+          [json.error ?? 'Error al guardar.', detalle].filter(Boolean).join(' ')
+        );
       }
-      setToast('¡Precios actualizados! ✅');
+      setToast(
+        json.actualizados
+          ? `¡${json.actualizados} precio(s) guardados en Supabase! ✅`
+          : '¡Precios actualizados! ✅'
+      );
       await cargarDatos();
     } catch (e) {
       setErrorGlobal(e instanceof Error ? e.message : String(e));
@@ -206,6 +220,22 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+        {avisoConfig ? (
+          <div
+            className="rounded-xl bg-amber-500/15 border border-amber-500/50 text-amber-100 px-4 py-3 text-sm leading-relaxed"
+            role="status"
+          >
+            <p className="font-black uppercase tracking-wide text-amber-400 text-xs mb-1">
+              Configuración pendiente en Supabase
+            </p>
+            <p>{avisoConfig}</p>
+            <p className="mt-2 text-xs text-amber-200/80">
+              Archivo: <code className="text-white">supabase/setup-admin-precios.sql</code> → pégalo en SQL
+              Editor → Run. Luego recarga esta página.
+            </p>
+          </div>
+        ) : null}
+
         {errorGlobal ? (
           <p className="rounded-xl bg-[#FF0000]/15 border border-[#FF0000]/40 text-[#FF0000] px-4 py-3 text-sm font-bold">
             {errorGlobal}
@@ -220,7 +250,7 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
           <div className="flex flex-col sm:flex-row max-w-2xl mx-auto rounded-2xl overflow-hidden border border-white/15">
             <button
               type="button"
-              disabled={cambiandoModo}
+              disabled={cambiandoModo || tablaConfigFaltante}
               onClick={() => modo !== 'automatico' && cambiarModo('automatico')}
               className={`flex-1 py-4 px-4 text-xs sm:text-sm font-black uppercase tracking-wide transition-all ${
                 modo === 'automatico'
@@ -235,7 +265,7 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
             </button>
             <button
               type="button"
-              disabled={cambiandoModo}
+              disabled={cambiandoModo || tablaConfigFaltante}
               onClick={() => modo !== 'manual' && cambiarModo('manual')}
               className={`flex-1 py-4 px-4 text-xs sm:text-sm font-black uppercase tracking-wide transition-all border-t sm:border-t-0 sm:border-l border-white/10 ${
                 modo === 'manual'

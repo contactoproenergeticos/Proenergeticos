@@ -24,11 +24,19 @@ export async function POST(req: Request) {
   }
 
   try {
-    const [modo, payload] = await Promise.all([
+    const [modoResult, payload] = await Promise.all([
       getModoCapturaPrecios(supabase),
       fetchAdminPreciosPayload(supabase),
     ]);
-    return Response.json({ ok: true, modo, ...payload });
+    return Response.json({
+      ok: true,
+      modo: modoResult.modo,
+      tablaConfigFaltante: modoResult.tablaConfigFaltante,
+      aviso: modoResult.tablaConfigFaltante
+        ? 'Ejecuta supabase/setup-admin-precios.sql en el SQL Editor de Supabase para activar el cambio de modo automático/manual.'
+        : null,
+      ...payload,
+    });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return Response.json({ ok: false, error: msg }, { status: 500 });
