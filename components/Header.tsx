@@ -190,19 +190,27 @@ const Header: React.FC = () => {
               className="w-full min-w-0 overflow-x-auto overscroll-x-contain flex justify-end [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
               aria-label="Menú principal"
             >
-              <ul className="flex flex-nowrap items-center gap-x-2.5 lg:gap-x-3 xl:gap-x-3.5 2xl:gap-x-4 w-max">
+              <ul className="flex flex-nowrap items-center gap-x-2 lg:gap-x-2.5 xl:gap-x-3 w-max">
                 {menuOptions.map((option) => {
                   const isActive = pathname === option.href;
+                  const navText = option.shortLabel ? (
+                    <>
+                      <span className="xl:hidden">{option.shortLabel}</span>
+                      <span className="hidden xl:inline">{option.label}</span>
+                    </>
+                  ) : (
+                    option.label
+                  );
                   return (
                     <li key={option.href} className="shrink-0">
                       <a
                         href={option.href}
-                        className={`text-xs lg:text-[13px] xl:text-sm 2xl:text-[15px] font-black italic tracking-tight normal-case transition-all duration-300 whitespace-nowrap
+                        className={`text-[11px] lg:text-xs xl:text-[13px] 2xl:text-sm font-black italic tracking-tight uppercase transition-all duration-300 whitespace-nowrap
                           ${isActive
-                            ? 'py-1.5 px-3 xl:px-4 rounded-full text-white bg-[#E30613]'
+                            ? 'py-1.5 px-3 rounded-full text-white bg-[#E30613]'
                             : 'py-1 px-2 xl:px-2.5 rounded-full border-b-2 text-gray-600 border-transparent hover:text-[#E30613]'}`}
                       >
-                        {option.label}
+                        {navText}
                       </a>
                     </li>
                   );
@@ -315,7 +323,7 @@ const Header: React.FC = () => {
                         <a
                           href={option.href}
                           onClick={handleNavClick}
-                          className={`group w-full py-2 pl-3 pr-3 rounded-lg flex items-center justify-end gap-3 normal-case font-black italic tracking-tight transition-all duration-200 text-[14px] leading-tight
+                          className={`group w-full py-2 pl-3 pr-3 rounded-lg flex items-center justify-end gap-3 uppercase font-black italic tracking-tight transition-all duration-200 text-[14px] leading-tight
                             ${isActive
                               ? 'bg-[#E30613]/10 text-[#E30613] ring-1 ring-[#E30613]/30'
                               : 'text-gray-900 hover:bg-gray-100/80 hover:text-gray-900 active:bg-gray-200/60'}`}
