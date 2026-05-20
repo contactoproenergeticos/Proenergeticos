@@ -47,7 +47,7 @@ const Header: React.FC = () => {
     { href: '/combustible', label: 'Combustible', Icon: Fuel },
     { href: '/estaciones', label: 'Estaciones de Servicio', shortLabel: 'Estaciones', Icon: MapPin },
     { href: '/corporativo', label: 'Planta de Distribución', shortLabel: 'Planta', Icon: Factory },
-    { href: '/precios', label: 'Precios', Icon: BadgeDollarSign },
+    { href: '/precios', label: 'Precios', shortLabel: 'Precios', Icon: BadgeDollarSign },
     { href: '/contacto', label: 'Quejas y Sugerencias', shortLabel: 'Quejas', Icon: MessageSquare },
   ];
 
@@ -142,15 +142,15 @@ const Header: React.FC = () => {
         className={`${HEADER_ENABLE_PRINT_UNSTICK ? 'proenergeticos-header-print ' : ''}sticky top-0 z-[100] w-full bg-white shadow-sm border-b border-gray-100`}
       >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center gap-4 h-20 md:h-28 lg:h-32">
+        <div className="flex justify-between items-center gap-3 lg:gap-4 h-20 md:h-24 lg:h-28 xl:h-32">
           
           {/* SECCIÓN LOGOTIPO - USANDO ProEner_negro.png sobre fondo blanco */}
           <a
             href="/"
-            className="flex-shrink-0 cursor-pointer flex items-center gap-1.5 sm:gap-2 lg:gap-3"
+            className="flex-shrink-0 cursor-pointer flex items-center gap-1.5 sm:gap-2 lg:gap-2 xl:gap-3 max-w-[42%] lg:max-w-[38%] xl:max-w-none"
             onClick={handleNavClick}
           >
-            <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-20 lg:h-20">
+            <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-16 lg:h-16 xl:w-20 xl:h-20">
               <Image 
                 src="/images/logotipos/ProEner_negro.png"
                 alt="Logo ProEnergéticos"
@@ -160,10 +160,10 @@ const Header: React.FC = () => {
               />
             </div>
             <div className="flex flex-col justify-center gap-0 min-w-0">
-              <span className="text-[13px] sm:text-[15px] md:text-lg lg:text-2xl font-black italic tracking-tighter leading-none text-slate-900 uppercase">
+              <span className="text-[13px] sm:text-[15px] md:text-lg lg:text-lg xl:text-2xl font-black italic tracking-tighter leading-none text-slate-900 uppercase">
                 GRUPO
               </span>
-              <h1 className="text-[13px] sm:text-[15px] md:text-lg lg:text-2xl font-black italic tracking-tighter leading-none text-slate-900 uppercase">
+              <h1 className="text-[13px] sm:text-[15px] md:text-lg lg:text-lg xl:text-2xl font-black italic tracking-tighter leading-none text-slate-900 uppercase">
                 PRO<span className="text-[#E30613]">ENERGÉTICOS</span>
               </h1>
               <span className="text-[6px] sm:text-[7px] md:text-[9px] lg:text-[10px] font-bold tracking-[0.15em] sm:tracking-[0.3em] uppercase text-gray-500 leading-tight mt-0.5">
@@ -172,17 +172,13 @@ const Header: React.FC = () => {
             </div>
           </a>
 
-          {/* NAVEGACIÓN DESKTOP: una sola fila, alineada a la derecha; texto tipo oración */}
-          <div className="hidden lg:flex flex-1 flex-col items-end justify-center gap-3 lg:gap-4 min-w-0 pl-2 xl:pl-4">
-            <a
-              href="/facturacion"
-              className="bg-[#E30613] text-white font-black px-6 lg:px-8 py-2 rounded-full hover:bg-gray-900 transition-all duration-300 text-[10px] lg:text-xs tracking-[0.2em] uppercase shadow-lg active:scale-95 text-center shrink-0"
+          {/* NAVEGACIÓN DESKTOP: menú desde Inicio + CTA en la misma fila */}
+          <div className="hidden lg:flex flex-1 items-center gap-2 xl:gap-4 min-w-0 ml-1 xl:ml-3">
+            <nav
+              className="flex-1 min-w-0 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+              aria-label="Menú principal"
             >
-              Facturación en Línea
-            </a>
-
-            <nav className="w-full min-w-0 flex justify-end overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-              <ul className="flex flex-nowrap items-center justify-end gap-x-2 lg:gap-x-3 xl:gap-x-5 2xl:gap-x-6 shrink-0">
+              <ul className="flex w-max flex-nowrap items-center justify-start gap-x-2 lg:gap-x-2.5 xl:gap-x-3 2xl:gap-x-5 pr-1">
                 {menuOptions.map((option) => {
                   const isActive = pathname === option.href;
                   const shortLabel = option.shortLabel ?? option.label;
@@ -191,19 +187,26 @@ const Header: React.FC = () => {
                       <a
                         href={option.href}
                         title={option.label}
-                        className={`text-[11px] lg:text-[12px] xl:text-[14px] 2xl:text-[15px] font-black italic tracking-wide xl:tracking-wider normal-case transition-all duration-300 py-1 border-b-2 whitespace-nowrap
+                        className={`text-[10px] lg:text-[11px] xl:text-[12px] 2xl:text-[14px] font-black italic tracking-tight xl:tracking-wide normal-case transition-all duration-300 py-1 border-b-2 whitespace-nowrap
                           ${isActive
                             ? 'text-[#E30613] border-[#E30613]'
                             : 'text-gray-600 border-transparent hover:text-[#E30613]'}`}
                       >
-                        <span className="xl:hidden">{shortLabel}</span>
-                        <span className="hidden xl:inline">{option.label}</span>
+                        <span className="2xl:hidden">{shortLabel}</span>
+                        <span className="hidden 2xl:inline">{option.label}</span>
                       </a>
                     </li>
                   );
                 })}
               </ul>
             </nav>
+
+            <a
+              href="/facturacion"
+              className="bg-[#E30613] text-white font-black px-4 lg:px-5 xl:px-8 py-2 rounded-full hover:bg-gray-900 transition-all duration-300 text-[9px] lg:text-[10px] xl:text-xs tracking-[0.12em] xl:tracking-[0.2em] uppercase shadow-lg active:scale-95 text-center shrink-0 whitespace-nowrap"
+            >
+              Facturación en Línea
+            </a>
           </div>
 
           {/* CONTROLES MÓVIL */}
