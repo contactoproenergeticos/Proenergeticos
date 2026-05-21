@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { motion } from 'motion/react';
+import { useSearchParams } from 'next/navigation';
 import {
   MapPin,
   Store,
@@ -25,7 +26,10 @@ import SiteShell from '@/components/SiteShell';
 
 type ServicioItem = { icon: LucideIcon; label: string; color: string };
 
+type EstacionId = 'gsi' | 'gpo';
+
 type EstacionData = {
+  id: EstacionId;
   nombre: string;
   marca: string;
   direccion: string;
@@ -155,46 +159,71 @@ function EstacionCard({
   );
 }
 
-export default function EstacionesPage() {
-  const serviciosBasicos: ServicioItem[] = [
-    { icon: Bath, label: 'Sanitarios', color: 'text-gray-500' },
-    { icon: Wind, label: 'Aire Llantas', color: 'text-blue-500' },
-    { icon: Droplets, label: 'Agua Radiador', color: 'text-cyan-500' },
-    { icon: Gauge, label: 'Calibración', color: 'text-red-500' },
-  ];
+const serviciosBasicos: ServicioItem[] = [
+  { icon: Bath, label: 'Sanitarios', color: 'text-gray-500' },
+  { icon: Wind, label: 'Aire Llantas', color: 'text-blue-500' },
+  { icon: Droplets, label: 'Agua Radiador', color: 'text-cyan-500' },
+  { icon: Gauge, label: 'Calibración', color: 'text-red-500' },
+];
 
-  const unidades: EstacionData[] = [
-    {
-      nombre: 'SANTA IRENE (GSI)',
-      marca: 'Estación de Servicio',
-      direccion: 'Luis Donaldo Colosio Murrieta 14101, Santa Laura, 82136 Mazatlán, Sin.',
-      mapLink: 'https://maps.app.goo.gl/zErcC9Mv731aAmPRA',
-      mapEmbed:
-        'https://www.google.com/maps?q=23.2561731,-106.405201&hl=es&z=16&output=embed',
-      imagen: '/images/gasolinera/GSI/gsi3.jpeg',
-      estacionLogo: '/images/logotipos/BLAST.png',
-      servicios: [
-        { icon: Store, label: 'TIENDAS DE CONVENIENCIAS', color: 'text-red-600' },
-        { icon: Clock, label: '24/7', color: 'text-green-600' },
-        ...serviciosBasicos,
-      ],
-    },
-    {
-      nombre: 'EL POZOLE (GPO)',
-      marca: 'Estación de Servicio',
-      direccion: 'Carretera Internacional Sur Km. 60, El Pozole, Villa Unión, Sin.',
-      mapLink: 'https://maps.app.goo.gl/TYiUjwbARVfAPhp16',
-      mapEmbed:
-        'https://www.google.com/maps?q=23.1926548,-106.2382193&hl=es&z=16&output=embed',
-      imagen: '/images/gasolinera/GPO/GPO2.jpg',
-      estacionLogo: '/images/logotipos/GPO.png',
-      servicios: [
-        { icon: Store, label: 'TIENDAS DE CONVENIENCIAS', color: 'text-orange-600' },
-        { icon: Clock, label: '24/7', color: 'text-green-600' },
-        ...serviciosBasicos,
-      ],
-    },
-  ];
+const unidades: EstacionData[] = [
+  {
+    id: 'gsi',
+    nombre: 'SANTA IRENE (GSI)',
+    marca: 'Estación de Servicio',
+    direccion: 'Luis Donaldo Colosio Murrieta 14101, Santa Laura, 82136 Mazatlán, Sin.',
+    mapLink: 'https://maps.app.goo.gl/zErcC9Mv731aAmPRA',
+    mapEmbed: 'https://www.google.com/maps?q=23.2561731,-106.405201&hl=es&z=16&output=embed',
+    imagen: '/images/gasolinera/GSI/gsi3.jpeg',
+    estacionLogo: '/images/logotipos/BLAST.png',
+    servicios: [
+      { icon: Store, label: 'TIENDAS DE CONVENIENCIAS', color: 'text-red-600' },
+      { icon: Clock, label: '24/7', color: 'text-green-600' },
+      ...serviciosBasicos,
+    ],
+  },
+  {
+    id: 'gpo',
+    nombre: 'EL POZOLE (GPO)',
+    marca: 'Estación de Servicio',
+    direccion: 'Carretera Internacional Sur Km. 60, El Pozole, Villa Unión, Sin.',
+    mapLink: 'https://maps.app.goo.gl/TYiUjwbARVfAPhp16',
+    mapEmbed: 'https://www.google.com/maps?q=23.1926548,-106.2382193&hl=es&z=16&output=embed',
+    imagen: '/images/gasolinera/GPO/GPO2.jpg',
+    estacionLogo: '/images/logotipos/GPO.png',
+    servicios: [
+      { icon: Store, label: 'TIENDAS DE CONVENIENCIAS', color: 'text-orange-600' },
+      { icon: Clock, label: '24/7', color: 'text-green-600' },
+      ...serviciosBasicos,
+    ],
+  },
+];
+
+export default function EstacionesPage() {
+  const searchParams = useSearchParams();
+  const estacionesRef = useRef<HTMLDivElement>(null);
+
+  const filtroEstacion = useMemo(() => {
+    const raw = searchParams.get('estacion')?.toLowerCase();
+    return raw === 'gsi' || raw === 'gpo' ? raw : null;
+  }, [searchParams]);
+
+  const unidadesVisibles = useMemo(
+    () => (filtroEstacion ? unidades.filter((u) => u.id === filtroEstacion) : unidades),
+    [filtroEstacion]
+  );
+
+  useEffect(() => {
+    if (!filtroEstacion) return;
+    estacionesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [filtroEstacion]);
+
+  const descripcionEstaciones =
+    filtroEstacion === 'gsi'
+      ? 'Ubicación, servicios, formas de pago y mapa de Santa Irene (GSI).'
+      : filtroEstacion === 'gpo'
+        ? 'Ubicación, servicios, formas de pago y mapa de El Pozole (GPO).'
+        : 'Conoce ubicación, servicios, formas de pago y mapa de cada unidad.';
 
   return (
     <SiteShell>
@@ -268,17 +297,46 @@ export default function EstacionesPage() {
             ))}
           </div>
 
-          <div className="text-center max-w-2xl mx-auto pt-2">
+          <div ref={estacionesRef} className="text-center max-w-2xl mx-auto pt-2 scroll-mt-24">
             <h2 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tighter uppercase italic leading-none">
-              Nuestras <span className="text-[#E30613]">Estaciones</span>
+              {filtroEstacion === 'gsi' && (
+                <>
+                  Estación <span className="text-[#E30613]">Santa Irene</span>
+                </>
+              )}
+              {filtroEstacion === 'gpo' && (
+                <>
+                  Estación <span className="text-[#E30613]">El Pozole</span>
+                </>
+              )}
+              {!filtroEstacion && (
+                <>
+                  Nuestras <span className="text-[#E30613]">Estaciones</span>
+                </>
+              )}
             </h2>
             <p className="mt-3 text-sm md:text-base text-gray-500 font-medium leading-relaxed">
-              Conoce ubicación, servicios, formas de pago y mapa de cada unidad.
+              {descripcionEstaciones}
             </p>
+            {filtroEstacion && (
+              <a
+                href="/estaciones"
+                className="inline-flex items-center gap-1.5 mt-4 text-[10px] md:text-xs font-black uppercase tracking-widest text-[#E30613] hover:text-gray-900 transition-colors"
+              >
+                Ver todas las estaciones
+                <ChevronRight className="w-3.5 h-3.5" />
+              </a>
+            )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-10 items-stretch">
-            {unidades.map((u, i) => (
+          <div
+            className={`grid gap-8 lg:gap-10 items-stretch ${
+              unidadesVisibles.length === 1
+                ? 'grid-cols-1 max-w-xl mx-auto'
+                : 'grid-cols-1 md:grid-cols-2'
+            }`}
+          >
+            {unidadesVisibles.map((u, i) => (
               <motion.div
                 key={u.nombre}
                 initial={{ opacity: 0, y: 20 }}

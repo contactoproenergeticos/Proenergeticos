@@ -51,7 +51,7 @@ const ubicaciones = [
     nombre: 'Gasolinera Santa Irene',
     detalle: 'BLAST · MAZATLÁN',
     direccion: 'Luis Donaldo Colosio 14101, Santa Laura, Mazatlán, Sin.',
-    href: '/estaciones',
+    href: '/estaciones?estacion=gsi',
     logo: '/images/logotipos/BLAST.png',
     logoBoxClass: 'w-[5.25rem] h-11 sm:w-24 sm:h-12 md:w-28 md:h-14',
     logoImageClass: 'object-contain object-right',
@@ -60,7 +60,7 @@ const ubicaciones = [
     nombre: 'Gasolinera El Pozole',
     detalle: 'VILLA UNIÓN, SIN.',
     direccion: 'Carretera Internacional Sur Km. 60, El Pozole, Villa Unión, Sin.',
-    href: '/estaciones',
+    href: '/estaciones?estacion=gpo',
     logo: '/images/logotipos/GPO.png',
     logoBoxClass: 'w-14 h-14 sm:w-16 sm:h-16 md:w-[4.5rem] md:h-[4.5rem]',
     logoImageClass: 'object-contain object-right',
@@ -157,14 +157,14 @@ export default function Page() {
 
                 <div className="flex flex-col items-center md:flex-row md:flex-wrap md:items-start gap-2 max-md:gap-2 sm:gap-3 md:gap-4 w-full md:w-auto">
                   <a
-                    href="/estaciones"
+                    href="/estaciones?estacion=gsi"
                     className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:w-auto bg-[#E30613] text-white px-5 md:px-8 py-3 sm:py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-widest flex items-center justify-between md:justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base shadow-lg shadow-red-900/25"
                   >
                     <span>Gasolinera Santa Irene</span>
                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform shrink-0" />
                   </a>
                   <a
-                    href="/estaciones"
+                    href="/estaciones?estacion=gpo"
                     className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:w-auto bg-[#E30613] text-white px-5 md:px-8 py-3 sm:py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-widest flex items-center justify-between md:justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base shadow-lg shadow-red-900/25"
                   >
                     <span>Gasolinera El Pozole</span>
