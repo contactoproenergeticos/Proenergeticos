@@ -79,8 +79,8 @@ const ubicaciones = [
 export default function Page() {
   return (
     <SiteShell>
-      <div className="w-full max-w-full overflow-hidden bg-gray-200 -mx-4 md:mx-0 px-0 md:p-8 lg:p-12">
-        <div className="max-w-7xl mx-auto space-y-3 md:space-y-6">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-5 md:px-8 lg:px-12">
+        <div className="space-y-3 md:space-y-6">
           {/* HERO */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
@@ -191,8 +191,8 @@ export default function Page() {
           >
             <div className="h-1 w-full bg-[#E30613]" aria-hidden />
 
-            <div className="px-5 md:px-6 py-4 md:py-5 border-b border-gray-200/80">
-              <div className="flex items-center gap-2 mb-1.5">
+            <div className="px-5 md:px-6 py-4 md:py-5 border-b border-gray-200/80 text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start gap-2 mb-1.5">
                 <div className="h-0.5 w-8 bg-[#E30613]" />
                 <span className="text-[#E30613] text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] italic">
                   Suministro en Mazatlán
@@ -204,13 +204,13 @@ export default function Page() {
               >
                 Qué ofrecemos y <span className="text-[#E30613]">dónde encontrarnos</span>
               </h2>
-              <p className="mt-2 md:mt-3 text-xs md:text-sm text-gray-500 font-medium italic max-w-2xl leading-snug">
+              <p className="mt-2 md:mt-3 text-xs md:text-sm text-gray-500 font-medium italic max-w-2xl leading-snug mx-auto md:mx-0">
                 Combustibles certificados, modalidades de venta y ubicaciones en la región.
               </p>
             </div>
 
             <div className="px-5 md:px-6 py-4 md:py-5 border-b border-gray-200/80">
-              <h3 className="flex items-center gap-2 mb-3 text-sm md:text-base font-black text-gray-900 uppercase italic">
+              <h3 className="flex items-center justify-center md:justify-start gap-2 mb-3 text-sm md:text-base font-black text-gray-900 uppercase italic">
                 <span className="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center shrink-0">
                   <Fuel className="w-4 h-4 text-[#E30613]" />
                 </span>
@@ -218,11 +218,11 @@ export default function Page() {
               </h3>
 
               <div className="rounded-xl md:rounded-2xl bg-gray-200/60 border border-gray-200/90 p-3 md:p-4">
-                <ul className="grid grid-cols-1 min-[400px]:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                <ul className="grid grid-cols-1 min-[400px]:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 justify-items-center">
                   {productosOfrecidos.map((producto) => {
                     const Icon = producto.icon;
                     return (
-                      <li key={producto.id}>
+                      <li key={producto.id} className="w-full max-w-sm min-[400px]:max-w-none">
                         <div
                           className={`flex flex-col h-full rounded-xl border p-3 md:p-4 transition-all duration-300 hover:shadow-md ${producto.cardClass}`}
                         >
@@ -247,26 +247,28 @@ export default function Page() {
                 </ul>
               </div>
 
-              <a
-                href="/combustible"
-                className="inline-flex items-center justify-center gap-2 mt-4 md:mt-5 bg-[#E30613] text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest italic shadow-lg shadow-red-500/20 hover:bg-gray-900 transition-all duration-300 group"
-              >
-                Ver combustibles
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </a>
+              <div className="flex justify-center md:justify-start mt-4 md:mt-5">
+                <a
+                  href="/combustible"
+                  className="inline-flex items-center justify-center gap-2 bg-[#E30613] text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest italic shadow-lg shadow-red-500/20 hover:bg-gray-900 transition-all duration-300 group"
+                >
+                  Ver combustibles
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </a>
+              </div>
             </div>
 
             <div className="px-5 md:px-6 py-4 md:py-5">
-              <h3 className="flex items-center gap-2.5 mb-4 text-sm md:text-base font-black text-gray-900 uppercase italic">
+              <h3 className="flex items-center justify-center md:justify-start gap-2.5 mb-4 text-sm md:text-base font-black text-gray-900 uppercase italic">
                 <span className="w-9 h-9 rounded-xl bg-gray-200 flex items-center justify-center shrink-0">
                   <MapPin className="w-4 h-4 text-[#E30613]" strokeWidth={2.5} />
                 </span>
                 Dónde <span className="text-[#E30613]">estamos</span>
               </h3>
               <div className="rounded-2xl md:rounded-[1.75rem] bg-gray-200/70 border border-gray-200/90 p-3 sm:p-4 md:p-5">
-                <ul className="flex flex-col lg:grid lg:grid-cols-3 gap-3 md:gap-4">
+                <ul className="flex flex-col items-center lg:grid lg:grid-cols-3 lg:items-stretch gap-3 md:gap-4">
                   {ubicaciones.map((u) => (
-                    <li key={u.nombre} className="min-w-0">
+                    <li key={u.nombre} className="min-w-0 w-full max-w-xl lg:max-w-none">
                       <a
                         href={u.href}
                         className="group flex flex-row items-center justify-between gap-3 sm:gap-4 h-full rounded-xl md:rounded-2xl border border-gray-200/80 bg-white p-4 sm:p-5 shadow-sm transition-all duration-300 hover:border-[#E30613]/30 hover:shadow-md"

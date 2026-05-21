@@ -312,8 +312,8 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
             </div>
           </div>
           <p className="relative mt-4 text-[11px] text-gray-500 leading-snug border-t border-white/10 pt-3">
-            Actualización automática cada 15 s. No cuenta rutas de administración ni visitas repetidas en la misma
-            sesión del navegador.
+            Actualización automática cada 15 s. Cuenta visitas a cualquier sección pública del sitio. No incluye
+            admin de precios ni visitas repetidas en la misma sesión del navegador.
           </p>
         </section>
 

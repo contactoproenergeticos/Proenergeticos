@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'motion/react';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -201,7 +201,6 @@ const unidades: EstacionData[] = [
 
 export default function EstacionesPage() {
   const searchParams = useSearchParams();
-  const estacionesRef = useRef<HTMLDivElement>(null);
 
   const filtroEstacion = useMemo(() => {
     const raw = searchParams.get('estacion')?.toLowerCase();
@@ -212,11 +211,6 @@ export default function EstacionesPage() {
     () => (filtroEstacion ? unidades.filter((u) => u.id === filtroEstacion) : unidades),
     [filtroEstacion]
   );
-
-  useEffect(() => {
-    if (!filtroEstacion) return;
-    estacionesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, [filtroEstacion]);
 
   const descripcionEstaciones =
     filtroEstacion === 'gsi'
@@ -260,6 +254,61 @@ export default function EstacionesPage() {
             </div>
           </section>
 
+          <div className="space-y-8 md:space-y-10">
+            <div className="text-center max-w-2xl mx-auto pt-2">
+              <h2 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tighter uppercase italic leading-none">
+                {filtroEstacion === 'gsi' && (
+                  <>
+                    Estación <span className="text-[#E30613]">Santa Irene</span>
+                  </>
+                )}
+                {filtroEstacion === 'gpo' && (
+                  <>
+                    Estación <span className="text-[#E30613]">El Pozole</span>
+                  </>
+                )}
+                {!filtroEstacion && (
+                  <>
+                    Nuestras <span className="text-[#E30613]">Estaciones</span>
+                  </>
+                )}
+              </h2>
+              <p className="mt-3 text-sm md:text-base text-gray-500 font-medium leading-relaxed">
+                {descripcionEstaciones}
+              </p>
+              {filtroEstacion && (
+                <a
+                  href="/estaciones"
+                  className="inline-flex items-center gap-1.5 mt-4 text-[10px] md:text-xs font-black uppercase tracking-widest text-[#E30613] hover:text-gray-900 transition-colors"
+                >
+                  Ver todas las estaciones
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </a>
+              )}
+            </div>
+
+            <div
+              className={`grid gap-8 lg:gap-10 items-stretch ${
+                unidadesVisibles.length === 1
+                  ? 'grid-cols-1 max-w-xl mx-auto'
+                  : 'grid-cols-1 md:grid-cols-2'
+              }`}
+            >
+              {unidadesVisibles.map((u, i) => (
+                <motion.div
+                  key={u.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className="h-full"
+                >
+                  <EstacionCard {...u} />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {[
               {
@@ -293,59 +342,6 @@ export default function EstacionesPage() {
                   {item.title}
                 </h2>
                 <p className="text-sm text-gray-500 font-medium leading-relaxed">{item.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          <div ref={estacionesRef} className="text-center max-w-2xl mx-auto pt-2 scroll-mt-24">
-            <h2 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tighter uppercase italic leading-none">
-              {filtroEstacion === 'gsi' && (
-                <>
-                  Estación <span className="text-[#E30613]">Santa Irene</span>
-                </>
-              )}
-              {filtroEstacion === 'gpo' && (
-                <>
-                  Estación <span className="text-[#E30613]">El Pozole</span>
-                </>
-              )}
-              {!filtroEstacion && (
-                <>
-                  Nuestras <span className="text-[#E30613]">Estaciones</span>
-                </>
-              )}
-            </h2>
-            <p className="mt-3 text-sm md:text-base text-gray-500 font-medium leading-relaxed">
-              {descripcionEstaciones}
-            </p>
-            {filtroEstacion && (
-              <a
-                href="/estaciones"
-                className="inline-flex items-center gap-1.5 mt-4 text-[10px] md:text-xs font-black uppercase tracking-widest text-[#E30613] hover:text-gray-900 transition-colors"
-              >
-                Ver todas las estaciones
-                <ChevronRight className="w-3.5 h-3.5" />
-              </a>
-            )}
-          </div>
-
-          <div
-            className={`grid gap-8 lg:gap-10 items-stretch ${
-              unidadesVisibles.length === 1
-                ? 'grid-cols-1 max-w-xl mx-auto'
-                : 'grid-cols-1 md:grid-cols-2'
-            }`}
-          >
-            {unidadesVisibles.map((u, i) => (
-              <motion.div
-                key={u.nombre}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="h-full"
-              >
-                <EstacionCard {...u} />
               </motion.div>
             ))}
           </div>

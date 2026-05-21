@@ -7,7 +7,7 @@ const VISIT_SESSION_KEY = 'proener-visit-session';
 const VISIT_REGISTERED_KEY = 'proener-visit-registered';
 
 /**
- * Registra una visita pública por sesión de navegador.
+ * Registra una visita pública por sesión de navegador (cualquier sección del sitio).
  * No se monta en /admin-precios (SiteShell no envuelve el panel admin).
  */
 export default function PublicVisitTracker() {
