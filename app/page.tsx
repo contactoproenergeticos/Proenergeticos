@@ -71,8 +71,9 @@ const ubicaciones = [
     direccion: 'México 15 1002, Urías, 82070 Mazatlán, Sin.',
     href: '/corporativo',
     logo: '/images/logotipos/ProEner.png',
-    logoBoxClass: 'w-[4.75rem] h-[4.25rem] sm:w-24 sm:h-[5.5rem] md:w-28 md:h-32 lg:w-32 lg:h-36',
-    logoImageClass: 'object-contain object-right scale-[1.2] sm:scale-[1.25]',
+    logoBoxClass:
+      'w-[4.75rem] h-[4.25rem] sm:w-24 sm:h-[5.5rem] md:w-28 md:h-32 lg:w-[4.5rem] lg:h-[4.75rem] xl:w-20 xl:h-20',
+    logoImageClass: 'object-contain object-right scale-[1.2] sm:scale-[1.25] lg:scale-100',
   },
 ] as const;
 
