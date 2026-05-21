@@ -85,7 +85,7 @@ export default function Page() {
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="relative w-full min-h-[calc(100dvh-6rem)] sm:min-h-[calc(100dvh-6.5rem)] md:min-h-[560px] lg:min-h-[68vh] bg-gray-950 rounded-t-[2rem] sm:rounded-t-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl flex items-stretch"
+            className="relative w-full max-md:h-[calc(100dvh-6rem)] max-md:max-h-[calc(100dvh-6rem)] md:min-h-[560px] lg:min-h-[68vh] bg-gray-950 rounded-t-[2rem] sm:rounded-t-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl flex items-stretch"
           >
             <div className="absolute inset-0 z-0">
               <Image
@@ -99,34 +99,33 @@ export default function Page() {
               <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/85 lg:bg-gradient-to-r lg:from-black/80 lg:via-black/40 lg:to-transparent z-10" />
             </div>
 
-            <div className="relative z-20 w-full px-4 sm:px-6 md:px-16 lg:px-24 py-7 sm:py-8 md:py-12 flex flex-col justify-center gap-5 sm:gap-6 md:gap-8">
-              <div className="flex items-center justify-center sm:justify-start gap-3 md:gap-4 w-full">
+            <div className="relative z-20 w-full max-md:h-full px-4 sm:px-6 md:px-16 lg:px-24 py-3.5 max-md:py-3 sm:py-8 md:py-12 flex flex-col max-md:justify-between md:justify-center gap-2 max-md:gap-2 sm:gap-6 md:gap-8">
+              <div className="flex items-center justify-center sm:justify-start gap-3 md:gap-4 w-full shrink-0">
                 <div className="hidden sm:block h-[2px] w-8 md:w-12 bg-[#E30613] shrink-0" />
-                <span className="text-[#E30613] text-[10px] sm:text-[13px] md:text-sm font-black uppercase tracking-[0.22em] sm:tracking-[0.28em] md:tracking-[0.4em] italic text-center sm:text-left">
+                <span className="text-[#E30613] text-[11px] sm:text-[13px] md:text-sm font-black uppercase tracking-[0.24em] sm:tracking-[0.28em] md:tracking-[0.4em] italic text-center sm:text-left">
                   — GRUPO PROENERGETICOS —
                 </span>
               </div>
 
-              <div className="flex flex-row items-start sm:items-center md:items-start lg:items-center justify-between gap-2 sm:gap-5 md:gap-6 lg:gap-10 xl:gap-12 w-full min-w-0">
-                <h1 className="flex-1 min-w-0 text-left font-black text-white tracking-tighter uppercase italic leading-[0.92] sm:leading-[0.9] text-[clamp(1.45rem,6.2vw,2.15rem)] sm:text-[clamp(1.85rem,4.8vw,2.75rem)] md:text-5xl lg:text-7xl xl:text-8xl">
+              <div className="flex flex-row items-start sm:items-center md:items-start lg:items-center justify-between gap-2 sm:gap-5 md:gap-6 lg:gap-10 xl:gap-12 w-full min-w-0 shrink-0">
+                <h1 className="flex-1 min-w-0 text-left font-black text-white tracking-tighter uppercase italic leading-[0.88] sm:leading-[0.9] text-[clamp(1.9rem,8.4vw,2.45rem)] sm:text-[clamp(2rem,4.8vw,2.75rem)] md:text-5xl lg:text-7xl xl:text-8xl">
                   ENERGÍA QUE
                   <br />
-                  <span className="text-[#E30613]">MUEVE</span>
-                  <br className="md:hidden" />
-                  <span className="md:before:content-['\00a0']">A MÉXICO</span>
+                  <span className="text-[#E30613]">MUEVE</span>{' '}
+                  <span>A MÉXICO</span>
                 </h1>
-                <div className="relative shrink-0 w-[clamp(3.25rem,17vw,4.5rem)] h-[clamp(3.25rem,17vw,4.5rem)] sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 xl:w-44 xl:h-44 mt-0.5 sm:mt-0">
+                <div className="relative shrink-0 w-[clamp(4.75rem,22vw,6.25rem)] h-[clamp(5.25rem,24vw,6.75rem)] sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 xl:w-44 xl:h-44">
                   <Image
                     src="/images/logotipos/ProEner.png"
                     alt="Logo Grupo Proenergéticos"
                     fill
-                    sizes="(max-width: 640px) 72px, (max-width: 1024px) 128px, 176px"
+                    sizes="(max-width: 640px) 100px, (max-width: 1024px) 128px, 176px"
                     className="object-contain drop-shadow-2xl"
                   />
                 </div>
               </div>
 
-              <p className="max-w-2xl text-[13px] sm:text-sm md:text-xl text-white/90 font-medium italic text-left leading-relaxed">
+              <p className="max-w-2xl text-[clamp(0.84rem,3.7vw,0.95rem)] sm:text-sm md:text-xl text-white/90 font-medium italic text-left leading-snug sm:leading-relaxed shrink-0">
                 En{' '}
                 <span className="font-black uppercase italic">
                   <span className="text-white">Grupo Pro</span>
@@ -136,36 +135,36 @@ export default function Page() {
                 industria, flotas y público en general, con certeza en cada litro.
               </p>
 
-              <div className="inline-flex items-center bg-black/35 backdrop-blur-md border border-white/10 px-4 py-3 md:px-8 md:py-4 rounded-full md:rounded-lg shadow-xl max-w-full">
+              <div className="inline-flex items-center bg-black/35 backdrop-blur-md border border-white/10 px-3 py-2 sm:px-4 sm:py-3 md:px-8 md:py-4 rounded-full md:rounded-lg shadow-xl max-w-full shrink-0">
                 <span className="flex items-center font-medium uppercase tracking-wider md:tracking-[0.2em] italic">
-                  <span className="text-[#E30613] mr-2.5 opacity-100">●</span>
-                  <span className="text-white text-[11px] md:text-base font-black uppercase italic tracking-widest leading-tight">
+                  <span className="text-[#E30613] mr-2 opacity-100">●</span>
+                  <span className="text-white text-[11px] sm:text-xs md:text-base font-black uppercase italic tracking-widest leading-tight">
                     NOM-016-CRE-2016
-                    <span className="block md:inline-block md:ml-2 text-[9px] md:text-[11px] font-bold text-gray-300 uppercase tracking-[0.18em] not-italic">
+                    <span className="block md:inline-block md:ml-2 text-[9px] sm:text-[10px] md:text-[11px] font-bold text-gray-300 uppercase tracking-[0.16em] not-italic">
                       Certificación Vigente
                     </span>
                   </span>
                 </span>
               </div>
 
-              <div className="flex flex-col md:flex-row md:flex-wrap gap-3 md:gap-4 w-full md:w-auto">
+              <div className="flex flex-col md:flex-row md:flex-wrap gap-2 max-md:gap-2 sm:gap-3 md:gap-4 w-full md:w-auto shrink-0">
                 <a
                   href="/estaciones"
-                  className="w-full md:w-auto bg-[#E30613] text-white px-5 md:px-8 py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.14em] md:tracking-widest flex items-center justify-between md:justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base shadow-lg shadow-red-900/30"
+                  className="w-full md:w-auto bg-[#E30613] text-white px-4 md:px-8 py-2.5 max-md:py-3 sm:py-4 rounded-xl md:rounded-xl font-black uppercase tracking-[0.12em] md:tracking-widest flex items-center justify-between md:justify-center gap-2 md:gap-3 hover:bg-white hover:text-black transition-all group text-[11px] sm:text-sm md:text-base shadow-lg shadow-red-900/30"
                 >
                   <span>Gasolinera Santa Irene</span>
-                  <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform shrink-0" />
+                  <ArrowRight size={18} className="md:w-5 md:h-5 group-hover:translate-x-2 transition-transform shrink-0" />
                 </a>
                 <a
                   href="/estaciones"
-                  className="w-full md:w-auto bg-[#E30613] text-white px-5 md:px-8 py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.14em] md:tracking-widest flex items-center justify-between md:justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base shadow-lg shadow-red-900/30"
+                  className="w-full md:w-auto bg-[#E30613] text-white px-4 md:px-8 py-2.5 max-md:py-3 sm:py-4 rounded-xl md:rounded-xl font-black uppercase tracking-[0.12em] md:tracking-widest flex items-center justify-between md:justify-center gap-2 md:gap-3 hover:bg-white hover:text-black transition-all group text-[11px] sm:text-sm md:text-base shadow-lg shadow-red-900/30"
                 >
                   <span>Gasolinera El Pozole</span>
-                  <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform shrink-0" />
+                  <ArrowRight size={18} className="md:w-5 md:h-5 group-hover:translate-x-2 transition-transform shrink-0" />
                 </a>
                 <a
                   href="/corporativo"
-                  className="w-full md:w-auto bg-black/40 backdrop-blur-md text-white border border-white/15 px-5 md:px-8 py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.14em] md:tracking-widest hover:bg-white/10 transition-all text-center text-xs sm:text-sm md:text-base"
+                  className="w-full md:w-auto bg-black/40 backdrop-blur-md text-white border border-white/15 px-4 md:px-8 py-2.5 max-md:py-3 sm:py-4 rounded-xl md:rounded-xl font-black uppercase tracking-[0.12em] md:tracking-widest hover:bg-white/10 transition-all text-center text-[11px] sm:text-sm md:text-base"
                 >
                   Planta de Distribución
                 </a>
