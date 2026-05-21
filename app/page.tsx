@@ -79,13 +79,13 @@ const ubicaciones = [
 export default function Page() {
   return (
     <SiteShell>
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-5 md:px-8 lg:px-12 md:pt-6 lg:pt-8">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-5 md:px-8 lg:px-12">
         <div className="space-y-3 md:space-y-6">
           {/* HERO */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="relative w-full md:min-h-[560px] lg:min-h-[68vh] bg-gray-950 rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl"
+            className="relative w-full md:min-h-[560px] lg:min-h-[68vh] bg-gray-950 rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl md:mt-2 lg:mt-3"
           >
             <div className="absolute inset-0 z-0">
               <Image

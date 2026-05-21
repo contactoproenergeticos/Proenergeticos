@@ -23,7 +23,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
       </nav>
 
       {/* 2. ESPACIADOR */}
-      <main className="flex-grow pt-24 px-4 md:px-0 w-full max-w-screen-2xl mx-auto">
+      <main className="flex-grow pt-24 md:pt-32 lg:pt-36 xl:pt-40 px-4 md:px-0 w-full max-w-screen-2xl mx-auto">
         <PublicVisitTracker />
         {children}
       </main>
