@@ -12,7 +12,8 @@ import {
   CheckCircle2, 
   Loader2, 
   Zap, 
-  XCircle 
+  XCircle,
+  Satellite
 } from 'lucide-react';
 import PlantaDistribucionSection from '@/components/PlantaDistribucionSection';
 
@@ -110,26 +111,59 @@ export default function Corporativo() {
       <div className="max-w-6xl mx-auto space-y-24 px-4">
         
         {/* Hero Section */}
-        <section className="relative rounded-[30px] md:rounded-[60px] overflow-hidden shadow-2xl bg-gray-900 min-h-[500px] flex items-center">
-          <div className="absolute inset-0 opacity-40">
+        <section className="relative w-full flex flex-col rounded-[24px] sm:rounded-[30px] md:rounded-[50px] overflow-hidden shadow-2xl bg-gray-900">
+          <div className="absolute inset-0 opacity-40 sm:opacity-45 md:opacity-40">
             <Image 
               src="/images/gasolinera/PLANTA/Planta1.JPG"
               alt="Planta Grupo Proenergéticos" 
               fill
-              className="object-cover"
+              className="object-cover object-[65%_center] sm:object-center"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1152px"
               priority
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/80 to-transparent"></div>
-          <div className="relative z-10 p-8 md:p-24 max-w-4xl">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="h-2 w-16 bg-[#E30613]"></div>
-              <span className="text-lg font-black text-[#E30613] uppercase tracking-[0.5em]">Socio Estratégico</span>
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-900 from-35% via-gray-900/95 via-70% to-gray-900/75 sm:from-gray-900 sm:via-gray-900/90 sm:to-gray-900/50 md:to-gray-900/40" />
+          <div className="relative z-10 w-full min-w-0 px-5 pt-7 pb-5 sm:px-8 sm:pt-9 sm:pb-6 md:px-12 md:pt-11 md:pb-6 lg:px-14 lg:pt-12 lg:pb-7">
+            <div className="max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl text-left">
+              <h1 className="font-black text-white tracking-[-0.04em] sm:tracking-[-0.03em] md:tracking-tighter leading-[0.95] sm:leading-[0.92] uppercase italic [text-shadow:0_2px_16px_rgba(0,0,0,0.45)] text-[clamp(0.8125rem,2.9vw+0.62rem,3.25rem)]">
+                <span className="block whitespace-nowrap">
+                  Planta de <span className="text-[#E30613]">Distribución</span> y
+                </span>
+                <span className="block mt-0.5 sm:mt-1">soluciones corporativas</span>
+              </h1>
+
+              <div className="flex items-center gap-2 sm:gap-2.5 md:gap-3 mt-3.5 sm:mt-4 md:mt-5">
+                <div className="h-0.5 sm:h-1 w-7 sm:w-8 md:w-10 bg-[#E30613] shrink-0" />
+                <span className="text-[9px] sm:text-xs md:text-sm font-black text-[#E30613] uppercase tracking-[0.22em] sm:tracking-[0.3em] md:tracking-[0.4em]">
+                  Socio Estratégico
+                </span>
+              </div>
+
+              <h2 className="mt-3.5 sm:mt-4 md:mt-5 text-[clamp(0.72rem,2.4vw+0.45rem,1.25rem)] font-black text-white uppercase tracking-tight leading-snug max-w-full sm:max-w-xl lg:max-w-2xl">
+                Soluciones corporativas para el suministro industrial
+              </h2>
+
+              <p className="mt-3 sm:mt-3.5 md:mt-4 text-[clamp(0.72rem,1.8vw+0.5rem,1rem)] text-gray-300 font-medium leading-relaxed max-w-full sm:max-w-xl lg:max-w-2xl">
+                <span className="font-black text-white uppercase">Operaciones en Mazatlán:</span>{' '}
+                Ofrecemos infraestructura estratégica para el suministro industrial, optimizando la
+                logística de flotas y brindando atención corporativa especializada con certificación
+                internacional.
+              </p>
             </div>
-            <h2 className="text-4xl md:text-7xl font-black text-white mb-8 tracking-tighter leading-none uppercase italic">
-              Planta de <span className="text-[#E30613]">Distribución</span> <br />
-              y soluciones corporativas
-            </h2>
+
+            <div className="mt-4 sm:mt-5 pt-4 sm:pt-5 border-t border-white/15">
+              <div className="flex items-center justify-center gap-3 sm:gap-4 md:gap-5 max-w-5xl mx-auto">
+                <p className="text-center text-[clamp(0.68rem,1.6vw+0.45rem,0.95rem)] sm:text-sm md:text-base text-white font-normal italic leading-snug sm:leading-relaxed max-w-3xl">
+                  Nuestra flota de transporte de combustible cuenta con rastreo satelital GPS en
+                  tiempo real para máxima seguridad y eficiencia.
+                </p>
+                <Satellite
+                  className="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 shrink-0 text-white"
+                  strokeWidth={1.75}
+                  aria-hidden
+                />
+              </div>
+            </div>
           </div>
         </section>
 

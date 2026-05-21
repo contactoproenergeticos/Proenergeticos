@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { MapPin, Truck, Briefcase, Fuel, Bath, ChevronRight, Zap } from 'lucide-react';
+import { MapPin, Truck, Briefcase, Fuel, Bath, ChevronRight } from 'lucide-react';
 
 const PLANTA_MAP_LINK =
   'https://maps.google.com/?cid=14017863012502601436&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNl';
@@ -42,23 +42,7 @@ export default function PlantaDistribucionSection() {
   const mapEmbedAmplio = buildMapEmbed(PLANTA_DIRECCION, 14, true);
 
   return (
-    <section className="space-y-8 md:space-y-10">
-      <div className="text-center max-w-3xl mx-auto px-2">
-        <div className="inline-flex items-center gap-2 bg-[#E30613]/10 px-4 py-2 rounded-full border border-[#E30613]/20 mb-4">
-          <Zap className="w-4 h-4 text-[#E30613]" />
-          <span className="text-[#E30613] font-black text-[10px] uppercase tracking-[0.25em]">
-            Centro Logístico
-          </span>
-        </div>
-        <h2 className="text-3xl md:text-5xl font-black text-gray-900 uppercase italic tracking-tighter leading-none">
-          Planta de <span className="text-[#E30613]">Distribución</span>
-        </h2>
-        <p className="mt-4 text-gray-500 font-medium text-sm md:text-base leading-relaxed">
-          Infraestructura estratégica para suministro industrial, logística de flotas y atención
-          corporativa en Mazatlán.
-        </p>
-      </div>
-
+    <section>
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -90,14 +74,7 @@ export default function PlantaDistribucionSection() {
 
           {/* Identificación */}
           <div className="px-6 sm:px-10 md:px-12 pt-6 sm:pt-8">
-            <h3 className="text-xl sm:text-2xl md:text-[2rem] lg:text-4xl font-black text-gray-900 uppercase tracking-tighter italic leading-tight">
-              PLANTA DE DISTRIBUCIÓN
-            </h3>
-            <p className="mt-1.5 text-[10px] sm:text-[11px] font-black text-[#E30613] uppercase tracking-[0.18em]">
-              • CENTRO LOGÍSTICO
-            </p>
-
-            <div className="flex items-start gap-3 mt-4 sm:mt-5">
+            <div className="flex items-start gap-3">
               <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-[#E30613] flex-shrink-0 mt-0.5" />
               <p className="text-sm sm:text-base md:text-lg text-gray-700 font-semibold leading-snug">
                 {PLANTA_DIRECCION}
