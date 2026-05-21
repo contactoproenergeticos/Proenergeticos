@@ -19,6 +19,13 @@ export default function AdminPwaIcons() {
       created.push(el);
     };
 
+    document.querySelectorAll('link[rel="manifest"]').forEach((el) => el.remove());
+
+    const manifestLink = document.createElement('link');
+    manifestLink.rel = 'manifest';
+    manifestLink.href = '/manifest-admin-precios';
+    add(manifestLink);
+
     const linkDefault = document.createElement('link');
     linkDefault.rel = 'apple-touch-icon';
     linkDefault.href = ADMIN_PWA_ICON;

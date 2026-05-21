@@ -20,6 +20,6 @@ export const config = {
     /*
      * Excluye estáticos para no ejecutar middleware en cada asset.
      */
-    '/((?!_next/static|_next/image|_next/webpack-hmr|favicon.ico|manifest.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff2?)$).*)',
+    '/((?!_next/static|_next/image|_next/webpack-hmr|favicon.ico|manifest.webmanifest|manifest-admin-precios|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff2?)$).*)',
   ],
 };
