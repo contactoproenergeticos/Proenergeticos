@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import {
   ADMIN_PWA_ICON,
+  ADMIN_PWA_SCOPE,
   ADMIN_PWA_START_URL,
   ADMIN_PWA_THEME,
   ADMIN_PWA_TITLE,
@@ -9,12 +10,12 @@ import {
 /** Manifiesto PWA solo para el panel admin (icono candado en escritorio). */
 export function adminPreciosManifest(): MetadataRoute.Manifest {
   return {
-    id: '/admin-precios',
+    id: ADMIN_PWA_SCOPE,
     name: `${ADMIN_PWA_TITLE} — Grupo Proenergéticos`,
     short_name: ADMIN_PWA_TITLE,
     description: 'Panel de control para captura manual de precios de combustible.',
     start_url: ADMIN_PWA_START_URL,
-    scope: '/admin-precios',
+    scope: ADMIN_PWA_SCOPE,
     display: 'standalone',
     orientation: 'portrait',
     background_color: '#ffffff',
@@ -36,4 +37,13 @@ export function adminPreciosManifest(): MetadataRoute.Manifest {
       },
     ],
   };
+}
+
+export function adminPreciosManifestResponse(): Response {
+  return Response.json(adminPreciosManifest(), {
+    headers: {
+      'Content-Type': 'application/manifest+json',
+      'Cache-Control': 'public, max-age=0, must-revalidate',
+    },
+  });
 }

@@ -3,5 +3,9 @@ export const ADMIN_PWA_ICON = '/icon-admin.png';
 export const ADMIN_PWA_TITLE = 'Admin Precios';
 export const ADMIN_PWA_THEME = '#E30613';
 
-/** URL de arranque del acceso directo (utm evita caché de start_url antiguo). */
-export const ADMIN_PWA_START_URL = '/admin-precios?utm_source=homescreen';
+/** Ruta de arranque y alcance del acceso directo de administración. */
+export const ADMIN_PWA_START_URL = '/admin-precios';
+export const ADMIN_PWA_SCOPE = '/admin-precios';
+
+/** Manifiesto propio del panel (ruta absoluta, extensión .json). */
+export const ADMIN_PWA_MANIFEST_HREF = '/manifest-admin-precios.json';

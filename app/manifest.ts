@@ -40,7 +40,7 @@ export default function manifest(): MetadataRoute.Manifest {
         name: 'Administrar Precios',
         short_name: 'Admin Precios',
         description: 'Panel de control secreto para la captura manual de precios',
-        url: '/admin-precios?utm_source=homescreen',
+        url: '/admin-precios',
         icons: [
           {
             src: adminIcon,

@@ -1,12 +1,8 @@
-import { adminPreciosManifest } from '@/lib/adminManifest';
+import { type NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-static';
 
-export function GET() {
-  return Response.json(adminPreciosManifest(), {
-    headers: {
-      'Content-Type': 'application/manifest+json',
-      'Cache-Control': 'public, max-age=0, must-revalidate',
-    },
-  });
+/** Redirige la ruta legacy al manifiesto con extensión .json */
+export function GET(request: NextRequest) {
+  return NextResponse.redirect(new URL('/manifest-admin-precios.json', request.url), 308);
 }

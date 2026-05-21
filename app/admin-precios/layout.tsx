@@ -1,8 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import AdminPwaIcons from '@/components/admin-precios/AdminPwaIcons';
-import { ADMIN_PWA_ISOLATION_SCRIPT, ADMIN_PWA_MANIFEST_HREF } from '@/lib/adminPwaHeadIsolation';
-import { ADMIN_PWA_ICON, ADMIN_PWA_TITLE, ADMIN_PWA_THEME } from '@/lib/adminPwaConfig';
+import { ADMIN_PWA_ISOLATION_SCRIPT } from '@/lib/adminPwaHeadIsolation';
+import { ADMIN_PWA_ICON, ADMIN_PWA_MANIFEST_HREF, ADMIN_PWA_TITLE, ADMIN_PWA_THEME } from '@/lib/adminPwaConfig';
 
 export const metadata: Metadata = {
   title: 'Admin Precios — Grupo Proenergéticos',

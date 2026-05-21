@@ -1,9 +1,10 @@
 import {
   ADMIN_PWA_ICON,
+  ADMIN_PWA_MANIFEST_HREF,
   ADMIN_PWA_TITLE,
 } from '@/lib/adminPwaConfig';
 
-export const ADMIN_PWA_MANIFEST_HREF = '/manifest-admin-precios';
+export { ADMIN_PWA_MANIFEST_HREF } from '@/lib/adminPwaConfig';
 
 /** IDs únicos para que el panel admin no herede metadatos PWA de la web pública. */
 export const ADMIN_PWA_HEAD_IDS = {
@@ -13,7 +14,11 @@ export const ADMIN_PWA_HEAD_IDS = {
   appleTouchIcon: 'admin-pwa-apple-touch-icon',
 } as const;
 
-const GLOBAL_MANIFEST_HREFS = ['/manifest.webmanifest', '/manifest.json'];
+const GLOBAL_MANIFEST_HREFS = [
+  '/manifest.webmanifest',
+  '/manifest.json',
+  '/manifest-admin-precios',
+];
 
 function isGlobalManifestHref(href: string | null): boolean {
   if (!href) return false;
@@ -121,7 +126,7 @@ export const ADMIN_PWA_ISOLATION_SCRIPT = `(function(){
   var TITLE='${ADMIN_PWA_TITLE}';
   var ICON='${ADMIN_PWA_ICON}';
   var IDS={manifest:'${ADMIN_PWA_HEAD_IDS.manifest}',appleTitle:'${ADMIN_PWA_HEAD_IDS.appleTitle}',applicationName:'${ADMIN_PWA_HEAD_IDS.applicationName}',appleTouchIcon:'${ADMIN_PWA_HEAD_IDS.appleTouchIcon}'};
-  var GLOBAL=['/manifest.webmanifest','/manifest.json'];
+  var GLOBAL=['/manifest.webmanifest','/manifest.json','/manifest-admin-precios'];
   function isGlobal(h){if(!h)return false;for(var i=0;i<GLOBAL.length;i++){if(h===GLOBAL[i]||h.slice(-GLOBAL[i].length)===GLOBAL[i])return true;}return false;}
   function safeRemove(n){if(n&&n.parentNode)n.parentNode.removeChild(n);}
   function ensureMeta(name,id,content){
