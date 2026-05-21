@@ -1,12 +1,14 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import AdminPwaIcons from '@/components/admin-precios/AdminPwaIcons';
+import { ADMIN_PWA_ISOLATION_SCRIPT, ADMIN_PWA_MANIFEST_HREF } from '@/lib/adminPwaHeadIsolation';
 import { ADMIN_PWA_ICON, ADMIN_PWA_TITLE, ADMIN_PWA_THEME } from '@/lib/adminPwaConfig';
 
 export const metadata: Metadata = {
   title: 'Admin Precios — Grupo Proenergéticos',
   description: 'Panel de control para captura manual de precios de combustible.',
   /** Manifiesto propio: start_url y scope en /admin-precios (no el de la web pública). */
-  manifest: '/manifest-admin-precios',
+  manifest: ADMIN_PWA_MANIFEST_HREF,
   applicationName: ADMIN_PWA_TITLE,
   robots: { index: false, follow: false },
   appleWebApp: {
@@ -38,6 +40,9 @@ export const viewport: Viewport = {
 export default function AdminPreciosLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <Script id="admin-pwa-head-isolation" strategy="beforeInteractive">
+        {ADMIN_PWA_ISOLATION_SCRIPT}
+      </Script>
       <AdminPwaIcons />
       {children}
     </>

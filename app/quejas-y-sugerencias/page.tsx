@@ -205,7 +205,11 @@ export default function QuejasYSugerenciasPage() {
                 Quejas y <span className="text-[#E30613]">Sugerencias</span>
               </h1>
               <p className="text-sm md:text-lg text-gray-300 font-medium leading-relaxed italic max-w-3xl">
-                Buzón oficial de <span className="text-white font-black not-italic">Grupo Proenergéticos</span>{' '}
+                Buzón oficial de{' '}
+                <span className="font-black uppercase italic">
+                  <span className="text-white">Grupo Pro</span>
+                  <span className="text-[#E30613]">energeticos</span>
+                </span>{' '}
                 para reportar inconformidades o propuestas relacionadas con la calidad de petrolíferos y el
                 servicio en nuestras estaciones de servicio en Mazatlán y zona conurbada.
               </p>
