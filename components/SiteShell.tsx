@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Phone } from 'lucide-react';
 import Header from '@/components/Header';
+import PublicVisitTracker from '@/components/PublicVisitTracker';
 
 /** `tel:` con prefijo +52 para números mostrados con espacios (México). */
 function telHrefMexico(display: string): string {
@@ -23,6 +24,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
 
       {/* 2. ESPACIADOR */}
       <main className="flex-grow pt-24 px-4 md:px-0 w-full max-w-screen-2xl mx-auto">
+        <PublicVisitTracker />
         {children}
       </main>
 

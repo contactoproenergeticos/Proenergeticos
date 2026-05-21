@@ -5,7 +5,7 @@ import { fuelKindFromParts } from '@/lib/fuelLabelKind';
 import type { AdminEstacionGroup, AdminPrecioRow } from '@/lib/adminPreciosData';
 import type { ModoCapturaPrecios } from '@/lib/preciosModoCaptura';
 import { validatePrecioInput } from '@/lib/adminPreciosValidation';
-import { CheckCircle2, Loader2, RefreshCw, Save } from 'lucide-react';
+import { CheckCircle2, Eye, Loader2, RefreshCw, Save } from 'lucide-react';
 
 type AdminPreciosPanelProps = {
   pin: string;
@@ -40,6 +40,8 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
   const [errorGlobal, setErrorGlobal] = useState<string | null>(null);
   const [avisoConfig, setAvisoConfig] = useState<string | null>(null);
   const [tablaConfigFaltante, setTablaConfigFaltante] = useState(false);
+  const [visitasTotal, setVisitasTotal] = useState<number | null>(null);
+  const [visitasActualizando, setVisitasActualizando] = useState(false);
 
   const manual = modo === 'manual';
 
@@ -60,6 +62,7 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
       setTablaConfigFaltante(Boolean(json.tablaConfigFaltante));
       setAvisoConfig(typeof json.aviso === 'string' ? json.aviso : null);
       setEstaciones(json.estaciones ?? []);
+      setVisitasTotal(typeof json.visitasTotal === 'number' ? json.visitasTotal : 0);
       const next: PrecioFormState = {};
       for (const est of json.estaciones ?? []) {
         for (const p of est.precios as AdminPrecioRow[]) {
@@ -79,6 +82,33 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
   useEffect(() => {
     cargarDatos();
   }, [cargarDatos]);
+
+  const actualizarVisitas = useCallback(async () => {
+    setVisitasActualizando(true);
+    try {
+      const res = await fetch('/api/admin-precios/visitas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin }),
+      });
+      const json = await res.json();
+      if (res.ok && json.ok && typeof json.total === 'number') {
+        setVisitasTotal(json.total);
+      }
+    } catch {
+      /* silencioso: el polling no debe interrumpir el panel */
+    } finally {
+      setVisitasActualizando(false);
+    }
+  }, [pin]);
+
+  useEffect(() => {
+    if (!pin) return;
+    const interval = window.setInterval(() => {
+      void actualizarVisitas();
+    }, 15000);
+    return () => window.clearInterval(interval);
+  }, [pin, actualizarVisitas]);
 
   useEffect(() => {
     if (!toast) return;
@@ -241,6 +271,51 @@ export default function AdminPreciosPanel({ pin, onLogout }: AdminPreciosPanelPr
             {errorGlobal}
           </p>
         ) : null}
+
+        <section className="rounded-2xl sm:rounded-[2rem] border border-gray-100 bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 p-5 sm:p-6 shadow-xl overflow-hidden relative">
+          <div
+            className="pointer-events-none absolute -top-16 -right-10 h-40 w-40 rounded-full bg-[#E30613]/20 blur-3xl"
+            aria-hidden
+          />
+          <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#E30613]/15 border border-[#E30613]/30 flex items-center justify-center shrink-0">
+                <Eye className="w-6 h-6 text-[#E30613]" />
+              </div>
+              <div>
+                <p className="text-[10px] sm:text-xs font-black uppercase tracking-[0.28em] text-gray-400">
+                  Analítica del sitio
+                </p>
+                <h2 className="text-lg sm:text-xl font-black italic uppercase text-white tracking-tight">
+                  Visitas <span className="text-[#E30613]">totales</span>
+                </h2>
+              </div>
+            </div>
+            <div className="flex items-end justify-between sm:justify-end gap-4 sm:gap-6">
+              <div className="text-left sm:text-right">
+                <p className="text-4xl sm:text-5xl font-black tabular-nums text-white leading-none tracking-tighter">
+                  {visitasTotal == null ? '—' : visitasTotal.toLocaleString('es-MX')}
+                </p>
+                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-2">
+                  Sesiones públicas únicas
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => void actualizarVisitas()}
+                disabled={visitasActualizando}
+                className="p-2.5 rounded-xl border border-white/15 text-white hover:border-[#E30613] hover:bg-white/5 transition-colors disabled:opacity-50"
+                aria-label="Actualizar visitas"
+              >
+                <RefreshCw className={`w-4 h-4 ${visitasActualizando ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
+          </div>
+          <p className="relative mt-4 text-[11px] text-gray-500 leading-snug border-t border-white/10 pt-3">
+            Actualización automática cada 15 s. No cuenta rutas de administración ni visitas repetidas en la misma
+            sesión del navegador.
+          </p>
+        </section>
 
         {/* Switch modo */}
         <section className="rounded-2xl sm:rounded-[2rem] border border-gray-100 bg-white p-5 sm:p-8 shadow-xl">

@@ -1,6 +1,4 @@
 import { unauthorizedPreciosResponse, verifyAdminPreciosPin } from '@/lib/adminPreciosAuth';
-import { fetchAdminPreciosPayload } from '@/lib/adminPreciosData';
-import { getModoCapturaPrecios } from '@/lib/preciosModoCaptura';
 import { getTotalVisitas } from '@/lib/visitasSitio';
 import { getServiceSupabase } from '@/lib/supabaseService';
 
@@ -25,21 +23,8 @@ export async function POST(req: Request) {
   }
 
   try {
-    const [modoResult, payload, visitasTotal] = await Promise.all([
-      getModoCapturaPrecios(supabase),
-      fetchAdminPreciosPayload(supabase),
-      getTotalVisitas(supabase),
-    ]);
-    return Response.json({
-      ok: true,
-      modo: modoResult.modo,
-      visitasTotal,
-      tablaConfigFaltante: modoResult.tablaConfigFaltante,
-      aviso: modoResult.tablaConfigFaltante
-        ? 'Ejecuta supabase/setup-admin-precios.sql en el SQL Editor de Supabase para activar el cambio de modo automático/manual.'
-        : null,
-      ...payload,
-    });
+    const total = await getTotalVisitas(supabase);
+    return Response.json({ ok: true, total });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     return Response.json({ ok: false, error: msg }, { status: 500 });
