@@ -109,7 +109,7 @@ export default function Page() {
                 </div>
 
                 <div className="flex flex-row items-start justify-between gap-3 sm:gap-5 md:gap-6 lg:gap-10 xl:gap-12 w-full min-w-0 mt-[1lh]">
-                  <h1 className="flex-1 min-w-0 max-w-[calc(100%-5.6rem)] sm:max-w-[calc(100%-7.5rem)] md:max-w-none text-left font-black text-white tracking-tighter uppercase italic leading-[0.9] text-[clamp(2.15rem,9.2vw,2.7rem)] sm:text-[clamp(2.25rem,5.1vw,2.9rem)] md:text-[clamp(2.75rem,4.5vw,3.25rem)] lg:text-7xl xl:text-8xl">
+                  <h1 className="flex-1 min-w-0 max-w-[calc(100%-5.6rem)] sm:max-w-[calc(100%-7.5rem)] md:max-w-none text-left font-black text-white tracking-[-0.04em] md:tracking-[-0.05em] lg:tracking-tighter uppercase italic leading-[0.86] sm:leading-[0.88] md:leading-[0.82] lg:leading-[0.9] [text-shadow:0_2px_20px_rgba(0,0,0,0.5)] text-[clamp(2.4rem,10.8vw,3.15rem)] sm:text-[clamp(2.65rem,6.5vw,3.35rem)] md:text-[5.125rem] lg:text-7xl xl:text-8xl">
                     <span className="md:hidden">
                       ENERGÍA QUE
                       <br />
@@ -120,7 +120,7 @@ export default function Page() {
                     <span className="hidden md:block">
                       ENERGÍA QUE
                       <br />
-                      <span className="text-[#E30613]">MUEVE</span> A MÉXICO
+                      <span className="text-[#E30613]">MUEVE A</span> MÉXICO
                     </span>
                   </h1>
                   <div className="relative shrink-0 w-[4.85rem] h-[5.35rem] sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 xl:w-44 xl:h-44 mt-0.5">
@@ -156,24 +156,24 @@ export default function Page() {
                   </span>
                 </div>
 
-                <div className="flex flex-col items-center md:flex-row md:flex-nowrap md:items-center gap-2 max-md:gap-2 sm:gap-3 md:gap-4 w-full md:w-auto">
+                <div className="flex flex-col items-center md:flex-row md:flex-nowrap md:items-stretch md:w-full md:min-w-0 gap-2 max-md:gap-2 sm:gap-3 md:gap-2 lg:items-center lg:gap-4 lg:w-auto">
                   <a
                     href="/estaciones?estacion=gsi"
-                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:w-auto md:shrink-0 bg-[#E30613] text-white px-5 md:px-8 py-3 sm:py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-widest flex items-center justify-between md:justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base shadow-lg shadow-red-900/25"
+                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:flex-1 md:min-w-0 md:w-auto lg:flex-none lg:shrink-0 bg-[#E30613] text-white px-5 md:px-3 lg:px-8 py-3 sm:py-4 md:py-2.5 lg:py-4 rounded-2xl md:rounded-lg lg:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-[0.07em] lg:tracking-widest flex items-center justify-between md:justify-center gap-3 md:gap-1.5 lg:gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-[10px] lg:text-base shadow-lg shadow-red-900/25"
                   >
-                    <span>Gasolinera Santa Irene</span>
-                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform shrink-0" />
+                    <span className="md:leading-tight lg:leading-normal">Gasolinera Santa Irene</span>
+                    <ArrowRight className="w-5 h-5 md:w-3.5 md:h-3.5 lg:w-5 lg:h-5 group-hover:translate-x-1 transition-transform shrink-0" />
                   </a>
                   <a
                     href="/estaciones?estacion=gpo"
-                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:w-auto md:shrink-0 bg-[#E30613] text-white px-5 md:px-8 py-3 sm:py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-widest flex items-center justify-between md:justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base shadow-lg shadow-red-900/25"
+                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:flex-1 md:min-w-0 md:w-auto lg:flex-none lg:shrink-0 bg-[#E30613] text-white px-5 md:px-3 lg:px-8 py-3 sm:py-4 md:py-2.5 lg:py-4 rounded-2xl md:rounded-lg lg:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-[0.07em] lg:tracking-widest flex items-center justify-between md:justify-center gap-3 md:gap-1.5 lg:gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-[10px] lg:text-base shadow-lg shadow-red-900/25"
                   >
-                    <span>Gasolinera El Pozole</span>
-                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform shrink-0" />
+                    <span className="md:leading-tight lg:leading-normal">Gasolinera El Pozole</span>
+                    <ArrowRight className="w-5 h-5 md:w-3.5 md:h-3.5 lg:w-5 lg:h-5 group-hover:translate-x-1 transition-transform shrink-0" />
                   </a>
                   <a
                     href="/corporativo"
-                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:w-auto md:shrink-0 bg-white text-gray-900 border border-gray-200 px-5 md:px-8 py-3 sm:py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-widest hover:bg-gray-100 hover:text-black transition-all text-center text-xs sm:text-sm md:text-base shadow-lg shadow-black/20"
+                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:flex-1 md:min-w-0 md:w-auto lg:flex-none lg:shrink-0 bg-white text-gray-900 border border-gray-200 px-5 md:px-3 lg:px-8 py-3 sm:py-4 md:py-2.5 lg:py-4 rounded-2xl md:rounded-lg lg:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-[0.07em] lg:tracking-widest hover:bg-gray-100 hover:text-black transition-all text-center text-xs sm:text-sm md:text-[10px] lg:text-base md:leading-tight lg:leading-normal shadow-lg shadow-black/20"
                   >
                     Planta de Distribución
                   </a>
@@ -272,7 +272,7 @@ export default function Page() {
                     <li key={u.nombre} className="min-w-0 w-full max-w-xl lg:max-w-none">
                       <a
                         href={u.href}
-                        className="group flex flex-row items-center justify-between gap-3 sm:gap-4 h-full rounded-xl md:rounded-2xl border border-gray-200/80 bg-white p-4 sm:p-5 shadow-sm transition-all duration-300 hover:border-[#E30613]/30 hover:shadow-md"
+                        className="group flex flex-row items-center justify-between gap-3 sm:gap-4 h-full rounded-xl md:rounded-2xl border-2 border-gray-200/90 border-l-4 border-l-[#E30613]/30 bg-white p-4 sm:p-5 shadow-md transition-all duration-300 hover:border-[#E30613]/45 hover:border-l-[#E30613] hover:bg-red-50/40 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E30613]/40"
                       >
                         <div className="flex-1 min-w-0 pr-1">
                           <p className="text-[13px] sm:text-sm md:text-base font-black text-gray-900 uppercase italic leading-tight group-hover:text-[#E30613] transition-colors">
@@ -284,16 +284,28 @@ export default function Page() {
                           <p className="text-[10px] sm:text-[11px] text-gray-500 font-medium leading-snug mt-1.5">
                             {u.direccion}
                           </p>
+                          <p className="mt-2.5 inline-flex items-center gap-1 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.14em] text-[#E30613] group-hover:text-gray-900 transition-colors">
+                            Ver ubicación
+                            <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                          </p>
                         </div>
-                        <div className={`relative shrink-0 ${u.logoBoxClass}`}>
-                          <Image
-                            src={u.logo}
-                            alt=""
-                            fill
-                            className={u.logoImageClass}
-                            sizes="(max-width: 640px) 88px, (max-width: 1024px) 112px, 128px"
-                            unoptimized
-                          />
+                        <div className="flex flex-col items-center justify-center gap-2 shrink-0">
+                          <div className={`relative ${u.logoBoxClass}`}>
+                            <Image
+                              src={u.logo}
+                              alt=""
+                              fill
+                              className={u.logoImageClass}
+                              sizes="(max-width: 640px) 88px, (max-width: 1024px) 112px, 128px"
+                              unoptimized
+                            />
+                          </div>
+                          <span
+                            className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-500 group-hover:bg-[#E30613] group-hover:text-white transition-all duration-300"
+                            aria-hidden
+                          >
+                            <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                          </span>
                         </div>
                       </a>
                     </li>
