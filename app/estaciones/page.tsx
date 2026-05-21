@@ -46,9 +46,9 @@ function buildMapEmbed(lat: number, lng: number, zoom: number, satellite = false
 }
 
 const ServiceIcon = ({ icon: Icon, label }: ServicioItem) => (
-  <div className="flex items-center gap-2.5 bg-gray-200 px-3 py-3 sm:py-3.5 rounded-full min-w-0">
-    <Icon className="w-5 h-5 sm:w-[1.35rem] sm:h-[1.35rem] shrink-0 text-[#E30613]" />
-    <span className="text-[9px] sm:text-[10px] font-black text-gray-900 uppercase tracking-tight leading-tight">
+  <div className="flex items-center gap-2.5 sm:gap-3 bg-gray-200 px-3.5 py-3.5 sm:px-4 sm:py-4 rounded-full min-w-0">
+    <Icon className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 text-[#E30613]" />
+    <span className="text-[11px] sm:text-xs md:text-sm font-black text-gray-900 uppercase tracking-tight leading-tight">
       {label}
     </span>
   </div>
@@ -98,9 +98,9 @@ function EstacionCard({
           • {marca}
         </p>
 
-        <div className="flex items-start gap-2.5 mt-4">
-          <MapPin className="w-4 h-4 text-[#E30613] flex-shrink-0 mt-0.5" />
-          <p className="text-[11px] sm:text-xs text-gray-600 font-medium leading-snug">{direccion}</p>
+        <div className="flex items-start gap-3 mt-4">
+          <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-[#E30613] flex-shrink-0 mt-0.5" />
+          <p className="text-sm sm:text-base md:text-lg text-gray-700 font-semibold leading-snug">{direccion}</p>
         </div>
       </div>
 
@@ -133,15 +133,17 @@ function EstacionCard({
 
       {/* Mapa */}
       <div className="mt-auto border-t border-gray-100">
-        <div className="px-5 sm:px-6 py-3 flex items-center justify-between gap-2">
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Ubicación</p>
+        <div className="px-5 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3">
+          <p className="text-xs sm:text-sm md:text-base font-black uppercase tracking-[0.18em] text-gray-700">
+            Ubicación
+          </p>
           <button
             type="button"
             onClick={abrirMapa}
-            className="text-[10px] font-black uppercase tracking-widest text-[#E30613] hover:text-gray-900 flex items-center gap-1 transition-colors"
+            className="text-xs sm:text-sm md:text-base font-black uppercase tracking-widest text-[#E30613] hover:text-gray-900 flex items-center gap-1.5 transition-colors shrink-0"
           >
             Google Maps
-            <ChevronRight className="w-3.5 h-3.5" />
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
         <div className="grid grid-cols-2 gap-1 bg-gray-200 px-1 sm:px-0">
