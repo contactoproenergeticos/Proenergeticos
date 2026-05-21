@@ -3,42 +3,30 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import {
-  MapPin,
-  Truck,
-  Briefcase,
-  Fuel,
-  Bath,
-  ChevronRight,
-  Zap,
-} from 'lucide-react';
+import { MapPin, Truck, Briefcase, Fuel, Bath, ChevronRight, Zap } from 'lucide-react';
 
 const PLANTA_MAP_LINK =
   'https://maps.google.com/?cid=14017863012502601436&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNl';
 
-const PLANTA_MAP_EMBED =
-  'https://www.google.com/maps?q=Sur,+M%C3%A9xico+15+1002,+Ur%C3%ADas,+82070+Mazatl%C3%A1n,+Sin.&output=embed';
+const PLANTA_DIRECCION = 'Sur, México 15 1002, Urías, 82070 Mazatlán, Sin.';
 
 const SERVICIOS = [
-  { icon: Truck, label: 'Logística', color: 'text-blue-600' },
-  { icon: Briefcase, label: 'Industrial', color: 'text-[#E30613]' },
-  { icon: Fuel, label: 'Suministro', color: 'text-gray-700' },
-  { icon: Bath, label: 'Baños', color: 'text-gray-500' },
+  { icon: Truck, label: 'LOGÍSTICA' },
+  { icon: Briefcase, label: 'INDUSTRIAL' },
+  { icon: Fuel, label: 'SUMINISTRO' },
+  { icon: Bath, label: 'BAÑOS' },
 ] as const;
 
-function ServiceIcon({
-  icon: Icon,
-  label,
-  color,
-}: {
-  icon: React.ElementType;
-  label: string;
-  color: string;
-}) {
+function buildMapEmbed(query: string, zoom: number, satellite = false) {
+  const mapType = satellite ? '&t=k' : '';
+  return `https://www.google.com/maps?q=${encodeURIComponent(query)}&hl=es&z=${zoom}${mapType}&output=embed`;
+}
+
+function ServicePill({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
   return (
-    <div className="flex items-center gap-2 bg-gray-50 px-2 py-2 rounded-xl border border-gray-100 hover:bg-white hover:shadow-sm transition-all">
-      <Icon className={`w-3.5 h-3.5 ${color}`} />
-      <span className="text-[9px] font-black text-gray-700 uppercase tracking-tight leading-none">
+    <div className="flex items-center justify-center sm:justify-start gap-2.5 sm:gap-3 bg-gray-200 px-3.5 py-3.5 sm:px-4 sm:py-4 rounded-full min-w-0">
+      <Icon className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 text-[#E30613]" />
+      <span className="text-[11px] sm:text-xs md:text-sm font-black text-gray-900 uppercase tracking-tight leading-tight text-center sm:text-left">
         {label}
       </span>
     </div>
@@ -50,9 +38,12 @@ export default function PlantaDistribucionSection() {
     window.open(PLANTA_MAP_LINK, '_blank', 'noopener,noreferrer');
   };
 
+  const mapEmbedPuntual = buildMapEmbed(PLANTA_DIRECCION, 17);
+  const mapEmbedAmplio = buildMapEmbed(PLANTA_DIRECCION, 14, true);
+
   return (
-    <section className="space-y-8">
-      <div className="text-center max-w-3xl mx-auto">
+    <section className="space-y-8 md:space-y-10">
+      <div className="text-center max-w-3xl mx-auto px-2">
         <div className="inline-flex items-center gap-2 bg-[#E30613]/10 px-4 py-2 rounded-full border border-[#E30613]/20 mb-4">
           <Zap className="w-4 h-4 text-[#E30613]" />
           <span className="text-[#E30613] font-black text-[10px] uppercase tracking-[0.25em]">
@@ -72,126 +63,124 @@ export default function PlantaDistribucionSection() {
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-stretch"
+        className="max-w-3xl md:max-w-5xl lg:max-w-6xl mx-auto w-full px-0 sm:px-2"
       >
-        {/* Tarjeta de la planta */}
-        <div className="bg-white rounded-[40px] shadow-xl overflow-hidden border border-[#E30613] ring-4 ring-[#E30613]/5 flex flex-col h-full group transition-all duration-500 hover:shadow-2xl relative">
-          <div className="absolute top-4 right-4 z-20">
-            <div className="bg-[#E30613] text-white text-[9px] font-black uppercase tracking-widest px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
-              <Zap className="w-3 h-3 fill-white" />
-              Centro Logístico
+        <article className="bg-white rounded-[28px] md:rounded-[36px] shadow-xl overflow-hidden border border-gray-100 flex flex-col group transition-all duration-500 hover:shadow-2xl">
+          {/* Imagen con logotipo */}
+          <div className="relative h-56 sm:h-72 md:h-80 lg:h-[22rem] w-full overflow-hidden bg-gray-100">
+            <div className="absolute top-5 left-5 sm:top-6 sm:left-6 z-20">
+              <div className="relative w-28 h-14 sm:w-32 sm:h-16 md:w-36 md:h-[4.5rem]">
+                <Image
+                  src="/images/logotipos/ProEner.png"
+                  alt="ProEnergéticos"
+                  fill
+                  className="object-contain drop-shadow-md"
+                  unoptimized
+                />
+              </div>
             </div>
-          </div>
-
-          <div className="absolute top-4 left-6 z-20">
-            <div className="relative w-28 h-14">
-              <Image
-                src="/images/logotipos/ProEner.png"
-                alt="ProEnergéticos"
-                fill
-                className="object-contain"
-                unoptimized
-              />
-            </div>
-          </div>
-
-          <div className="relative h-56 w-full overflow-hidden">
             <Image
               src="/images/gasolinera/PLANTA/Planta3.jpg"
               alt="Planta de Distribución Grupo Proenergéticos"
               fill
-              className="object-cover transition-transform duration-1000 group-hover:scale-110"
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
               unoptimized
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            <div className="absolute bottom-4 left-6 text-left">
-              <h3 className="text-2xl font-black text-white uppercase tracking-tighter italic leading-tight mb-1">
-                Planta de Distribución
-              </h3>
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#E30613] animate-pulse" />
-                <p className="text-[10px] text-white/90 font-bold uppercase tracking-widest">
-                  Centro Logístico
-                </p>
-              </div>
+          </div>
+
+          {/* Identificación */}
+          <div className="px-6 sm:px-10 md:px-12 pt-6 sm:pt-8">
+            <h3 className="text-xl sm:text-2xl md:text-[2rem] lg:text-4xl font-black text-gray-900 uppercase tracking-tighter italic leading-tight">
+              PLANTA DE DISTRIBUCIÓN
+            </h3>
+            <p className="mt-1.5 text-[10px] sm:text-[11px] font-black text-[#E30613] uppercase tracking-[0.18em]">
+              • CENTRO LOGÍSTICO
+            </p>
+
+            <div className="flex items-start gap-3 mt-4 sm:mt-5">
+              <MapPin className="w-5 h-5 sm:w-6 sm:h-6 text-[#E30613] flex-shrink-0 mt-0.5" />
+              <p className="text-sm sm:text-base md:text-lg text-gray-700 font-semibold leading-snug">
+                {PLANTA_DIRECCION}
+              </p>
             </div>
           </div>
 
-          <div className="p-6 flex flex-col flex-grow text-left">
-            <div className="flex items-start gap-3 mb-4">
-              <MapPin className="w-4 h-4 text-[#E30613] flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-gray-600 font-bold leading-snug">
-                Sur, México 15 1002, Urías, 82070 Mazatlán, Sin.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 mb-6">
+          {/* Servicios */}
+          <div className="px-6 sm:px-10 md:px-12 pt-5 pb-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
               {SERVICIOS.map((s) => (
-                <ServiceIcon key={s.label} {...s} />
+                <ServicePill key={s.label} {...s} />
               ))}
             </div>
+          </div>
 
-            <div className="flex-grow flex flex-col justify-center py-2 px-4">
-              <p className="text-[10px] text-gray-400 font-black uppercase tracking-[0.2em] mb-3 italic text-center">
+          {/* Pagos */}
+          <div className="px-6 sm:px-10 md:px-12 pb-6 md:pb-8">
+            <div className="rounded-2xl bg-gray-800 px-5 py-5 sm:px-8 sm:py-6 text-center">
+              <p className="text-[9px] sm:text-[10px] text-white font-black uppercase tracking-[0.22em] mb-3 sm:mb-4">
                 Aceptamos tarjetas y monederos
               </p>
-              <div className="relative w-full h-14 opacity-80 group-hover:opacity-100 transition-opacity">
+              <div className="relative w-full h-14 sm:h-16 md:h-[4.75rem] mx-auto max-w-lg md:max-w-2xl">
                 <Image
-                  src="/images/pagos/pago tarjetas credito.png"
+                  src="/images/pagos/pago tarjetas hor.png"
                   alt="Métodos de pago"
                   fill
-                  className="object-contain"
+                  className="object-contain object-center"
+                  unoptimized
                 />
               </div>
             </div>
-
-            <button
-              type="button"
-              onClick={abrirMapa}
-              className="w-full mt-6 py-5 bg-[#E30613] text-white font-black uppercase tracking-widest text-xs hover:bg-gray-900 transition-all duration-300 rounded-2xl flex items-center justify-center gap-3 shadow-lg shadow-red-500/20"
-            >
-              <span>Cómo llegar</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
           </div>
-        </div>
 
-        {/* Mapa de Google */}
-        <div className="flex flex-col h-full min-h-[420px] lg:min-h-0">
-          <div className="bg-white rounded-[40px] shadow-xl border border-gray-100 overflow-hidden flex flex-col h-full">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-              <MapPin className="w-5 h-5 text-[#E30613] shrink-0" />
-              <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                  Ubicación
-                </p>
-                <p className="text-sm font-bold text-gray-800 leading-snug">
-                  Sur, México 15 1002, Urías, Mazatlán, Sin.
-                </p>
-              </div>
-            </div>
-            <div className="relative flex-grow min-h-[320px] bg-gray-100">
-              <iframe
-                title="Mapa — Planta de Distribución Grupo Proenergéticos"
-                src={PLANTA_MAP_EMBED}
-                className="absolute inset-0 w-full h-full border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
-            </div>
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+          {/* Mapa dual */}
+          <div className="mt-auto border-t border-gray-100">
+            <div className="px-6 sm:px-10 md:px-12 py-3 sm:py-4 flex items-center justify-between gap-3">
+              <p className="text-xs sm:text-sm md:text-base font-black uppercase tracking-[0.18em] text-gray-700">
+                Ubicación
+              </p>
               <button
                 type="button"
                 onClick={abrirMapa}
-                className="w-full py-3 text-[11px] font-black uppercase tracking-widest text-[#E30613] hover:text-gray-900 transition-colors flex items-center justify-center gap-2"
+                className="text-xs sm:text-sm md:text-base font-black uppercase tracking-widest text-[#E30613] hover:text-gray-900 flex items-center gap-1.5 transition-colors shrink-0"
               >
-                Abrir en Google Maps
-                <ChevronRight className="w-4 h-4" />
+                Google Maps
+                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+              </button>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 sm:gap-1.5 bg-gray-200">
+              <div className="relative h-48 sm:h-60 md:h-72 lg:h-80 bg-gray-100 overflow-hidden">
+                <iframe
+                  title="Ubicación puntual — Planta de Distribución"
+                  src={mapEmbedPuntual}
+                  className="absolute inset-0 w-full h-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              </div>
+              <div className="relative h-48 sm:h-60 md:h-72 lg:h-80 bg-gray-100 overflow-hidden">
+                <iframe
+                  title="Ubicación amplia — Planta de Distribución"
+                  src={mapEmbedAmplio}
+                  className="absolute inset-0 w-full h-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              </div>
+            </div>
+            <div className="px-6 sm:px-10 md:px-12 py-5 sm:py-7">
+              <button
+                type="button"
+                onClick={abrirMapa}
+                className="w-full py-4 sm:py-4 md:py-5 bg-[#E30613] text-white font-black uppercase tracking-[0.14em] sm:tracking-widest text-sm sm:text-base md:text-lg hover:bg-gray-900 transition-all duration-300 rounded-full flex items-center justify-center gap-2.5 shadow-lg shadow-red-500/20 active:scale-[0.98]"
+              >
+                Cómo llegar
+                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
           </div>
-        </div>
+        </article>
       </motion.div>
     </section>
   );

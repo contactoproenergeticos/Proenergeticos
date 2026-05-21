@@ -34,11 +34,16 @@ type EstacionData = {
   marca: string;
   direccion: string;
   mapLink: string;
-  mapEmbed: string;
+  coords: { lat: number; lng: number };
   imagen: string;
   estacionLogo: string;
   servicios: ServicioItem[];
 };
+
+function buildMapEmbed(lat: number, lng: number, zoom: number, satellite = false) {
+  const mapType = satellite ? '&t=k' : '';
+  return `https://www.google.com/maps?q=${lat},${lng}&hl=es&z=${zoom}${mapType}&output=embed`;
+}
 
 const ServiceIcon = ({ icon: Icon, label }: ServicioItem) => (
   <div className="flex items-center gap-2.5 bg-gray-200 px-3 py-3 sm:py-3.5 rounded-full min-w-0">
@@ -56,12 +61,15 @@ function EstacionCard({
   servicios,
   imagen,
   mapLink,
-  mapEmbed,
+  coords,
   estacionLogo,
 }: EstacionData) {
   const abrirMapa = () => {
     if (mapLink) window.open(mapLink, '_blank', 'noopener,noreferrer');
   };
+
+  const mapEmbedPuntual = buildMapEmbed(coords.lat, coords.lng, 17);
+  const mapEmbedAmplio = buildMapEmbed(coords.lat, coords.lng, 14, true);
 
   return (
     <article className="bg-white rounded-[28px] md:rounded-[32px] shadow-xl overflow-hidden border border-gray-100 flex flex-col h-full group transition-all duration-500 hover:shadow-2xl">
@@ -136,15 +144,27 @@ function EstacionCard({
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
-        <div className="relative w-full h-40 sm:h-44 bg-gray-100">
-          <iframe
-            title={`Mapa — ${nombre}`}
-            src={mapEmbed}
-            className="absolute inset-0 w-full h-full border-0"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            allowFullScreen
-          />
+        <div className="grid grid-cols-2 gap-1 bg-gray-200 px-1 sm:px-0">
+          <div className="relative h-40 sm:h-44 bg-gray-100 overflow-hidden">
+            <iframe
+              title={`Ubicación puntual — ${nombre}`}
+              src={mapEmbedPuntual}
+              className="absolute inset-0 w-full h-full border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          </div>
+          <div className="relative h-40 sm:h-44 bg-gray-100 overflow-hidden">
+            <iframe
+              title={`Ubicación amplia — ${nombre}`}
+              src={mapEmbedAmplio}
+              className="absolute inset-0 w-full h-full border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          </div>
         </div>
         <div className="px-5 sm:px-6 py-5">
           <button
@@ -175,7 +195,7 @@ const unidades: EstacionData[] = [
     marca: 'Estación de Servicio',
     direccion: 'Luis Donaldo Colosio Murrieta 14101, Santa Laura, 82136 Mazatlán, Sin.',
     mapLink: 'https://maps.app.goo.gl/zErcC9Mv731aAmPRA',
-    mapEmbed: 'https://www.google.com/maps?q=23.2561731,-106.405201&hl=es&z=16&output=embed',
+    coords: { lat: 23.2561731, lng: -106.405201 },
     imagen: '/images/gasolinera/GSI/gsi3.jpeg',
     estacionLogo: '/images/logotipos/BLAST.png',
     servicios: [
@@ -190,7 +210,7 @@ const unidades: EstacionData[] = [
     marca: 'Estación de Servicio',
     direccion: 'Carretera Internacional Sur Km. 60, El Pozole, Villa Unión, Sin.',
     mapLink: 'https://maps.app.goo.gl/TYiUjwbARVfAPhp16',
-    mapEmbed: 'https://www.google.com/maps?q=23.1926548,-106.2382193&hl=es&z=16&output=embed',
+    coords: { lat: 23.1926548, lng: -106.2382193 },
     imagen: '/images/gasolinera/GPO/GPO2.jpg',
     estacionLogo: '/images/logotipos/GPO.png',
     servicios: [
