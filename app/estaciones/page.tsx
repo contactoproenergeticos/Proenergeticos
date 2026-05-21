@@ -40,10 +40,10 @@ type EstacionData = {
   servicios: ServicioItem[];
 };
 
-const ServiceIcon = ({ icon: Icon, label, color }: ServicioItem) => (
-  <div className="flex items-center gap-2 bg-gray-50 px-2 py-2 rounded-xl border border-gray-100">
-    <Icon className={`w-3.5 h-3.5 shrink-0 ${color}`} />
-    <span className="text-[9px] font-black text-gray-700 uppercase tracking-tight leading-none">
+const ServiceIcon = ({ icon: Icon, label }: ServicioItem) => (
+  <div className="flex items-center gap-2.5 bg-gray-200 px-3 py-3 sm:py-3.5 rounded-full min-w-0">
+    <Icon className="w-5 h-5 sm:w-[1.35rem] sm:h-[1.35rem] shrink-0 text-[#E30613]" />
+    <span className="text-[9px] sm:text-[10px] font-black text-gray-900 uppercase tracking-tight leading-tight">
       {label}
     </span>
   </div>
@@ -64,9 +64,9 @@ function EstacionCard({
   };
 
   return (
-    <article className="bg-white rounded-[32px] md:rounded-[40px] shadow-xl overflow-hidden border border-gray-100 flex flex-col h-full group transition-all duration-500 hover:shadow-2xl">
-      {/* Imagen + título */}
-      <div className="relative h-48 sm:h-56 w-full overflow-hidden">
+    <article className="bg-white rounded-[28px] md:rounded-[32px] shadow-xl overflow-hidden border border-gray-100 flex flex-col h-full group transition-all duration-500 hover:shadow-2xl">
+      {/* Imagen con logotipo */}
+      <div className="relative h-44 sm:h-52 w-full overflow-hidden bg-gray-100">
         <div className="absolute top-4 left-4 z-20">
           <div className="relative w-24 h-12 sm:w-28 sm:h-14">
             <Image src={estacionLogo} alt="" fill className="object-contain drop-shadow-md" unoptimized />
@@ -79,80 +79,82 @@ function EstacionCard({
           className="object-cover transition-transform duration-700 group-hover:scale-105"
           unoptimized
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-        <div className="absolute bottom-4 left-4 right-4 text-left">
-          <h2 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tighter italic leading-tight mb-1">
-            {nombre}
-          </h2>
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-green-500 shrink-0" />
-            <p className="text-[10px] text-white/90 font-bold uppercase tracking-widest">{marca}</p>
-          </div>
+      </div>
+
+      {/* Identificación */}
+      <div className="px-5 sm:px-6 pt-5 sm:pt-6">
+        <h2 className="text-xl sm:text-2xl font-black text-gray-900 uppercase tracking-tighter italic leading-tight">
+          {nombre}
+        </h2>
+        <p className="mt-1.5 text-[10px] sm:text-[11px] font-black text-[#E30613] uppercase tracking-[0.18em]">
+          • {marca}
+        </p>
+
+        <div className="flex items-start gap-2.5 mt-4">
+          <MapPin className="w-4 h-4 text-[#E30613] flex-shrink-0 mt-0.5" />
+          <p className="text-[11px] sm:text-xs text-gray-600 font-medium leading-snug">{direccion}</p>
         </div>
       </div>
 
-      {/* Contenido */}
-      <div className="p-5 sm:p-6 flex flex-col flex-1 text-left">
-        <div className="flex items-start gap-3 mb-4">
-          <MapPin className="w-4 h-4 text-[#E30613] flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-gray-600 font-bold leading-snug">{direccion}</p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2 mb-4">
+      {/* Servicios */}
+      <div className="px-5 sm:px-6 pt-4 pb-5">
+        <div className="grid grid-cols-2 gap-3">
           {servicios.map((s, i) => (
             <ServiceIcon key={`${s.label}-${i}`} {...s} />
           ))}
         </div>
+      </div>
 
-        <div className="mb-5">
-          <p className="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mb-2 italic text-center">
+      {/* Pagos */}
+      <div className="px-5 sm:px-6 pb-5">
+        <div className="rounded-2xl bg-gray-800 px-4 py-4 sm:px-5 sm:py-5 text-center">
+          <p className="text-[9px] sm:text-[10px] text-white font-black uppercase tracking-[0.22em] mb-3 sm:mb-4">
             Aceptamos tarjetas y monederos
           </p>
-          <div className="relative w-full h-12 sm:h-14">
+          <div className="relative w-full h-14 sm:h-16 mx-auto max-w-[340px] sm:max-w-none">
             <Image
-              src="/images/pagos/pago tarjetas credito.png"
+              src="/images/pagos/pago tarjetas hor.png"
               alt="Métodos de pago"
               fill
-              className="object-contain"
+              className="object-contain object-center"
+              unoptimized
             />
           </div>
         </div>
+      </div>
 
-        {/* Mapa embebido — pie de la tarjeta */}
-        <div className="mt-auto -mx-5 sm:-mx-6 border-t border-gray-100">
-          <div className="px-5 sm:px-6 py-3 flex items-center justify-between gap-2 bg-gray-50">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">
-              Ubicación
-            </p>
-            <button
-              type="button"
-              onClick={abrirMapa}
-              className="text-[10px] font-black uppercase tracking-widest text-[#E30613] hover:text-gray-900 flex items-center gap-1 transition-colors"
-            >
-              Google Maps
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-          <div className="relative w-full h-44 sm:h-48 bg-gray-100">
-            <iframe
-              title={`Mapa — ${nombre}`}
-              src={mapEmbed}
-              className="absolute inset-0 w-full h-full border-0"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              allowFullScreen
-            />
-          </div>
-          <div className="p-4 sm:p-5 bg-white">
-            <button
-              type="button"
-              onClick={abrirMapa}
-              className="w-full py-4 bg-[#E30613] text-white font-black uppercase tracking-widest text-xs hover:bg-gray-900 transition-all duration-300 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-red-500/20 active:scale-[0.98]"
-            >
-              Cómo llegar
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
+      {/* Mapa */}
+      <div className="mt-auto border-t border-gray-100">
+        <div className="px-5 sm:px-6 py-3 flex items-center justify-between gap-2">
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Ubicación</p>
+          <button
+            type="button"
+            onClick={abrirMapa}
+            className="text-[10px] font-black uppercase tracking-widest text-[#E30613] hover:text-gray-900 flex items-center gap-1 transition-colors"
+          >
+            Google Maps
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+        <div className="relative w-full h-40 sm:h-44 bg-gray-100">
+          <iframe
+            title={`Mapa — ${nombre}`}
+            src={mapEmbed}
+            className="absolute inset-0 w-full h-full border-0"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            allowFullScreen
+          />
+        </div>
+        <div className="px-5 sm:px-6 py-5">
+          <button
+            type="button"
+            onClick={abrirMapa}
+            className="w-full py-3.5 sm:py-4 bg-[#E30613] text-white font-black uppercase tracking-widest text-xs hover:bg-gray-900 transition-all duration-300 rounded-full flex items-center justify-center gap-2 shadow-lg shadow-red-500/20 active:scale-[0.98]"
+          >
+            Cómo llegar
+            <ChevronRight className="w-4 h-4" />
+          </button>
         </div>
       </div>
     </article>
@@ -177,7 +179,7 @@ const unidades: EstacionData[] = [
     imagen: '/images/gasolinera/GSI/gsi3.jpeg',
     estacionLogo: '/images/logotipos/BLAST.png',
     servicios: [
-      { icon: Store, label: 'TIENDAS DE CONVENIENCIAS', color: 'text-red-600' },
+      { icon: Store, label: 'TIENDA DE CONVENIENCIA', color: 'text-red-600' },
       { icon: Clock, label: '24/7', color: 'text-green-600' },
       ...serviciosBasicos,
     ],
@@ -192,7 +194,7 @@ const unidades: EstacionData[] = [
     imagen: '/images/gasolinera/GPO/GPO2.jpg',
     estacionLogo: '/images/logotipos/GPO.png',
     servicios: [
-      { icon: Store, label: 'TIENDAS DE CONVENIENCIAS', color: 'text-orange-600' },
+      { icon: Store, label: 'TIENDA DE CONVENIENCIA', color: 'text-orange-600' },
       { icon: Clock, label: '24/7', color: 'text-green-600' },
       ...serviciosBasicos,
     ],
