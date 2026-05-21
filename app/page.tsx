@@ -80,12 +80,12 @@ export default function Page() {
   return (
     <SiteShell>
       <div className="w-full max-w-full overflow-hidden bg-gray-200 -mx-4 md:mx-0 px-0 md:p-8 lg:p-12">
-        <div className="max-w-7xl mx-auto space-y-0 md:space-y-6">
+        <div className="max-w-7xl mx-auto space-y-3 md:space-y-6">
           {/* HERO */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="relative w-full max-md:h-[calc(100dvh-6rem)] max-md:max-h-[calc(100dvh-6rem)] md:min-h-[560px] lg:min-h-[68vh] bg-gray-950 rounded-t-[2rem] sm:rounded-t-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl flex items-stretch"
+            className="relative w-full md:min-h-[560px] lg:min-h-[68vh] bg-gray-950 rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl"
           >
             <div className="absolute inset-0 z-0">
               <Image
@@ -94,80 +94,89 @@ export default function Page() {
                 fill
                 priority
                 sizes="100vw"
-                className="object-cover opacity-60 contrast-125"
+                className="object-cover opacity-55 contrast-125"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/85 lg:bg-gradient-to-r lg:from-black/80 lg:via-black/40 lg:to-transparent z-10" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/55 to-black/90 lg:bg-gradient-to-r lg:from-black/80 lg:via-black/40 lg:to-transparent z-10" />
             </div>
 
-            <div className="relative z-20 w-full max-md:h-full px-4 sm:px-6 md:px-16 lg:px-24 py-3.5 max-md:py-3 sm:py-8 md:py-12 flex flex-col max-md:justify-between md:justify-center gap-2 max-md:gap-2 sm:gap-6 md:gap-8">
-              <div className="flex items-center justify-center sm:justify-start gap-3 md:gap-4 w-full shrink-0">
-                <div className="hidden sm:block h-[2px] w-8 md:w-12 bg-[#E30613] shrink-0" />
-                <span className="text-[#E30613] text-[11px] sm:text-[13px] md:text-sm font-black uppercase tracking-[0.24em] sm:tracking-[0.28em] md:tracking-[0.4em] italic text-center sm:text-left">
-                  — GRUPO PROENERGETICOS —
-                </span>
-              </div>
-
-              <div className="flex flex-row items-start sm:items-center md:items-start lg:items-center justify-between gap-2 sm:gap-5 md:gap-6 lg:gap-10 xl:gap-12 w-full min-w-0 shrink-0">
-                <h1 className="flex-1 min-w-0 text-left font-black text-white tracking-tighter uppercase italic leading-[0.88] sm:leading-[0.9] text-[clamp(1.9rem,8.4vw,2.45rem)] sm:text-[clamp(2rem,4.8vw,2.75rem)] md:text-5xl lg:text-7xl xl:text-8xl">
-                  ENERGÍA QUE
-                  <br />
-                  <span className="text-[#E30613]">MUEVE</span>{' '}
-                  <span>A MÉXICO</span>
-                </h1>
-                <div className="relative shrink-0 w-[clamp(4.75rem,22vw,6.25rem)] h-[clamp(5.25rem,24vw,6.75rem)] sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 xl:w-44 xl:h-44">
-                  <Image
-                    src="/images/logotipos/ProEner.png"
-                    alt="Logo Grupo Proenergéticos"
-                    fill
-                    sizes="(max-width: 640px) 100px, (max-width: 1024px) 128px, 176px"
-                    className="object-contain drop-shadow-2xl"
-                  />
+            <div className="relative z-20 w-full px-5 sm:px-6 md:px-16 lg:px-24 pt-4 pb-4 sm:py-8 md:py-12">
+              <div className="flex flex-col gap-2.5 max-md:gap-[10px] sm:gap-6 md:gap-8">
+                <div className="flex items-center justify-center sm:justify-start w-full">
+                  <span className="text-[#E30613] text-[11px] sm:text-[13px] md:text-sm font-black uppercase tracking-[0.28em] sm:tracking-[0.28em] md:tracking-[0.4em] italic text-center sm:text-left">
+                    — GRUPO PROENERGETICOS —
+                  </span>
                 </div>
-              </div>
 
-              <p className="max-w-2xl text-[clamp(0.84rem,3.7vw,0.95rem)] sm:text-sm md:text-xl text-white/90 font-medium italic text-left leading-snug sm:leading-relaxed shrink-0">
-                En{' '}
-                <span className="font-black uppercase italic">
-                  <span className="text-white">Grupo Pro</span>
-                  <span className="text-[#E30613]">energeticos</span>
-                </span>{' '}
-                distribuimos combustibles de alta calidad en Mazatlán y zona conurbada — para transporte,
-                industria, flotas y público en general, con certeza en cada litro.
-              </p>
+                <div className="flex flex-row items-start justify-between gap-3 sm:gap-5 md:gap-6 lg:gap-10 xl:gap-12 w-full min-w-0 mt-[1lh]">
+                  <h1 className="flex-1 min-w-0 max-w-[calc(100%-5.6rem)] sm:max-w-[calc(100%-7.5rem)] md:max-w-none text-left font-black text-white tracking-tighter uppercase italic leading-[0.9] text-[clamp(2.15rem,9.2vw,2.7rem)] sm:text-[clamp(2.25rem,5.1vw,2.9rem)] md:text-[clamp(2.75rem,4.5vw,3.25rem)] lg:text-7xl xl:text-8xl">
+                    <span className="md:hidden">
+                      ENERGÍA QUE
+                      <br />
+                      <span className="text-[#E30613]">MUEVE A</span>
+                      <br />
+                      MÉXICO
+                    </span>
+                    <span className="hidden md:block">
+                      ENERGÍA QUE
+                      <br />
+                      <span className="text-[#E30613]">MUEVE</span> A MÉXICO
+                    </span>
+                  </h1>
+                  <div className="relative shrink-0 w-[4.85rem] h-[5.35rem] sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 xl:w-44 xl:h-44 mt-0.5">
+                    <Image
+                      src="/images/logotipos/ProEner.png"
+                      alt="Logo Grupo Proenergéticos"
+                      fill
+                      sizes="(max-width: 640px) 100px, (max-width: 1024px) 128px, 176px"
+                      className="object-contain drop-shadow-2xl"
+                    />
+                  </div>
+                </div>
 
-              <div className="inline-flex items-center bg-black/35 backdrop-blur-md border border-white/10 px-3 py-2 sm:px-4 sm:py-3 md:px-8 md:py-4 rounded-full md:rounded-lg shadow-xl max-w-full shrink-0">
-                <span className="flex items-center font-medium uppercase tracking-wider md:tracking-[0.2em] italic">
-                  <span className="text-[#E30613] mr-2 opacity-100">●</span>
-                  <span className="text-white text-[11px] sm:text-xs md:text-base font-black uppercase italic tracking-widest leading-tight">
-                    NOM-016-CRE-2016
-                    <span className="block md:inline-block md:ml-2 text-[9px] sm:text-[10px] md:text-[11px] font-bold text-gray-300 uppercase tracking-[0.16em] not-italic">
-                      Certificación Vigente
+                <p className="max-w-2xl mt-[1lh] mb-[1lh] text-[clamp(0.875rem,3.8vw,0.98rem)] sm:text-sm md:text-xl text-white/95 font-medium italic text-left leading-[1.35] sm:leading-relaxed">
+                  En{' '}
+                  <span className="font-black uppercase italic">
+                    <span className="text-white">Grupo Pro</span>
+                    <span className="text-[#E30613]">energéticos</span>
+                  </span>{' '}
+                  distribuimos combustibles de alta calidad en Mazatlán y zona conurbada — para transporte,
+                  industria, flotas y público en general, con certeza en cada litro.
+                </p>
+
+                <div className="inline-flex w-fit items-center max-md:mx-auto md:mx-0 bg-black/45 backdrop-blur-sm border border-white/10 px-4 py-2.5 sm:px-5 sm:py-3 md:px-8 md:py-4 rounded-2xl md:rounded-lg shadow-lg">
+                  <span className="flex items-center gap-2.5 font-medium uppercase tracking-wide md:tracking-[0.2em] italic">
+                    <span className="text-[#E30613] text-lg leading-none shrink-0">●</span>
+                    <span className="text-white text-[11px] sm:text-xs md:text-base font-black uppercase italic tracking-wider leading-tight">
+                      NOM-016-CRE-2016
+                      <span className="block text-[9px] sm:text-[10px] md:text-[11px] font-bold text-gray-300 uppercase tracking-[0.14em] not-italic mt-0.5">
+                        Certificación Vigente
+                      </span>
                     </span>
                   </span>
-                </span>
-              </div>
+                </div>
 
-              <div className="flex flex-col md:flex-row md:flex-wrap gap-2 max-md:gap-2 sm:gap-3 md:gap-4 w-full md:w-auto shrink-0">
-                <a
-                  href="/estaciones"
-                  className="w-full md:w-auto bg-[#E30613] text-white px-4 md:px-8 py-2.5 max-md:py-3 sm:py-4 rounded-xl md:rounded-xl font-black uppercase tracking-[0.12em] md:tracking-widest flex items-center justify-between md:justify-center gap-2 md:gap-3 hover:bg-white hover:text-black transition-all group text-[11px] sm:text-sm md:text-base shadow-lg shadow-red-900/30"
-                >
-                  <span>Gasolinera Santa Irene</span>
-                  <ArrowRight size={18} className="md:w-5 md:h-5 group-hover:translate-x-2 transition-transform shrink-0" />
-                </a>
-                <a
-                  href="/estaciones"
-                  className="w-full md:w-auto bg-[#E30613] text-white px-4 md:px-8 py-2.5 max-md:py-3 sm:py-4 rounded-xl md:rounded-xl font-black uppercase tracking-[0.12em] md:tracking-widest flex items-center justify-between md:justify-center gap-2 md:gap-3 hover:bg-white hover:text-black transition-all group text-[11px] sm:text-sm md:text-base shadow-lg shadow-red-900/30"
-                >
-                  <span>Gasolinera El Pozole</span>
-                  <ArrowRight size={18} className="md:w-5 md:h-5 group-hover:translate-x-2 transition-transform shrink-0" />
-                </a>
-                <a
-                  href="/corporativo"
-                  className="w-full md:w-auto bg-black/40 backdrop-blur-md text-white border border-white/15 px-4 md:px-8 py-2.5 max-md:py-3 sm:py-4 rounded-xl md:rounded-xl font-black uppercase tracking-[0.12em] md:tracking-widest hover:bg-white/10 transition-all text-center text-[11px] sm:text-sm md:text-base"
-                >
-                  Planta de Distribución
-                </a>
+                <div className="flex flex-col items-center md:flex-row md:flex-wrap md:items-start gap-2 max-md:gap-2 sm:gap-3 md:gap-4 w-full md:w-auto">
+                  <a
+                    href="/estaciones"
+                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:w-auto bg-[#E30613] text-white px-5 md:px-8 py-3 sm:py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-widest flex items-center justify-between md:justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base shadow-lg shadow-red-900/25"
+                  >
+                    <span>Gasolinera Santa Irene</span>
+                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform shrink-0" />
+                  </a>
+                  <a
+                    href="/estaciones"
+                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:w-auto bg-[#E30613] text-white px-5 md:px-8 py-3 sm:py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-widest flex items-center justify-between md:justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base shadow-lg shadow-red-900/25"
+                  >
+                    <span>Gasolinera El Pozole</span>
+                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform shrink-0" />
+                  </a>
+                  <a
+                    href="/corporativo"
+                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:w-auto bg-black/45 backdrop-blur-sm text-white border border-white/15 px-5 md:px-8 py-3 sm:py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-widest hover:bg-white/10 transition-all text-center text-xs sm:text-sm md:text-base"
+                  >
+                    Planta de Distribución
+                  </a>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -177,7 +186,7 @@ export default function Page() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.12, duration: 0.45 }}
-            className="bg-gray-100 rounded-b-[2rem] md:rounded-[2rem] shadow-lg border border-gray-200/80 border-t-0 md:border-t overflow-hidden mx-0 md:mx-0"
+            className="bg-gray-100 rounded-[2rem] md:rounded-[2rem] shadow-lg border border-gray-200/80 overflow-hidden mx-0 md:mx-0"
             aria-labelledby="inicio-oferta-titulo"
           >
             <div className="h-1 w-full bg-[#E30613]" aria-hidden />
