@@ -79,7 +79,7 @@ const ubicaciones = [
 export default function Page() {
   return (
     <SiteShell>
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-5 md:px-8 lg:px-12">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-5 md:px-8 lg:px-12 md:pt-6 lg:pt-8">
         <div className="space-y-3 md:space-y-6">
           {/* HERO */}
           <motion.div
