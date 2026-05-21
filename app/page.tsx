@@ -155,24 +155,24 @@ export default function Page() {
                   </span>
                 </div>
 
-                <div className="flex flex-col items-center md:flex-row md:flex-wrap md:items-start gap-2 max-md:gap-2 sm:gap-3 md:gap-4 w-full md:w-auto">
+                <div className="flex flex-col items-center md:flex-row md:flex-nowrap md:items-center gap-2 max-md:gap-2 sm:gap-3 md:gap-4 w-full md:w-auto">
                   <a
                     href="/estaciones?estacion=gsi"
-                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:w-auto bg-[#E30613] text-white px-5 md:px-8 py-3 sm:py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-widest flex items-center justify-between md:justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base shadow-lg shadow-red-900/25"
+                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:w-auto md:shrink-0 bg-[#E30613] text-white px-5 md:px-8 py-3 sm:py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-widest flex items-center justify-between md:justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base shadow-lg shadow-red-900/25"
                   >
                     <span>Gasolinera Santa Irene</span>
                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform shrink-0" />
                   </a>
                   <a
                     href="/estaciones?estacion=gpo"
-                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:w-auto bg-[#E30613] text-white px-5 md:px-8 py-3 sm:py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-widest flex items-center justify-between md:justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base shadow-lg shadow-red-900/25"
+                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:w-auto md:shrink-0 bg-[#E30613] text-white px-5 md:px-8 py-3 sm:py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-widest flex items-center justify-between md:justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base shadow-lg shadow-red-900/25"
                   >
                     <span>Gasolinera El Pozole</span>
                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform shrink-0" />
                   </a>
                   <a
                     href="/corporativo"
-                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:w-auto bg-black/45 backdrop-blur-sm text-white border border-white/15 px-5 md:px-8 py-3 sm:py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-widest hover:bg-white/10 transition-all text-center text-xs sm:text-sm md:text-base"
+                    className="w-full max-w-[19rem] sm:max-w-md md:max-w-none md:w-auto md:shrink-0 bg-white text-gray-900 border border-gray-200 px-5 md:px-8 py-3 sm:py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.1em] md:tracking-widest hover:bg-gray-100 hover:text-black transition-all text-center text-xs sm:text-sm md:text-base shadow-lg shadow-black/20"
                   >
                     Planta de Distribución
                   </a>
