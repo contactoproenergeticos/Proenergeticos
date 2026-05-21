@@ -1,14 +1,11 @@
 import type { MetadataRoute } from 'next';
 
-/**
- * Manifiesto PWA (instalable / “Añadir a pantalla de inicio”).
- * Icono: /public/images/logotipos/ProEner.png
- */
-export default function manifest(): MetadataRoute.Manifest {
+/** Manifiesto PWA de la web pública (no incluye /admin-precios). */
+export function publicSiteManifest(): MetadataRoute.Manifest {
   const icon = '/images/logotipos/ProEner.png';
-  const adminIcon = '/icon-admin.png';
 
   return {
+    id: '/',
     name: 'Grupo Proenergéticos — Estaciones de servicio',
     short_name: 'Grupo Proenergéticos',
     description:
@@ -35,27 +32,14 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: 'any',
       },
     ],
-    shortcuts: [
-      {
-        name: 'Administrar Precios',
-        short_name: 'Admin Precios',
-        description: 'Panel de control secreto para la captura manual de precios',
-        url: '/admin-precios',
-        icons: [
-          {
-            src: adminIcon,
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any',
-          },
-          {
-            src: adminIcon,
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any',
-          },
-        ],
-      },
-    ],
   };
+}
+
+export function publicSiteManifestResponse(): Response {
+  return Response.json(publicSiteManifest(), {
+    headers: {
+      'Content-Type': 'application/manifest+json',
+      'Cache-Control': 'public, max-age=0, must-revalidate',
+    },
+  });
 }

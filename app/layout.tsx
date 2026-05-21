@@ -1,10 +1,14 @@
 import { GoogleTagManager } from '@next/third-parties/google';
 import type { Metadata, Viewport } from 'next';
+import { headers } from 'next/headers';
 import { Inter } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
-import AccessibilityButton from '../components/AccessibilityButton'; // Importación directa
+import AccessibilityButton from '../components/AccessibilityButton';
 import InstallPWA from '../components/InstallPWA';
+import PublicPwaScope from '../components/PublicPwaScope';
 import SplashGate from '../components/SplashGate';
+import { PWA_LAUNCH_GUARD_SCRIPT } from '@/lib/pwaLaunchGuard';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,17 +23,21 @@ export const viewport: Viewport = {
   ],
 };
 
-export const metadata: Metadata = {
+const sharedMetadata: Metadata = {
   title: 'Grupo Proenergéticos - Estaciones de Servicio',
   description: 'Sistema de gestión y monitoreo para estaciones de servicio Grupo Proenergéticos.',
+  formatDetection: {
+    telephone: false,
+  },
+};
+
+const publicPwaMetadata: Metadata = {
+  manifest: '/manifest.webmanifest',
   applicationName: 'Grupo Proenergéticos',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
     title: 'Grupo Proenergéticos',
-  },
-  formatDetection: {
-    telephone: false,
   },
   icons: {
     icon: [
@@ -42,6 +50,19 @@ export const metadata: Metadata = {
   },
 };
 
+export async function generateMetadata(): Promise<Metadata> {
+  const pathname = (await headers()).get('x-pathname') ?? '';
+
+  if (pathname.startsWith('/admin-precios')) {
+    return sharedMetadata;
+  }
+
+  return {
+    ...sharedMetadata,
+    ...publicPwaMetadata,
+  };
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -51,7 +72,11 @@ export default function RootLayout({
     <html lang="es">
       <GoogleTagManager gtmId="GTM-P53V68D7" />
       <body className={inter.className}>
+        <Script id="pwa-launch-guard" strategy="beforeInteractive">
+          {PWA_LAUNCH_GUARD_SCRIPT}
+        </Script>
         <SplashGate>{children}</SplashGate>
+        <PublicPwaScope />
         <InstallPWA />
         <AccessibilityButton />
       </body>

@@ -10,12 +10,12 @@ import {
 /** Manifiesto PWA solo para el panel admin (icono candado en escritorio). */
 export function adminPreciosManifest(): MetadataRoute.Manifest {
   return {
-    id: ADMIN_PWA_SCOPE,
+    id: `${ADMIN_PWA_SCOPE}?source=pwa-admin`,
     name: `${ADMIN_PWA_TITLE} — Grupo Proenergéticos`,
     short_name: ADMIN_PWA_TITLE,
     description: 'Panel de control para captura manual de precios de combustible.',
     start_url: ADMIN_PWA_START_URL,
-    scope: ADMIN_PWA_SCOPE,
+    scope: `${ADMIN_PWA_SCOPE}/`,
     display: 'standalone',
     orientation: 'portrait',
     background_color: '#ffffff',

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import AdminPwaIcons from '@/components/admin-precios/AdminPwaIcons';
 import { ADMIN_PWA_ISOLATION_SCRIPT } from '@/lib/adminPwaHeadIsolation';
+import { PWA_ADMIN_SCOPE_SCRIPT } from '@/lib/pwaLaunchGuard';
 import { ADMIN_PWA_ICON, ADMIN_PWA_MANIFEST_HREF, ADMIN_PWA_TITLE, ADMIN_PWA_THEME } from '@/lib/adminPwaConfig';
 
 export const metadata: Metadata = {
@@ -40,6 +41,9 @@ export const viewport: Viewport = {
 export default function AdminPreciosLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <Script id="admin-pwa-scope-mark" strategy="beforeInteractive">
+        {PWA_ADMIN_SCOPE_SCRIPT}
+      </Script>
       <Script id="admin-pwa-head-isolation" strategy="beforeInteractive">
         {ADMIN_PWA_ISOLATION_SCRIPT}
       </Script>
