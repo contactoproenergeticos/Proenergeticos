@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { motion } from 'motion/react';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -199,7 +199,20 @@ const unidades: EstacionData[] = [
   },
 ];
 
-export default function EstacionesPage() {
+function EstacionesPageFallback() {
+  return (
+    <SiteShell>
+      <div className="py-10 md:py-14 bg-gray-100 min-h-screen">
+        <div className="max-w-6xl mx-auto px-4 space-y-8">
+          <div className="h-[340px] md:h-[460px] rounded-[30px] md:rounded-[60px] bg-gray-200 animate-pulse" />
+          <div className="h-64 rounded-[2rem] bg-gray-200 animate-pulse" />
+        </div>
+      </div>
+    </SiteShell>
+  );
+}
+
+function EstacionesPageContent() {
   const searchParams = useSearchParams();
 
   const filtroEstacion = useMemo(() => {
@@ -396,5 +409,13 @@ export default function EstacionesPage() {
         </motion.div>
       </div>
     </SiteShell>
+  );
+}
+
+export default function EstacionesPage() {
+  return (
+    <Suspense fallback={<EstacionesPageFallback />}>
+      <EstacionesPageContent />
+    </Suspense>
   );
 }
