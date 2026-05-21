@@ -73,13 +73,13 @@ const ubicaciones = [
 export default function Page() {
   return (
     <SiteShell>
-      <div className="w-full max-w-full overflow-hidden p-2 md:p-8 lg:p-12 bg-gray-200">
-        <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
+      <div className="w-full max-w-full overflow-hidden bg-gray-200 -mx-4 md:mx-0 px-0 md:p-8 lg:p-12">
+        <div className="max-w-7xl mx-auto space-y-0 md:space-y-6">
           {/* HERO */}
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="relative w-full min-h-[520px] md:min-h-[560px] lg:min-h-[68vh] bg-gray-950 rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl flex items-center"
+            className="relative w-full min-h-[calc(100dvh-6rem)] md:min-h-[560px] lg:min-h-[68vh] bg-gray-950 rounded-t-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl flex items-stretch"
           >
             <div className="absolute inset-0 z-0">
               <Image
@@ -90,23 +90,26 @@ export default function Page() {
                 sizes="100vw"
                 className="object-cover opacity-60 contrast-125"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80 lg:bg-gradient-to-r lg:from-black/80 lg:via-black/40 lg:to-transparent z-10" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/85 lg:bg-gradient-to-r lg:from-black/80 lg:via-black/40 lg:to-transparent z-10" />
             </div>
 
-            <div className="relative z-20 w-full px-6 md:px-16 lg:px-24 py-10 md:py-12">
-              <div className="flex items-center gap-4 mb-4 md:mb-6">
-                <div className="h-[2px] w-8 md:w-12 bg-[#E30613]" />
-                <span className="text-[#E30613] text-[15px] md:text-sm font-black uppercase tracking-[0.2em] md:tracking-[0.4em] italic">
+            <div className="relative z-20 w-full px-5 sm:px-6 md:px-16 lg:px-24 py-8 md:py-12 flex flex-col justify-center gap-6 md:gap-8">
+              <div className="flex items-center justify-center md:justify-start gap-3 md:gap-4">
+                <div className="hidden md:block h-[2px] w-8 md:w-12 bg-[#E30613] shrink-0" />
+                <span className="text-[#E30613] text-[11px] sm:text-[13px] md:text-sm font-black uppercase tracking-[0.28em] md:tracking-[0.4em] italic text-center md:text-left">
                   — GRUPO PROENERGETICOS —
                 </span>
               </div>
 
-              <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6 md:gap-8 lg:gap-12 mb-6 md:mb-8">
-                <h1 className="text-4xl md:text-6xl lg:text-8xl font-black text-white tracking-tighter uppercase italic leading-[0.95] md:leading-[0.9]">
-                  ENERGÍA QUE <br />
-                  <span className="text-[#E30613]">MUEVE</span> A MÉXICO
+              <div className="flex flex-col lg:flex-row items-center lg:items-center gap-6 md:gap-8 lg:gap-12">
+                <h1 className="w-full text-center md:text-left text-[2.1rem] sm:text-4xl md:text-6xl lg:text-8xl font-black text-white tracking-tighter uppercase italic leading-[0.92] md:leading-[0.9]">
+                  ENERGÍA QUE
+                  <br />
+                  <span className="text-[#E30613]">MUEVE</span>
+                  <br className="md:hidden" />
+                  <span className="md:before:content-['\00a0']">A MÉXICO</span>
                 </h1>
-                <div className="relative w-24 h-24 md:w-36 md:h-36 lg:w-44 lg:h-44 shrink-0">
+                <div className="relative hidden lg:block w-44 h-44 shrink-0">
                   <Image
                     src="/images/logotipos/ProEner.png"
                     alt="Logo Grupo Proenergéticos"
@@ -116,42 +119,46 @@ export default function Page() {
                 </div>
               </div>
 
-              <p className="max-w-2xl text-sm md:text-xl text-white/90 font-medium italic mb-6 md:mb-8 leading-relaxed">
-                En <span className="text-white font-black">Grupo Proenergéticos</span> distribuimos combustibles
-                de alta calidad en Mazatlán y zona conurbada — para transporte, industria, flotas y público en
-                general, con certeza en cada litro.
+              <p className="max-w-2xl mx-auto md:mx-0 text-sm md:text-xl text-white/90 font-medium italic text-center md:text-left leading-relaxed">
+                En{' '}
+                <span className="font-black uppercase italic">
+                  <span className="text-white">Grupo Pro</span>
+                  <span className="text-[#E30613]">energeticos</span>
+                </span>{' '}
+                distribuimos combustibles de alta calidad en Mazatlán y zona conurbada — para transporte,
+                industria, flotas y público en general, con certeza en cada litro.
               </p>
 
-              <div className="inline-flex items-center bg-white/5 backdrop-blur-md border border-white/10 px-4 py-3 md:px-8 md:py-4 rounded-lg mb-6 md:mb-8 shadow-xl max-w-full">
+              <div className="mx-auto md:mx-0 inline-flex items-center bg-black/35 backdrop-blur-md border border-white/10 px-4 py-3 md:px-8 md:py-4 rounded-full md:rounded-lg shadow-xl max-w-full">
                 <span className="flex items-center font-medium uppercase tracking-wider md:tracking-[0.2em] italic">
-                  <span className="text-[#E30613] mr-2 opacity-100 scale-90 md:scale-110">●</span>
+                  <span className="text-[#E30613] mr-2.5 opacity-100">●</span>
                   <span className="text-white text-[11px] md:text-base font-black uppercase italic tracking-widest leading-tight">
                     NOM-016-CRE-2016
-                    <span className="block md:inline-block md:ml-2 text-[9px] md:text-[11px] font-normal text-gray-400 font-sans not-italic">
+                    <span className="block md:inline-block md:ml-2 text-[9px] md:text-[11px] font-bold text-gray-300 uppercase tracking-[0.18em] not-italic">
                       Certificación Vigente
                     </span>
                   </span>
                 </span>
               </div>
 
-              <div className="flex flex-col sm:flex-row flex-wrap gap-3 md:gap-4 w-full sm:w-auto">
+              <div className="flex flex-col md:flex-row md:flex-wrap gap-3 md:gap-4 w-full md:w-auto">
                 <a
                   href="/estaciones"
-                  className="w-full sm:w-auto bg-[#E30613] text-white px-6 md:px-8 py-4 rounded-xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base"
+                  className="w-full md:w-auto bg-[#E30613] text-white px-5 md:px-8 py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.14em] md:tracking-widest flex items-center justify-between md:justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base shadow-lg shadow-red-900/30"
                 >
                   <span>Gasolinera Santa Irene</span>
                   <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform shrink-0" />
                 </a>
                 <a
                   href="/estaciones"
-                  className="w-full sm:w-auto bg-[#E30613] text-white px-6 md:px-8 py-4 rounded-xl font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base"
+                  className="w-full md:w-auto bg-[#E30613] text-white px-5 md:px-8 py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.14em] md:tracking-widest flex items-center justify-between md:justify-center gap-3 hover:bg-white hover:text-black transition-all group text-xs sm:text-sm md:text-base shadow-lg shadow-red-900/30"
                 >
                   <span>Gasolinera El Pozole</span>
                   <ArrowRight size={20} className="group-hover:translate-x-2 transition-transform shrink-0" />
                 </a>
                 <a
                   href="/corporativo"
-                  className="w-full sm:w-auto bg-white/10 backdrop-blur-md text-white border border-white/20 px-6 md:px-8 py-4 rounded-xl font-black uppercase tracking-widest hover:bg-white/20 transition-all text-center text-xs sm:text-sm md:text-base"
+                  className="w-full md:w-auto bg-black/40 backdrop-blur-md text-white border border-white/15 px-5 md:px-8 py-4 rounded-2xl md:rounded-xl font-black uppercase tracking-[0.14em] md:tracking-widest hover:bg-white/10 transition-all text-center text-xs sm:text-sm md:text-base"
                 >
                   Planta de Distribución
                 </a>
@@ -164,7 +171,7 @@ export default function Page() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.12, duration: 0.45 }}
-            className="bg-gray-100 rounded-[1.25rem] md:rounded-[2rem] shadow-lg border border-gray-200/80 overflow-hidden"
+            className="bg-gray-100 rounded-b-[2rem] md:rounded-[2rem] shadow-lg border border-gray-200/80 border-t-0 md:border-t overflow-hidden mx-0 md:mx-0"
             aria-labelledby="inicio-oferta-titulo"
           >
             <div className="h-1 w-full bg-[#E30613]" aria-hidden />
