@@ -49,21 +49,21 @@ const productosOfrecidos = [
 const ubicaciones = [
   {
     nombre: 'Gasolinera Santa Irene',
-    detalle: 'BLAST · Mazatlán',
+    detalle: 'BLAST · MAZATLÁN',
     direccion: 'Luis Donaldo Colosio 14101, Santa Laura, Mazatlán, Sin.',
     href: '/estaciones',
     logo: '/images/logotipos/BLAST.png',
   },
   {
     nombre: 'Gasolinera El Pozole',
-    detalle: 'Villa Unión, Sin.',
+    detalle: 'VILLA UNIÓN, SIN.',
     direccion: 'Carretera Internacional Sur Km. 60, El Pozole, Villa Unión, Sin.',
     href: '/estaciones',
     logo: '/images/logotipos/GPO.png',
   },
   {
     nombre: 'Planta de Distribución',
-    detalle: 'Centro logístico · Mazatlán',
+    detalle: 'CENTRO LOGÍSTICO · MAZATLÁN',
     direccion: 'México 15 1002, Urías, 82070 Mazatlán, Sin.',
     href: '/corporativo',
     logo: '/images/logotipos/ProEner_negro.png',
@@ -79,7 +79,7 @@ export default function Page() {
           <motion.div
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="relative w-full min-h-[calc(100dvh-6rem)] md:min-h-[560px] lg:min-h-[68vh] bg-gray-950 rounded-t-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl flex items-stretch"
+            className="relative w-full min-h-[calc(100dvh-6rem)] sm:min-h-[calc(100dvh-6.5rem)] md:min-h-[560px] lg:min-h-[68vh] bg-gray-950 rounded-t-[2rem] sm:rounded-t-[2.5rem] md:rounded-[3rem] overflow-hidden shadow-2xl flex items-stretch"
           >
             <div className="absolute inset-0 z-0">
               <Image
@@ -93,33 +93,34 @@ export default function Page() {
               <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/85 lg:bg-gradient-to-r lg:from-black/80 lg:via-black/40 lg:to-transparent z-10" />
             </div>
 
-            <div className="relative z-20 w-full px-5 sm:px-6 md:px-16 lg:px-24 py-8 md:py-12 flex flex-col justify-center gap-6 md:gap-8">
-              <div className="flex items-center justify-center md:justify-start gap-3 md:gap-4">
-                <div className="hidden md:block h-[2px] w-8 md:w-12 bg-[#E30613] shrink-0" />
-                <span className="text-[#E30613] text-[11px] sm:text-[13px] md:text-sm font-black uppercase tracking-[0.28em] md:tracking-[0.4em] italic text-center md:text-left">
+            <div className="relative z-20 w-full px-4 sm:px-6 md:px-16 lg:px-24 py-7 sm:py-8 md:py-12 flex flex-col justify-center gap-5 sm:gap-6 md:gap-8">
+              <div className="flex items-center justify-center sm:justify-start gap-3 md:gap-4 w-full">
+                <div className="hidden sm:block h-[2px] w-8 md:w-12 bg-[#E30613] shrink-0" />
+                <span className="text-[#E30613] text-[10px] sm:text-[13px] md:text-sm font-black uppercase tracking-[0.22em] sm:tracking-[0.28em] md:tracking-[0.4em] italic text-center sm:text-left">
                   — GRUPO PROENERGETICOS —
                 </span>
               </div>
 
-              <div className="flex flex-col lg:flex-row items-center lg:items-center gap-6 md:gap-8 lg:gap-12">
-                <h1 className="w-full text-center md:text-left text-[2.1rem] sm:text-4xl md:text-6xl lg:text-8xl font-black text-white tracking-tighter uppercase italic leading-[0.92] md:leading-[0.9]">
+              <div className="flex flex-row items-start sm:items-center md:items-start lg:items-center justify-between gap-2 sm:gap-5 md:gap-6 lg:gap-10 xl:gap-12 w-full min-w-0">
+                <h1 className="flex-1 min-w-0 text-left font-black text-white tracking-tighter uppercase italic leading-[0.92] sm:leading-[0.9] text-[clamp(1.45rem,6.2vw,2.15rem)] sm:text-[clamp(1.85rem,4.8vw,2.75rem)] md:text-5xl lg:text-7xl xl:text-8xl">
                   ENERGÍA QUE
                   <br />
                   <span className="text-[#E30613]">MUEVE</span>
                   <br className="md:hidden" />
                   <span className="md:before:content-['\00a0']">A MÉXICO</span>
                 </h1>
-                <div className="relative hidden lg:block w-44 h-44 shrink-0">
+                <div className="relative shrink-0 w-[clamp(3.25rem,17vw,4.5rem)] h-[clamp(3.25rem,17vw,4.5rem)] sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 xl:w-44 xl:h-44 mt-0.5 sm:mt-0">
                   <Image
                     src="/images/logotipos/ProEner.png"
                     alt="Logo Grupo Proenergéticos"
                     fill
+                    sizes="(max-width: 640px) 72px, (max-width: 1024px) 128px, 176px"
                     className="object-contain drop-shadow-2xl"
                   />
                 </div>
               </div>
 
-              <p className="max-w-2xl mx-auto md:mx-0 text-sm md:text-xl text-white/90 font-medium italic text-center md:text-left leading-relaxed">
+              <p className="max-w-2xl text-[13px] sm:text-sm md:text-xl text-white/90 font-medium italic text-left leading-relaxed">
                 En{' '}
                 <span className="font-black uppercase italic">
                   <span className="text-white">Grupo Pro</span>
@@ -129,7 +130,7 @@ export default function Page() {
                 industria, flotas y público en general, con certeza en cada litro.
               </p>
 
-              <div className="mx-auto md:mx-0 inline-flex items-center bg-black/35 backdrop-blur-md border border-white/10 px-4 py-3 md:px-8 md:py-4 rounded-full md:rounded-lg shadow-xl max-w-full">
+              <div className="inline-flex items-center bg-black/35 backdrop-blur-md border border-white/10 px-4 py-3 md:px-8 md:py-4 rounded-full md:rounded-lg shadow-xl max-w-full">
                 <span className="flex items-center font-medium uppercase tracking-wider md:tracking-[0.2em] italic">
                   <span className="text-[#E30613] mr-2.5 opacity-100">●</span>
                   <span className="text-white text-[11px] md:text-base font-black uppercase italic tracking-widest leading-tight">
@@ -242,39 +243,41 @@ export default function Page() {
             </div>
 
             <div className="px-5 md:px-6 py-4 md:py-5">
-              <h3 className="flex items-center gap-2 mb-3 text-sm md:text-base font-black text-gray-900 uppercase italic">
-                <span className="w-8 h-8 rounded-lg bg-gray-200 flex items-center justify-center shrink-0">
-                  <MapPin className="w-4 h-4 text-[#E30613]" />
+              <h3 className="flex items-center gap-2.5 mb-4 text-sm md:text-base font-black text-gray-900 uppercase italic">
+                <span className="w-9 h-9 rounded-xl bg-gray-200 flex items-center justify-center shrink-0">
+                  <MapPin className="w-4 h-4 text-[#E30613]" strokeWidth={2.5} />
                 </span>
                 Dónde <span className="text-[#E30613]">estamos</span>
               </h3>
-              <div className="rounded-xl md:rounded-2xl bg-gray-200/60 border border-gray-200/90 p-3 md:p-4">
-                <ul className="grid grid-cols-1 min-[520px]:grid-cols-3 gap-3 md:gap-4">
+              <div className="rounded-2xl md:rounded-[1.75rem] bg-gray-200/70 border border-gray-200/90 p-3 sm:p-4 md:p-5">
+                <ul className="flex flex-col lg:grid lg:grid-cols-3 gap-3 md:gap-4">
                   {ubicaciones.map((u) => (
                     <li key={u.nombre} className="min-w-0">
                       <a
                         href={u.href}
-                        className="group flex flex-col h-full rounded-xl border border-gray-200/90 bg-gray-50 p-3 md:p-4 shadow-sm transition-all duration-300 hover:border-[#E30613]/40 hover:bg-white hover:shadow-md"
+                        className="group flex flex-row items-center justify-between gap-3 sm:gap-4 h-full rounded-xl md:rounded-2xl border border-gray-200/80 bg-white p-4 sm:p-5 shadow-sm transition-all duration-300 hover:border-[#E30613]/30 hover:shadow-md"
                       >
-                        <div className="relative w-full h-12 md:h-14 mb-2.5 shrink-0 rounded-lg overflow-hidden bg-white ring-1 ring-gray-200/90">
+                        <div className="flex-1 min-w-0 pr-1">
+                          <p className="text-[13px] sm:text-sm md:text-base font-black text-gray-900 uppercase italic leading-tight group-hover:text-[#E30613] transition-colors">
+                            {u.nombre}
+                          </p>
+                          <p className="text-[10px] sm:text-[11px] font-bold text-[#E30613] uppercase italic tracking-wide mt-1">
+                            {u.detalle}
+                          </p>
+                          <p className="text-[10px] sm:text-[11px] text-gray-500 font-medium leading-snug mt-1.5">
+                            {u.direccion}
+                          </p>
+                        </div>
+                        <div className="relative w-[4.5rem] h-11 sm:w-20 sm:h-12 md:w-24 md:h-14 shrink-0">
                           <Image
                             src={u.logo}
                             alt=""
                             fill
-                            className="object-contain p-1.5"
-                            sizes="160px"
+                            className="object-contain object-right"
+                            sizes="(max-width: 640px) 72px, 96px"
                             unoptimized
                           />
                         </div>
-                        <p className="text-[11px] md:text-sm font-black text-gray-900 uppercase italic leading-tight group-hover:text-[#E30613] transition-colors">
-                          {u.nombre}
-                        </p>
-                        <p className="text-[9px] md:text-[10px] font-bold text-[#E30613] uppercase tracking-wide mt-0.5">
-                          {u.detalle}
-                        </p>
-                        <p className="text-[9px] md:text-xs text-gray-600 font-medium leading-snug mt-1.5">
-                          {u.direccion}
-                        </p>
                       </a>
                     </li>
                   ))}
