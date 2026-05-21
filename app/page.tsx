@@ -53,6 +53,8 @@ const ubicaciones = [
     direccion: 'Luis Donaldo Colosio 14101, Santa Laura, Mazatlán, Sin.',
     href: '/estaciones',
     logo: '/images/logotipos/BLAST.png',
+    logoBoxClass: 'w-[5.25rem] h-11 sm:w-24 sm:h-12 md:w-28 md:h-14',
+    logoImageClass: 'object-contain object-right',
   },
   {
     nombre: 'Gasolinera El Pozole',
@@ -60,13 +62,17 @@ const ubicaciones = [
     direccion: 'Carretera Internacional Sur Km. 60, El Pozole, Villa Unión, Sin.',
     href: '/estaciones',
     logo: '/images/logotipos/GPO.png',
+    logoBoxClass: 'w-14 h-14 sm:w-16 sm:h-16 md:w-[4.5rem] md:h-[4.5rem]',
+    logoImageClass: 'object-contain object-right',
   },
   {
     nombre: 'Planta de Distribución',
     detalle: 'CENTRO LOGÍSTICO · MAZATLÁN',
     direccion: 'México 15 1002, Urías, 82070 Mazatlán, Sin.',
     href: '/corporativo',
-    logo: '/images/logotipos/ProEner_negro.png',
+    logo: '/images/logotipos/ProEner.png',
+    logoBoxClass: 'w-[4.75rem] h-[4.25rem] sm:w-24 sm:h-[5.5rem] md:w-28 md:h-32 lg:w-32 lg:h-36',
+    logoImageClass: 'object-contain object-right scale-[1.2] sm:scale-[1.25]',
   },
 ] as const;
 
@@ -268,13 +274,13 @@ export default function Page() {
                             {u.direccion}
                           </p>
                         </div>
-                        <div className="relative w-[4.5rem] h-11 sm:w-20 sm:h-12 md:w-24 md:h-14 shrink-0">
+                        <div className={`relative shrink-0 ${u.logoBoxClass}`}>
                           <Image
                             src={u.logo}
                             alt=""
                             fill
-                            className="object-contain object-right"
-                            sizes="(max-width: 640px) 72px, 96px"
+                            className={u.logoImageClass}
+                            sizes="(max-width: 640px) 88px, (max-width: 1024px) 112px, 128px"
                             unoptimized
                           />
                         </div>
