@@ -23,6 +23,7 @@ function shouldShowSplash(): boolean {
       (navigator as Navigator & { standalone?: boolean }).standalone === true);
 
   if (!isStandalone) return false;
+  if (window.location.pathname.startsWith('/admin-precios')) return false;
   if (sessionStorage.getItem(SESSION_KEY) === '1') return false;
 
   return true;

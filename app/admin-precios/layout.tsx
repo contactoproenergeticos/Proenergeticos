@@ -5,6 +5,8 @@ import { ADMIN_PWA_ICON, ADMIN_PWA_TITLE, ADMIN_PWA_THEME } from '@/lib/adminPwa
 export const metadata: Metadata = {
   title: 'Admin Precios — Grupo Proenergéticos',
   description: 'Panel de control para captura manual de precios de combustible.',
+  /** Manifiesto propio: start_url y scope en /admin-precios (no el de la web pública). */
+  manifest: '/manifest-admin-precios',
   applicationName: ADMIN_PWA_TITLE,
   robots: { index: false, follow: false },
   appleWebApp: {

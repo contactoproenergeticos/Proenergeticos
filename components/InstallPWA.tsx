@@ -9,6 +9,7 @@
 
 import { getPushReadiness } from '@/lib/pwaPushPlaceholder';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Download, Share2, Smartphone, X } from 'lucide-react';
 
@@ -90,6 +91,7 @@ function persistInstalled(): void {
 }
 
 export default function InstallPWA() {
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
@@ -105,11 +107,12 @@ export default function InstallPWA() {
 
   const eligible = useMemo(() => {
     if (!mounted) return false;
+    if (pathname?.startsWith('/admin-precios')) return false;
     if (!isMobilePhoneLike()) return false;
     if (isStandalone()) return false;
     if (shouldSuppressByStorage()) return false;
     return true;
-  }, [mounted]);
+  }, [mounted, pathname]);
 
   // Refleja el último prompt en ref para handlers estables sin re-suscribir en cada render.
   useEffect(() => {
