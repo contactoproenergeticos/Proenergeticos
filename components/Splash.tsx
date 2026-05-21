@@ -6,15 +6,37 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const LOGO_SRC = '/images/logotipos/ProEner.png';
 const PARTICLE_COUNT = 28;
-const TOTAL_MS = 3500;
-const FADE_OUT_AT_MS = 3000;
-const TEXT_START_MS = 1150;
+
+/** Ritmo del splash: intro del logo → typewriter → pausa para leer → fade out */
+const LOGO_INTRO_MS = 1500;
+const TEXT_START_MS = LOGO_INTRO_MS;
+const HOLD_AFTER_TEXT_MS = 3200;
+const FADE_OUT_MS = 550;
+
+const CHAR_MS = {
+  title: 30,
+  tagline: 20,
+  subtitle: 16,
+  bullets: 14,
+} as const;
+
+const GAP_MS = 120;
 
 const TITLE = 'GRUPO PROENERGÉTICOS';
 const TAGLINE_A = 'TECNOLOGÍA EN MOVIMIENTO, ';
 const TAGLINE_B = 'CALIDAD QUE SE SIENTE.';
 const SUBTITLE = 'Tu socio estratégico de combustible en Mazatlán y Sinaloa.';
 const BULLETS = '• Trazabilidad Total • Servicio Marino • Suministro Industrial';
+
+const taglineStart = TITLE.length * CHAR_MS.title + GAP_MS;
+const taglineBStart = taglineStart + TAGLINE_A.length * CHAR_MS.tagline;
+const subtitleStart = taglineBStart + TAGLINE_B.length * CHAR_MS.tagline + GAP_MS;
+const bulletsStart = subtitleStart + SUBTITLE.length * CHAR_MS.subtitle + GAP_MS;
+
+const TEXT_FINISH_MS =
+  TEXT_START_MS + bulletsStart + BULLETS.length * CHAR_MS.bullets;
+const FADE_OUT_AT_MS = TEXT_FINISH_MS + HOLD_AFTER_TEXT_MS;
+const TOTAL_MS = FADE_OUT_AT_MS + FADE_OUT_MS;
 
 type SplashProps = {
   onComplete: () => void;
@@ -123,7 +145,7 @@ export default function Splash({ onComplete }: SplashProps) {
     const t1 = setTimeout(() => {
       setPhase('settle');
       setParticlePhase('expand');
-    }, 1150);
+    }, LOGO_INTRO_MS);
     const t2 = setTimeout(() => {
       setPhase('text');
       setTextActive(true);
@@ -138,16 +160,11 @@ export default function Splash({ onComplete }: SplashProps) {
     };
   }, [onComplete]);
 
-  const titleTyped = useTypewriter(TITLE, textActive, 20, 0);
-  const taglineStart = 380;
-  const taglineBStart = taglineStart + TAGLINE_A.length * 14;
-  const subtitleStart = taglineBStart + TAGLINE_B.length * 14 + 50;
-  const bulletsStart = subtitleStart + SUBTITLE.length * 11 + 40;
-
-  const taglineATyped = useTypewriter(TAGLINE_A, textActive, 14, taglineStart);
-  const taglineBTyped = useTypewriter(TAGLINE_B, textActive, 14, taglineBStart);
-  const subtitleTyped = useTypewriter(SUBTITLE, textActive, 11, subtitleStart);
-  const bulletsTyped = useTypewriter(BULLETS, textActive, 10, bulletsStart);
+  const titleTyped = useTypewriter(TITLE, textActive, CHAR_MS.title, 0);
+  const taglineATyped = useTypewriter(TAGLINE_A, textActive, CHAR_MS.tagline, taglineStart);
+  const taglineBTyped = useTypewriter(TAGLINE_B, textActive, CHAR_MS.tagline, taglineBStart);
+  const subtitleTyped = useTypewriter(SUBTITLE, textActive, CHAR_MS.subtitle, subtitleStart);
+  const bulletsTyped = useTypewriter(BULLETS, textActive, CHAR_MS.bullets, bulletsStart);
 
   const showBullets = bulletsTyped.length > 8;
 
@@ -158,7 +175,7 @@ export default function Splash({ onComplete }: SplashProps) {
       aria-label="Bienvenida Grupo Proenergéticos"
       initial={{ opacity: 1 }}
       animate={{ opacity: phase === 'exit' ? 0 : 1 }}
-      transition={{ duration: 0.45, ease: 'easeInOut' }}
+      transition={{ duration: FADE_OUT_MS / 1000, ease: 'easeInOut' }}
     >
       {/* Fondo carbón + textura */}
       <motion.div
