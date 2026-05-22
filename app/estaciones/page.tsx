@@ -415,7 +415,7 @@ function EstacionesPageContent() {
                 </div>
                 <p className="text-gray-400 text-sm md:text-base font-medium leading-relaxed italic max-w-2xl border-l-4 border-[#E30613] pl-6">
                   Facilita tu carga pagando con tarjetas de crédito, débito y tus monederos de
-                  combustible preferidos. En ProEnergéticos implementamos la mejor tecnología.
+                  combustible preferidos. En Grupo ProEnergéticos implementamos la mejor tecnología.
                 </p>
               </div>
               <div className="w-full lg:w-auto flex items-center justify-center py-4">
