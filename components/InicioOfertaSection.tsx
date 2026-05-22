@@ -144,7 +144,7 @@ function TimelineNode({
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <div className="mb-4 md:mb-5 flex items-center gap-3 min-w-0">
-      <h3 className="shrink-0 text-xs sm:text-sm font-black uppercase tracking-wide text-gray-900 italic">
+      <h3 className="shrink-0 text-sm sm:text-base md:text-lg font-black uppercase tracking-wide text-gray-900 italic">
         {children}
       </h3>
       <div className="h-px min-w-[2rem] flex-1 bg-gray-300/90" aria-hidden />
