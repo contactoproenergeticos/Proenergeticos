@@ -34,14 +34,21 @@ export default function Page() {
 
             <div className="relative z-20 w-full px-5 sm:px-6 md:px-16 lg:px-24 pt-4 pb-4 sm:py-8 md:py-12">
               <div className="flex flex-col gap-2.5 max-md:gap-[10px] sm:gap-6 md:gap-8">
-                <div className="flex items-center justify-center sm:justify-start w-full min-w-0">
-                  <span className="text-[#E30613] text-[11px] sm:text-[13px] md:text-sm font-black uppercase tracking-[0.22em] sm:tracking-[0.24em] md:tracking-[0.32em] lg:tracking-[0.4em] italic text-center sm:text-left max-w-full">
-                    — GRUPO PROENERGETICOS —
-                  </span>
+                <div className="w-full min-w-0 text-center sm:text-left">
+                  <p className="m-0 font-black uppercase italic tracking-tighter leading-none text-[clamp(1.05rem,3.8vw,1.65rem)] sm:text-[clamp(1.15rem,2.8vw,1.85rem)] md:text-[1.75rem] lg:text-[2rem] text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.5)]">
+                    Grupo <span className="text-white">Pro</span>
+                    <span className="text-[#E30613]">energéticos</span>
+                  </p>
+                  <div className="mt-2.5 sm:mt-3 flex items-center justify-center sm:justify-start gap-2.5">
+                    <div className="h-1 w-10 sm:w-12 md:w-14 bg-[#E30613] shrink-0" aria-hidden />
+                    <span className="text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-[0.22em] sm:tracking-[0.28em] text-white/80 italic">
+                      Mazatlán, Sinaloa
+                    </span>
+                  </div>
                 </div>
 
-                <div className="flex flex-row items-start justify-between gap-3 sm:gap-5 md:gap-6 lg:gap-10 xl:gap-12 w-full min-w-0 mt-[1lh]">
-                  <h1 className="flex-1 min-w-0 max-w-[calc(100%-5.6rem)] sm:max-w-[calc(100%-7.5rem)] md:max-w-none text-left font-black text-white tracking-[-0.04em] md:tracking-[-0.05em] lg:tracking-tighter uppercase italic leading-[0.86] sm:leading-[0.88] md:leading-[0.82] lg:leading-[0.9] [text-shadow:0_2px_20px_rgba(0,0,0,0.5)] text-[clamp(2.4rem,10.8vw,3.15rem)] sm:text-[clamp(2.65rem,6.5vw,3.35rem)] md:text-[5.125rem] lg:text-7xl xl:text-8xl">
+                <div className="grid grid-cols-[1fr_auto] items-start gap-x-3 sm:gap-x-5 md:gap-x-6 lg:gap-x-10 xl:gap-x-12 w-full min-w-0 mt-[1lh] text-[clamp(2.4rem,10.8vw,3.15rem)] sm:text-[clamp(2.65rem,6.5vw,3.35rem)] md:text-[5.125rem] lg:text-7xl xl:text-8xl leading-[0.86] sm:leading-[0.88] md:leading-[0.82] lg:leading-[0.9]">
+                  <h1 className="min-w-0 text-left font-black text-white tracking-[-0.04em] md:tracking-[-0.05em] lg:tracking-tighter uppercase italic leading-[inherit] [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
                     <span className="md:hidden">
                       ENERGÍA QUE
                       <br />
@@ -55,13 +62,14 @@ export default function Page() {
                       <span className="text-[#E30613]">MUEVE A</span> MÉXICO
                     </span>
                   </h1>
-                  <div className="relative shrink-0 w-[4.85rem] h-[5.35rem] sm:w-24 sm:h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 xl:w-44 xl:h-44 mt-0.5">
+                  <div className="relative shrink-0 h-[3lh] md:h-[2lh] aspect-[92/100] min-h-[6.2rem] min-w-[5.7rem] md:min-h-[8.4rem] md:min-w-[7.7rem]">
                     <Image
                       src="/images/logotipos/ProEner.png"
                       alt="Logo Grupo Proenergéticos"
                       fill
-                      sizes="(max-width: 640px) 100px, (max-width: 1024px) 128px, 176px"
-                      className="object-contain drop-shadow-2xl"
+                      sizes="(max-width: 768px) 120px, (max-width: 1280px) 160px, 220px"
+                      className="object-contain object-top drop-shadow-2xl"
+                      priority
                     />
                   </div>
                 </div>
