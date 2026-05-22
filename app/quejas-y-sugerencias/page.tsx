@@ -207,7 +207,7 @@ export default function QuejasYSugerenciasPage() {
               <p className="text-sm md:text-lg text-gray-300 font-medium leading-relaxed italic max-w-3xl">
                 Buzón oficial de{' '}
                 <span className="font-black uppercase italic">
-                  <span className="text-white">Grupo Pro</span>
+                  <span className="text-white">Grupo Pro-</span>
                   <span className="text-[#E30613]">energeticos</span>
                 </span>{' '}
                 para reportar inconformidades o propuestas relacionadas con la calidad de petrolíferos y el
@@ -231,7 +231,7 @@ export default function QuejasYSugerenciasPage() {
                   <p className="mt-2 text-sm md:text-base text-gray-600 font-medium leading-relaxed">
                     La Norma Oficial Mexicana NOM-016-CRE-2016 establece las especificaciones de calidad de
                     los petrolíferos (gasolinas, diésel y otros) que se comercializan en México. Como
-                    permisionario de expendio al público, Grupo Proenergéticos mantiene este medio para
+                    permisionario de expendio al público, Grupo Pro-energéticos mantiene este medio para
                     recibir quejas y sugerencias de consumidores sobre el cumplimiento de dichas
                     especificaciones, el despacho en estaciones y la atención en punto de venta.
                   </p>
@@ -484,7 +484,7 @@ export default function QuejasYSugerenciasPage() {
                     />
                     <span className="text-[11px] text-gray-400 leading-snug group-hover:text-gray-300">
                       He leído el aviso de privacidad y entiendo que este buzón atiende asuntos vinculados a
-                      petrolíferos y estaciones de Grupo Proenergéticos conforme a la NOM-016-CRE-2016. *
+                      petrolíferos y estaciones de Grupo Pro-energéticos conforme a la NOM-016-CRE-2016. *
                     </span>
                   </label>
 
@@ -531,7 +531,7 @@ export default function QuejasYSugerenciasPage() {
                   Permisionario
                 </p>
                 <p className="text-xs text-gray-800 font-bold leading-snug">
-                  Grupo Proenergéticos — Estaciones Santa Irene (GSI), El Pozole (GPO) y Planta de
+                  Grupo Pro-energéticos — Estaciones Santa Irene (GSI), El Pozole (GPO) y Planta de
                   Distribución en Mazatlán, Sinaloa.
                 </p>
               </div>

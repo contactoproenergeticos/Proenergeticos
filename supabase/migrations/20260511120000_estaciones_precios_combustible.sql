@@ -42,7 +42,7 @@ select 'Santa Irene (GSI)', 'Estación Blast', 1
 where not exists (select 1 from public.estaciones where nombre = 'Santa Irene (GSI)');
 
 insert into public.estaciones (nombre, marca, orden)
-select 'El Pozole (GPO)', 'Grupo Proenergéticos Oil Companies', 2
+select 'El Pozole (GPO)', 'Grupo Pro-energéticos Oil Companies', 2
 where not exists (select 1 from public.estaciones where nombre = 'El Pozole (GPO)');
 
 insert into public.precios_combustible (estacion_id, label, subtitulo, precio, updated_at)

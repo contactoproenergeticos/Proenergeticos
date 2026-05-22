@@ -23,7 +23,7 @@ export default function Page() {
             <div className="absolute inset-0 z-0">
               <Image
                 src="/images/gasolinera/PLANTA/Planta4.jpg"
-                alt="Planta de Almacenamiento Grupo Proenergéticos"
+                alt="Planta de Almacenamiento Grupo Pro-energéticos"
                 fill
                 priority
                 sizes="100vw"
@@ -36,7 +36,7 @@ export default function Page() {
               <div className="flex flex-col gap-2.5 max-md:gap-[10px] sm:gap-6 md:gap-8">
                 <div className="w-full min-w-0 text-center sm:text-left">
                   <p className="m-0 font-black uppercase italic tracking-tighter leading-none text-[clamp(1.05rem,3.8vw,1.65rem)] sm:text-[clamp(1.15rem,2.8vw,1.85rem)] md:text-[1.75rem] lg:text-[2rem] text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.5)]">
-                    Grupo <span className="text-white">Pro</span>
+                    Grupo <span className="text-white">Pro-</span>
                     <span className="text-[#E30613]">energéticos</span>
                   </p>
                   <div className="mt-2.5 sm:mt-3 flex items-center justify-center sm:justify-start gap-2.5">
@@ -65,7 +65,7 @@ export default function Page() {
                   <div className="relative shrink-0 h-[3lh] md:h-[2lh] aspect-[92/100] min-h-[6.2rem] min-w-[5.7rem] md:min-h-[8.4rem] md:min-w-[7.7rem]">
                     <Image
                       src="/images/logotipos/ProEner.png"
-                      alt="Logo Grupo Proenergéticos"
+                      alt="Logo Grupo Pro-energéticos"
                       fill
                       sizes="(max-width: 768px) 120px, (max-width: 1280px) 160px, 220px"
                       className="object-contain object-top drop-shadow-2xl"
@@ -77,7 +77,7 @@ export default function Page() {
                 <p className="max-w-2xl mt-[1lh] mb-[1lh] text-[clamp(0.875rem,3.8vw,0.98rem)] sm:text-sm md:text-xl text-white/95 font-medium italic text-left leading-[1.35] sm:leading-relaxed">
                   En{' '}
                   <span className="font-black uppercase italic">
-                    <span className="text-white">Grupo Pro</span>
+                    <span className="text-white">Grupo Pro-</span>
                     <span className="text-[#E30613]">energéticos</span>
                   </span>{' '}
                   distribuimos combustibles de alta calidad en Mazatlán y zona conurbada — para transporte,

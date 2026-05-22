@@ -24,8 +24,8 @@ export const viewport: Viewport = {
 };
 
 const sharedMetadata: Metadata = {
-  title: 'Grupo Proenergéticos - Estaciones de Servicio',
-  description: 'Sistema de gestión y monitoreo para estaciones de servicio Grupo Proenergéticos.',
+  title: 'Grupo Pro-energéticos - Estaciones de Servicio',
+  description: 'Sistema de gestión y monitoreo para estaciones de servicio Grupo Pro-energéticos.',
   formatDetection: {
     telephone: false,
   },
@@ -33,11 +33,11 @@ const sharedMetadata: Metadata = {
 
 const publicPwaMetadata: Metadata = {
   manifest: '/manifest.webmanifest',
-  applicationName: 'Grupo Proenergéticos',
+  applicationName: 'Grupo Pro-energéticos',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Grupo Proenergéticos',
+    title: 'Grupo Pro-energéticos',
   },
   icons: {
     icon: [

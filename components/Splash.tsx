@@ -22,7 +22,7 @@ const CHAR_MS = {
 
 const GAP_MS = 120;
 
-const TITLE = 'GRUPO PROENERGÉTICOS';
+const TITLE = 'GRUPO PRO-ENERGÉTICOS';
 const TAGLINE_A = 'TECNOLOGÍA EN MOVIMIENTO, ';
 const TAGLINE_B = 'CALIDAD QUE SE SIENTE.';
 const SUBTITLE = 'Tu socio estratégico de combustible en Mazatlán y Sinaloa.';
@@ -172,7 +172,7 @@ export default function Splash({ onComplete }: SplashProps) {
     <motion.div
       className="fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-hidden splash-scene"
       role="dialog"
-      aria-label="Bienvenida Grupo Proenergéticos"
+      aria-label="Bienvenida Grupo Pro-energéticos"
       initial={{ opacity: 1 }}
       animate={{ opacity: phase === 'exit' ? 0 : 1 }}
       transition={{ duration: FADE_OUT_MS / 1000, ease: 'easeInOut' }}
@@ -256,7 +256,7 @@ export default function Splash({ onComplete }: SplashProps) {
                 <div className="relative w-[78%] h-[88%] drop-shadow-[0_24px_48px_rgba(0,0,0,0.65)]">
                   <Image
                     src={LOGO_SRC}
-                    alt="Escudo Grupo Proenergéticos"
+                    alt="Escudo Grupo Pro-energéticos"
                     fill
                     className="object-contain"
                     priority

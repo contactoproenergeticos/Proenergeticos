@@ -115,7 +115,7 @@ export default function Corporativo() {
           <div className="absolute inset-0 opacity-40 sm:opacity-45 md:opacity-40">
             <Image 
               src="/images/gasolinera/PLANTA/Planta1.JPG"
-              alt="Planta Grupo Proenergéticos" 
+              alt="Planta Grupo Pro-energéticos" 
               fill
               className="object-cover object-[65%_center] sm:object-center"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1152px"

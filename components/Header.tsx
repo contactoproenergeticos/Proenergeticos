@@ -158,7 +158,7 @@ const Header: React.FC = () => {
             <div className="relative w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-16 lg:h-16 xl:w-20 xl:h-20">
               <Image 
                 src="/images/logotipos/ProEner_negro.png"
-                alt="Logo ProEnergéticos"
+                alt="Logo Pro-energéticos"
                 fill
                 className="object-contain"
                 priority
@@ -169,7 +169,7 @@ const Header: React.FC = () => {
                 GRUPO
               </span>
               <h1 className="text-[13px] sm:text-[15px] md:text-lg lg:text-lg xl:text-2xl font-black italic tracking-tighter leading-none text-slate-900 uppercase">
-                PRO<span className="text-[#E30613]">ENERGÉTICOS</span>
+                PRO-<span className="text-[#E30613]">ENERGÉTICOS</span>
               </h1>
               <span className="text-[6px] sm:text-[7px] md:text-[9px] lg:text-[10px] font-bold tracking-[0.15em] sm:tracking-[0.3em] uppercase text-gray-500 leading-tight mt-0.5">
                 Sinaloa, México
@@ -273,7 +273,7 @@ const Header: React.FC = () => {
                   <div className="relative w-8 h-8 shrink-0">
                     <Image
                       src="/images/logotipos/ProEner_negro.png"
-                      alt="Logo ProEnergéticos"
+                      alt="Logo Pro-energéticos"
                       fill
                       className="object-contain"
                     />
@@ -283,7 +283,7 @@ const Header: React.FC = () => {
                       GRUPO
                     </span>
                     <span className="text-[13px] font-black italic text-slate-900 uppercase leading-none truncate">
-                      PRO<span className="text-[#E30613]">ENERGÉTICOS</span>
+                      PRO-<span className="text-[#E30613]">ENERGÉTICOS</span>
                     </span>
                   </div>
                 </div>
@@ -348,7 +348,7 @@ const Header: React.FC = () => {
               {/* PIE DECORATIVO */}
               <div className="relative shrink-0 px-4 py-2 border-t border-gray-200/80 text-center">
                 <p className="text-[8px] text-gray-500 font-bold uppercase tracking-[0.3em]">
-                  © Grupo Proenergéticos · Sinaloa
+                  © Grupo Pro-energéticos · Sinaloa
                 </p>
               </div>
             </motion.div>

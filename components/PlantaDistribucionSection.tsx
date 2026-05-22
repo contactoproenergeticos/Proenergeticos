@@ -56,7 +56,7 @@ export default function PlantaDistribucionSection() {
               <div className="relative w-28 h-14 sm:w-32 sm:h-16 md:w-36 md:h-[4.5rem]">
                 <Image
                   src="/images/logotipos/ProEner.png"
-                  alt="ProEnergéticos"
+                  alt="Pro-energéticos"
                   fill
                   className="object-contain drop-shadow-md"
                   unoptimized
@@ -65,7 +65,7 @@ export default function PlantaDistribucionSection() {
             </div>
             <Image
               src="/images/gasolinera/PLANTA/Planta3.jpg"
-              alt="Planta de Distribución Grupo Proenergéticos"
+              alt="Planta de Distribución Grupo Pro-energéticos"
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               unoptimized

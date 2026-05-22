@@ -51,7 +51,7 @@ export async function POST(req: Request) {
                 `;
 
     const data = await resend.emails.send({
-      from: 'Web Grupo Proenergéticos <onboarding@resend.dev>',
+      from: 'Web Grupo Pro-energéticos <onboarding@resend.dev>',
       to: ['contactoproenergeticos@gmail.com'],
       reply_to: correo,
       subject: asunto ? `${prefijoAsunto}: ${asunto}` : `${prefijoAsunto}: ${nombre}`,

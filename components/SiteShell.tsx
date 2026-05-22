@@ -131,7 +131,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-center text-[8px] md:text-[9px] text-gray-600 font-bold uppercase tracking-[0.2em] md:tracking-[0.4em]">
-            <p>© 2026 GRUPO PROENERGÉTICOS S.A. DE C.V. — MAZATLÁN, SINALOA</p>
+            <p>© 2026 GRUPO PRO-ENERGÉTICOS S.A. DE C.V. — MAZATLÁN, SINALOA</p>
             <p className="text-white/20">NOM-016-CRE-2016 CERTIFICACIÓN VIGENTE</p>
           </div>
         </div>

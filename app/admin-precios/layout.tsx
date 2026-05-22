@@ -6,7 +6,7 @@ import { PWA_ADMIN_SCOPE_SCRIPT } from '@/lib/pwaLaunchGuard';
 import { ADMIN_PWA_ICON, ADMIN_PWA_MANIFEST_HREF, ADMIN_PWA_TITLE, ADMIN_PWA_THEME } from '@/lib/adminPwaConfig';
 
 export const metadata: Metadata = {
-  title: 'Admin Precios — Grupo Proenergéticos',
+  title: 'Admin Precios — Grupo Pro-energéticos',
   description: 'Panel de control para captura manual de precios de combustible.',
   /** Manifiesto propio: start_url y scope en /admin-precios (no el de la web pública). */
   manifest: ADMIN_PWA_MANIFEST_HREF,

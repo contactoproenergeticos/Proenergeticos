@@ -29,7 +29,7 @@ export default function Page() {
               <p className="text-lg md:text-2xl text-gray-300 font-medium leading-relaxed italic">
                 En{' '}
                 <span className="font-black uppercase italic">
-                  <span className="text-white">Grupo Pro</span>
+                  <span className="text-white">Grupo Pro-</span>
                   <span className="text-[#E30613]">energeticos</span>
                 </span>{' '}
                 nos dedicamos a impulsar el movimiento de Mazatlán y el sur de Sinaloa con soluciones energéticas de vanguardia.

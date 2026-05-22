@@ -277,7 +277,7 @@ function EstacionesPageContent() {
               </div>
               <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black mb-5 md:mb-6 tracking-tighter leading-[0.95] uppercase italic">
                 <span className="text-white">Grupo </span>
-                <span className="text-white">Pro</span>
+                <span className="text-white">Pro-</span>
                 <span className="text-[#E30613]">energéticos</span>
               </h1>
               <p className="text-base md:text-xl text-gray-300 font-medium leading-relaxed italic max-w-3xl">
@@ -415,7 +415,7 @@ function EstacionesPageContent() {
                 </div>
                 <p className="text-gray-400 text-sm md:text-base font-medium leading-relaxed italic max-w-2xl border-l-4 border-[#E30613] pl-6">
                   Facilita tu carga pagando con tarjetas de crédito, débito y tus monederos de
-                  combustible preferidos. En Grupo ProEnergéticos implementamos la mejor tecnología.
+                  combustible preferidos. En Grupo Pro-energéticos implementamos la mejor tecnología.
                 </p>
               </div>
               <div className="w-full lg:w-auto flex items-center justify-center py-4">

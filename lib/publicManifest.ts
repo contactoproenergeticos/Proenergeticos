@@ -6,8 +6,8 @@ export function publicSiteManifest(): MetadataRoute.Manifest {
 
   return {
     id: '/',
-    name: 'Grupo Proenergéticos — Estaciones de servicio',
-    short_name: 'Grupo Proenergéticos',
+    name: 'Grupo Pro-energéticos — Estaciones de servicio',
+    short_name: 'Grupo Pro-energéticos',
     description:
       'Combustibles de alta calidad y servicio en Mazatlán, Sinaloa. Consulta precios, estaciones y facturación.',
     start_url: '/',

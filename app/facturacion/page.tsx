@@ -27,7 +27,7 @@ const ESTACIONES: EstacionFacturacion[] = [
   {
     clave: 'GPO',
     nombre: 'EL POZOLE (GPO)',
-    razonSocial: 'GRUPO PROENERGETICOS OIL COMPANIES S.A. DE C.V.',
+    razonSocial: 'GRUPO PRO-ENERGETICOS OIL COMPANIES S.A. DE C.V.',
     logo: '/images/logotipos/GPO.png',
     color: 'border-gray-900',
     logoContainerClasses: 'h-12 sm:h-16 md:h-30 w-full relative mb-2 sm:mb-4 md:mb-6',
