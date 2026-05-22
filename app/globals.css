@@ -14,11 +14,11 @@
 
 @layer base {
   html, body {
-    @apply overflow-x-hidden w-full relative;
+    @apply overflow-x-clip w-full relative;
   }
   
   main {
-    @apply overflow-x-hidden w-full relative;
+    @apply overflow-x-clip w-full relative;
   }
 }
 

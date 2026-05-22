@@ -146,8 +146,7 @@ export default function Corporativo() {
               <p className="mt-3 sm:mt-3.5 md:mt-4 text-[clamp(0.72rem,1.8vw+0.5rem,1rem)] text-gray-300 font-medium leading-relaxed max-w-full sm:max-w-xl lg:max-w-2xl">
                 <span className="font-black text-white uppercase">Operaciones en Mazatlán:</span>{' '}
                 Ofrecemos infraestructura estratégica para el suministro industrial, optimizando la
-                logística de flotas y brindando atención corporativa especializada con certificación
-                internacional.
+                logística de flotas y brindando atención corporativa especializada.
               </p>
             </div>
 

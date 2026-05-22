@@ -15,7 +15,7 @@ function telHrefMexico(display: string): string {
 
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen w-full flex flex-col bg-gray-200 font-sans overflow-x-hidden">
+    <div className="min-h-screen w-full flex flex-col bg-gray-200 font-sans overflow-x-clip">
       
       {/* 1. NAVEGACIÓN FIJA */}
       <nav className="fixed top-0 left-0 right-0 z-[100] w-full shadow-lg bg-white">
