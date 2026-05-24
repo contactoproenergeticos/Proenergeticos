@@ -7,14 +7,6 @@ import {
   Ship,
   Shield,
   History,
-  Factory,
-  Sprout,
-  Pickaxe,
-  HardHat,
-  Anchor,
-  Hotel,
-  Truck,
-  Hospital,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -61,59 +53,62 @@ const tabs = [
   { id: 'aditec', label: 'Aditec®', icon: Zap },
 ] as const;
 
+const sectoresImgBase = '/images/sectores productivos';
+
 const sectores = [
-  { name: 'Industrial', icon: Factory, desc: 'Suministro continuo para plantas y maquinaria pesada.' },
-  { name: 'Agricultura', icon: Sprout, desc: 'Diésel y combustibles para el campo y la cosecha.' },
-  { name: 'Pesquero', icon: Ship, desc: 'Abasto confiable para embarcaciones y flota costera.' },
-  { name: 'Minería', icon: Pickaxe, desc: 'Energía para equipos y operaciones de extracción.' },
-  { name: 'Construcción', icon: HardHat, desc: 'Combustible para obra, transporte y maquinaria.' },
-  { name: 'Naviero', icon: Anchor, desc: 'Diésel marino y logística portuaria en Mazatlán.' },
-  { name: 'Hotelero', icon: Hotel, desc: 'Servicio para hoteles, restaurantes y turismo.' },
-  { name: 'Transporte', icon: Truck, desc: 'Gasolina y diésel para flotas y carga regional.' },
-  { name: 'Hospitales', icon: Hospital, desc: 'Respaldo energético para servicios de salud.' },
+  { name: 'Industrial', image: `${sectoresImgBase}/industria.jpg`, desc: 'Suministro continuo para plantas y maquinaria pesada.' },
+  { name: 'Agricultura', image: `${sectoresImgBase}/agricultura.jpg`, desc: 'Diésel y combustibles para el campo y la cosecha.' },
+  { name: 'Pesquero', image: `${sectoresImgBase}/pesquero.jpg`, desc: 'Abasto confiable para embarcaciones y flota costera.' },
+  { name: 'Minería', image: `${sectoresImgBase}/mineria.jpeg`, desc: 'Energía para equipos y operaciones de extracción.' },
+  { name: 'Construcción', image: `${sectoresImgBase}/construccion.jpg`, desc: 'Combustible para obra, transporte y maquinaria.' },
+  { name: 'Naviero', image: `${sectoresImgBase}/naviero.jpg`, desc: 'Diésel marino y logística portuaria en Mazatlán.' },
+  { name: 'Hotelero', image: `${sectoresImgBase}/hotelero.jpg`, desc: 'Servicio para hoteles, restaurantes y turismo.' },
+  { name: 'Transporte', image: `${sectoresImgBase}/transporte.jpg`, desc: 'Gasolina y diésel para flotas y carga regional.' },
+  { name: 'Hospitales', image: `${sectoresImgBase}/hospitales.jpg`, desc: 'Respaldo energético para servicios de salud.' },
 ] as const;
 
 function SectorCard({
   name,
   desc,
-  icon: Icon,
+  image,
   index,
 }: {
   name: string;
   desc: string;
-  icon: React.ComponentType<{ className?: string }>;
+  image: string;
   index: number;
 }) {
   return (
-    <div className="group relative">
+    <div className="group relative h-full">
       <div
-        className="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none shadow-[0_0_20px_rgba(227,6,19,0.3),0_0_40px_rgba(227,6,19,0.1)]"
+        className="absolute -inset-1 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none shadow-[0_0_20px_rgba(227,6,19,0.3),0_0_40px_rgba(227,6,19,0.1)]"
         aria-hidden
       />
-      <motion.div
+      <motion.article
         initial={{ opacity: 0, y: 14 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-20px' }}
         transition={{ duration: 0.35, delay: index * 0.04 }}
         whileHover={{ y: -5 }}
-        className="relative z-10 flex flex-row sm:flex-col items-start sm:items-center text-left sm:text-center gap-4 sm:gap-0 bg-white rounded-2xl md:rounded-3xl p-4 sm:p-5 md:p-6 w-full min-h-0 sm:min-h-[168px] md:min-h-[180px] border border-gray-200 shadow-md overflow-hidden transition-colors duration-300 group-hover:border-2 group-hover:border-[#E30613]"
+        className="relative z-10 flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md transition-colors duration-300 group-hover:border-2 group-hover:border-[#E30613]"
       >
-        <div
-          className="w-11 h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl bg-gray-900 ring-[3px] ring-[#E30613] ring-offset-2 ring-offset-white flex items-center justify-center sm:mb-3 shrink-0 transition-all duration-300 group-hover:bg-[#E30613] group-hover:ring-[#E30613] group-hover:ring-offset-white"
-          aria-hidden
-        >
-          <Icon className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white" />
-        </div>
-        <div className="flex-1 min-w-0 sm:w-full border-l-2 border-[#E30613]/80 pl-3 sm:border-l-0 sm:pl-0">
-          <h4 className="text-sm sm:text-xs md:text-sm font-black text-[#E30613] uppercase tracking-wide leading-tight mb-1.5 sm:mb-2">
+        <div className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-t-2xl bg-gray-900">
+          <Image
+            src={image}
+            alt={name}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            sizes="(max-width: 520px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent" />
+          <h4 className="absolute bottom-3 left-3 right-3 text-sm font-black uppercase tracking-wide text-white drop-shadow-sm sm:text-base">
             {name}
           </h4>
-          <div className="hidden sm:block w-8 h-0.5 bg-[#E30613] mx-auto mb-2 rounded-full" aria-hidden />
-          <p className="text-sm sm:text-[11px] md:text-sm text-gray-600 font-medium leading-relaxed">
-            {desc}
-          </p>
         </div>
-      </motion.div>
+        <div className="flex flex-1 flex-col bg-white p-5 sm:p-6">
+          <p className="text-sm font-medium leading-relaxed text-gray-600 sm:text-base">{desc}</p>
+        </div>
+      </motion.article>
     </div>
   );
 }
@@ -234,7 +229,13 @@ export default function Combustibles() {
             <div className="rounded-xl sm:rounded-2xl md:rounded-3xl bg-gray-100/90 border border-gray-200 p-3 sm:p-4 md:p-6 lg:p-8">
               <div className="grid grid-cols-1 min-[520px]:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
                 {sectores.map((sector, i) => (
-                  <SectorCard key={sector.name} name={sector.name} desc={sector.desc} icon={sector.icon} index={i} />
+                  <SectorCard
+                    key={sector.name}
+                    name={sector.name}
+                    desc={sector.desc}
+                    image={sector.image}
+                    index={i}
+                  />
                 ))}
               </div>
             </div>
