@@ -8,7 +8,7 @@ import { MapPin, Truck, Briefcase, Fuel, Bath, ChevronRight } from 'lucide-react
 const PLANTA_MAP_LINK =
   'https://maps.google.com/?cid=14017863012502601436&g_mp=CiVnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLkdldFBsYWNl';
 
-const PLANTA_DIRECCION = 'Sur, México 15 1002, Urías, 82070 Mazatlán, Sin.';
+const PLANTA_DIRECCION = 'Carretera al Sur, México 15 1002, Colonia Urías, C.P. 82070 Mazatlán, Sin.';
 
 const SERVICIOS = [
   { icon: Truck, label: 'LOGÍSTICA' },
@@ -83,29 +83,11 @@ export default function PlantaDistribucionSection() {
           </div>
 
           {/* Servicios */}
-          <div className="px-6 sm:px-10 md:px-12 pt-5 pb-6">
+          <div className="px-6 sm:px-10 md:px-12 pt-5 pb-6 md:pb-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
               {SERVICIOS.map((s) => (
                 <ServicePill key={s.label} {...s} />
               ))}
-            </div>
-          </div>
-
-          {/* Pagos */}
-          <div className="px-6 sm:px-10 md:px-12 pb-6 md:pb-8">
-            <div className="rounded-2xl bg-gray-800 px-5 py-5 sm:px-8 sm:py-6 text-center">
-              <p className="text-[9px] sm:text-[10px] text-white font-black uppercase tracking-[0.22em] mb-3 sm:mb-4">
-                Aceptamos tarjetas y monederos
-              </p>
-              <div className="relative w-full h-14 sm:h-16 md:h-[4.75rem] mx-auto max-w-lg md:max-w-2xl">
-                <Image
-                  src="/images/pagos/pago tarjetas hor.png"
-                  alt="Métodos de pago"
-                  fill
-                  className="object-contain object-center"
-                  unoptimized
-                />
-              </div>
             </div>
           </div>
 

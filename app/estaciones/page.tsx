@@ -37,6 +37,8 @@ type EstacionData = {
   coords: { lat: number; lng: number };
   imagen: string;
   estacionLogo: string;
+  pagosImagen: string;
+  pagosImagenClass: string;
   servicios: ServicioItem[];
 };
 
@@ -63,6 +65,8 @@ function EstacionCard({
   mapLink,
   coords,
   estacionLogo,
+  pagosImagen,
+  pagosImagenClass,
 }: EstacionData) {
   const abrirMapa = () => {
     if (mapLink) window.open(mapLink, '_blank', 'noopener,noreferrer');
@@ -119,12 +123,13 @@ function EstacionCard({
           <p className="text-[9px] sm:text-[10px] text-white font-black uppercase tracking-[0.22em] mb-3 sm:mb-4">
             Aceptamos tarjetas y monederos
           </p>
-          <div className="relative w-full h-14 sm:h-16 mx-auto max-w-[340px] sm:max-w-none">
+          <div className="flex min-h-[2.75rem] sm:min-h-[3rem] items-center justify-center">
             <Image
-              src="/images/pagos/pago tarjetas hor.png"
+              src={pagosImagen}
               alt="Métodos de pago"
-              fill
-              className="object-contain object-center"
+              width={360}
+              height={56}
+              className={`w-auto max-w-full object-contain object-center ${pagosImagenClass}`}
               unoptimized
             />
           </div>
@@ -200,6 +205,8 @@ const unidades: EstacionData[] = [
     coords: { lat: 23.2561731, lng: -106.405201 },
     imagen: '/images/gasolinera/GSI/gsi3.jpeg',
     estacionLogo: '/images/logotipos/BLAST.png',
+    pagosImagen: '/images/pagos/pago tarjetas hor.png',
+    pagosImagenClass: 'h-11 sm:h-12',
     servicios: [
       { icon: Store, label: 'TIENDA DE CONVENIENCIA', color: 'text-red-600' },
       { icon: Clock, label: '24/7', color: 'text-green-600' },
@@ -215,6 +222,8 @@ const unidades: EstacionData[] = [
     coords: { lat: 23.1926548, lng: -106.2382193 },
     imagen: '/images/gasolinera/GPO/GPO2.jpg',
     estacionLogo: '/images/logotipos/GPO.png',
+    pagosImagen: '/images/pagos/pago tarjetas credito gpo.png',
+    pagosImagenClass: 'h-9 sm:h-10',
     servicios: [
       { icon: Store, label: 'TIENDA DE CONVENIENCIA', color: 'text-orange-600' },
       { icon: Clock, label: '24/7', color: 'text-green-600' },

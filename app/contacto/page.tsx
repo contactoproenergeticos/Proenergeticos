@@ -20,8 +20,11 @@ const ContactInfo = ({
 }: {
   icon: React.ElementType;
   title: string;
-  content: string;
-}) => (
+  content: string | string[];
+}) => {
+  const lines = Array.isArray(content) ? content : [content];
+
+  return (
   <div className="flex gap-4 md:gap-6 items-start p-5 md:p-8 bg-white rounded-3xl shadow-xl border border-gray-100 transition-transform hover:scale-[1.02] w-full max-w-md mx-auto lg:mx-0">
     <div className="bg-red-50 p-3 md:p-4 rounded-full flex-shrink-0 shadow-sm border border-red-100">
       <Icon className="text-[#E30613] w-5 h-5 md:w-8 md:h-8" />
@@ -30,12 +33,20 @@ const ContactInfo = ({
       <h4 className="text-base md:text-xl font-black text-gray-900 tracking-tighter uppercase italic mb-1">
         {title}
       </h4>
-      <p className="text-gray-500 font-medium leading-tight md:leading-relaxed break-words text-[13px] md:text-base">
-        {content}
-      </p>
+      <div className="space-y-0.5">
+        {lines.map((line) => (
+          <p
+            key={line}
+            className="text-gray-500 font-medium leading-tight md:leading-relaxed break-words text-[13px] md:text-base"
+          >
+            {line}
+          </p>
+        ))}
+      </div>
     </div>
   </div>
-);
+  );
+};
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
@@ -221,12 +232,16 @@ export default function Page() {
             </div>
 
             <div className="flex flex-col justify-between space-y-4 lg:space-y-5 h-full">
-              <ContactInfo icon={Phone} title="Teléfono" content="+52 (669) 991 1292" />
-              <ContactInfo icon={Mail} title="Correo electrónico" content="contactoproenergeticos@gmail.com" />
+              <ContactInfo
+                icon={Phone}
+                title="Teléfono"
+                content={['(+52) 669 991 12 92', '(+52) 669 991 01 01', '(+52) 669 990 04 00']}
+              />
+              <ContactInfo icon={Mail} title="Correo electrónico" content="ventas@proenergeticos.mx" />
               <ContactInfo
                 icon={MapPin}
                 title="Oficinas corporativas"
-                content="Sur, México 15 1002, Urías, 82070 Mazatlán, Sin."
+                content="Carretera al Sur, México 15 1002, Colonia Urías, C.P. 82070 Mazatlán, Sin."
               />
               <ContactInfo icon={Clock} title="Horario" content="Lunes a Viernes: 8:00 AM - 5:00 PM" />
             </div>
