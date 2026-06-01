@@ -15,11 +15,17 @@ function isStandalonePwa(): boolean {
   );
 }
 
-/** Marca el acceso directo público cuando la PWA principal arranca fuera de /admin-precios. */
 export default function PublicPwaScope() {
   const pathname = usePathname();
 
   useEffect(() => {
+    // 🛑 TRUCO: Silencia por completo el letrero automático de instalación en móviles
+    const silenceInstallPrompt = (e: Event) => {
+      e.preventDefault();
+    };
+    window.addEventListener('beforeinstallprompt', silenceInstallPrompt);
+
+    // Lógica original de tu PWA
     if (!isStandalonePwa()) return;
     if (pathname?.startsWith('/admin-precios')) return;
 
@@ -28,6 +34,11 @@ export default function PublicPwaScope() {
     } catch {
       /* ignore */
     }
+
+    // Limpieza del evento al desmontar
+    return () => {
+      window.removeEventListener('beforeinstallprompt', silenceInstallPrompt);
+    };
   }, [pathname]);
 
   return null;
