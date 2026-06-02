@@ -5,7 +5,6 @@ import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import AccessibilityButton from '../components/AccessibilityButton';
-import InstallPWA from '../components/InstallPWA';
 import PublicPwaScope from '../components/PublicPwaScope';
 import SplashGate from '../components/SplashGate';
 import { PWA_LAUNCH_GUARD_SCRIPT } from '@/lib/pwaLaunchGuard';
@@ -77,7 +76,6 @@ export default function RootLayout({
         </Script>
         <SplashGate>{children}</SplashGate>
         <PublicPwaScope />
-        <InstallPWA />
         <AccessibilityButton />
       </body>
     </html>
