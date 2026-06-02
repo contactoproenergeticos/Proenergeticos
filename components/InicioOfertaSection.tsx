@@ -119,7 +119,7 @@ const ubicaciones: Ubicacion[] = [
   {
     nombre: 'Planta de Distribución',
     detalle: 'CENTRO LOGÍSTICO · MAZATLÁN',
-    direccion: 'México 15 1002, Urías, 82070 Mazatlán, Sin.',
+    direccion: 'Carretera México 15 1002, Colonia Urías, C.P. 82070 Mazatlán, Sin.',
     href: '/corporativo',
     imagen: '/images/gasolinera/PLANTA/Planta3.jpg',
   },
