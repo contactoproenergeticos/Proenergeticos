@@ -32,7 +32,7 @@ const dieselSlides = [
     title: 'NORMATIVA INTERNACIONAL',
     subtitle: 'Garantizamos el cumplimiento estricto de las normas NOM-016-CRE-2016 y los estándares de la US EPA para la reducción de emisiones contaminantes.',
     techData: 'CERTIFICACIÓN US EPA',
-    image: '/images/Camiiones/Camion6.jpg',
+    image: '/images/Camiiones/Camion2.jpg',
     logo: '/images/logotipos/Diesel_cuadro.png',
     accentColor: '#E30613'
   },
