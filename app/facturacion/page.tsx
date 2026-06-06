@@ -11,6 +11,7 @@ type EstacionFacturacion = {
   nombre: string;
   razonSocial: string;
   logo: string;
+  qrPago: string;
   color: string;
   logoContainerClasses: string;
 };
@@ -21,6 +22,7 @@ const ESTACIONES: EstacionFacturacion[] = [
     nombre: 'SANTA IRENE (GSI)',
     razonSocial: 'GASOLINERA SANTA IRENE, S.A. DE C.V.',
     logo: '/images/logotipos/BLAST.png',
+    qrPago: '/images/pagos/QR_GSI.jpeg',
     color: 'border-[#E30613]',
     logoContainerClasses: 'h-8 sm:h-12 md:h-20 w-full relative mb-2 sm:mb-4 md:mb-6',
   },
@@ -29,6 +31,7 @@ const ESTACIONES: EstacionFacturacion[] = [
     nombre: 'EL POZOLE (GPO)',
     razonSocial: 'GRUPO PRO-ENERGETICOS OIL COMPANIES S.A. DE C.V.',
     logo: '/images/logotipos/GPO.png',
+    qrPago: '/images/pagos/QR_GPO.jpeg',
     color: 'border-gray-900',
     logoContainerClasses: 'h-12 sm:h-16 md:h-30 w-full relative mb-2 sm:mb-4 md:mb-6',
   },
@@ -158,6 +161,21 @@ export default function FacturacionPage() {
                   <p className="mt-2 sm:mt-3 md:mt-4 text-[7px] sm:text-[9px] md:text-[10px] text-gray-400 font-bold uppercase tracking-widest">
                     Tenga su ticket a la mano
                   </p>
+
+                  <div className="mt-3 sm:mt-4 md:mt-6 pt-3 sm:pt-4 md:pt-5 border-t border-gray-100 w-full">
+                    <p className="text-[7px] sm:text-[9px] md:text-[10px] text-gray-500 font-black uppercase tracking-widest mb-2 sm:mb-3">
+                      Ayuda para pago de factura
+                    </p>
+                    <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto rounded-lg overflow-hidden border border-gray-100 bg-white">
+                      <Image
+                        src={estacion.qrPago}
+                        alt={`QR ayuda pago de factura — ${estacion.nombre}`}
+                        fill
+                        className="object-contain p-1"
+                        sizes="(max-width: 640px) 128px, 192px"
+                      />
+                    </div>
+                  </div>
                 </div>
               );
             })}

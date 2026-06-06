@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { 
   Truck, 
-  BarChart3, 
   CreditCard, 
   ShieldCheck, 
   Ship, 
@@ -184,22 +183,29 @@ export default function Corporativo() {
               <h3 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tighter uppercase italic mb-8">
                 Infraestructura <span className="text-[#E30613]">Logística</span>
               </h3>
-              <div className="space-y-8">
-                {[
-                  { icon: ShieldCheck, title: "Garantía de Calidad", desc: "Suministramos combustibles bajo las normas oficiales para proteger tus motores." },
-                  { icon: BarChart3, title: "Reportes Inteligentes", desc: "Accede a datos precisos de consumo por unidad y periodo en tiempo real." },
-                  { icon: Ship, title: "Suministro Marino", desc: "Logística especializada para el sector pesquero y embarcaciones en muelle." }
-                ].map((item, i) => (
-                  <div key={i} className="flex gap-6 items-start">
-                    <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
-                      <item.icon className="w-8 h-8 text-[#E30613]" />
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-black text-gray-900 uppercase italic">{item.title}</h4>
-                      <p className="text-gray-500 font-medium">{item.desc}</p>
-                    </div>
+              <div className="flex flex-col justify-center gap-10 md:gap-14">
+                <div className="flex gap-5 md:gap-6 items-start">
+                  <div className="bg-gray-50 p-4 md:p-5 rounded-2xl border border-gray-100 shadow-sm shrink-0">
+                    <ShieldCheck className="w-8 h-8 md:w-9 md:h-9 text-[#E30613]" />
                   </div>
-                ))}
+                  <div className="pt-1">
+                    <h4 className="text-xl md:text-2xl font-black text-gray-900 uppercase italic mb-3">Garantía de Calidad</h4>
+                    <p className="text-gray-500 font-medium leading-relaxed text-sm md:text-base">
+                      Suministramos combustibles certificados bajo las normas oficiales de calidad, garantizando un producto confiable que protege tus motores y optimiza el rendimiento de tu operación industrial.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-5 md:gap-6 items-start">
+                  <div className="bg-gray-50 p-4 md:p-5 rounded-2xl border border-gray-100 shadow-sm shrink-0">
+                    <Ship className="w-8 h-8 md:w-9 md:h-9 text-[#E30613]" />
+                  </div>
+                  <div className="pt-1">
+                    <h4 className="text-xl md:text-2xl font-black text-gray-900 uppercase italic mb-3">Suministro Marino</h4>
+                    <p className="text-gray-500 font-medium leading-relaxed text-sm md:text-base">
+                      Logística especializada para el sector pesquero y embarcaciones en muelle, con diésel marino de alta calidad y atención directa a la flota costera de Mazatlán y la región.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
