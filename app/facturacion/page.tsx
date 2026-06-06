@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
+import { MessageCircle } from 'lucide-react';
 import SiteShell from '@/components/SiteShell';
 
 type ClaveEstacion = 'GSI' | 'GPO';
@@ -12,6 +13,7 @@ type EstacionFacturacion = {
   razonSocial: string;
   logo: string;
   qrPago: string;
+  whatsappAyuda: string;
   color: string;
   logoContainerClasses: string;
 };
@@ -23,6 +25,7 @@ const ESTACIONES: EstacionFacturacion[] = [
     razonSocial: 'GASOLINERA SANTA IRENE, S.A. DE C.V.',
     logo: '/images/logotipos/BLAST.png',
     qrPago: '/images/pagos/QR_GSI.jpeg',
+    whatsappAyuda: 'https://wa.me/525671254032?text=Hola%2C%20quiero%20facturar!',
     color: 'border-[#E30613]',
     logoContainerClasses: 'h-8 sm:h-12 md:h-20 w-full relative mb-2 sm:mb-4 md:mb-6',
   },
@@ -32,6 +35,7 @@ const ESTACIONES: EstacionFacturacion[] = [
     razonSocial: 'GRUPO PRO-ENERGETICOS OIL COMPANIES S.A. DE C.V.',
     logo: '/images/logotipos/GPO.png',
     qrPago: '/images/pagos/QR_GPO.jpeg',
+    whatsappAyuda: 'https://wa.me/525671254154?text=Hola%2C%20quiero%20facturar!',
     color: 'border-gray-900',
     logoContainerClasses: 'h-12 sm:h-16 md:h-30 w-full relative mb-2 sm:mb-4 md:mb-6',
   },
@@ -164,17 +168,26 @@ export default function FacturacionPage() {
 
                   <div className="mt-3 sm:mt-4 md:mt-6 pt-3 sm:pt-4 md:pt-5 border-t border-gray-100 w-full">
                     <p className="text-[7px] sm:text-[9px] md:text-[10px] text-gray-500 font-black uppercase tracking-widest mb-2 sm:mb-3">
-                      Ayuda para pago de factura
+                      Ayuda por WhatsApp
                     </p>
                     <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto rounded-lg overflow-hidden border border-gray-100 bg-white">
                       <Image
                         src={estacion.qrPago}
-                        alt={`QR ayuda pago de factura — ${estacion.nombre}`}
+                        alt={`QR ayuda por WhatsApp — ${estacion.nombre}`}
                         fill
                         className="object-contain p-1"
                         sizes="(max-width: 640px) 128px, 192px"
                       />
                     </div>
+                    <a
+                      href={estacion.whatsappAyuda}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 sm:mt-4 md:mt-5 w-full inline-flex items-center justify-center gap-2 font-black py-2 sm:py-2.5 md:py-3.5 rounded-lg sm:rounded-xl md:rounded-[1.5rem] transition-all duration-300 text-[8px] sm:text-[10px] md:text-xs italic uppercase tracking-widest bg-[#25D366] hover:bg-[#1ebe57] text-white shadow-md shadow-green-500/20 active:scale-95"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5 shrink-0" aria-hidden />
+                      Abrir WhatsApp
+                    </a>
                   </div>
                 </div>
               );
