@@ -3,6 +3,7 @@ import { updatePrecioCombustibleRow } from '@/lib/adminPreciosUpdate';
 import { parsePrecioInput, validatePrecioInput } from '@/lib/adminPreciosValidation';
 import { leyendasVigenciaAhora } from '@/lib/preciosLeyenda';
 import { getModoCapturaPrecios } from '@/lib/preciosModoCaptura';
+import { sendDataUpdateTestEmail } from '@/lib/sendDataUpdateTestEmail';
 import { getServiceSupabase } from '@/lib/supabaseService';
 
 export const dynamic = 'force-dynamic';
@@ -116,10 +117,17 @@ export async function POST(req: Request) {
     );
   }
 
+  const email = await sendDataUpdateTestEmail({
+    actualizados,
+    origen: 'Panel admin-precios (modo manual)',
+    detalle: `Leyenda vigente: ${leyendas.fecha_actualizacion} · ${leyendas.hora_actualizacion}`,
+  });
+
   return Response.json({
     ok: true,
     mensaje: 'Precios actualizados',
     actualizados,
     leyendas,
+    email,
   });
 }

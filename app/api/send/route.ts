@@ -1,9 +1,15 @@
-import { Resend } from 'resend';
 import { NextResponse } from 'next/server';
-
-const resend = new Resend('re_QYWTfnF7_Q6u2JF9KJjJbKpy3AZj2LPgh');
+import { getMailTransporter, MAIL_FROM } from '@/lib/nodemailerTransport';
 
 export async function POST(req: Request) {
+  const transporter = getMailTransporter();
+  if (!transporter) {
+    return NextResponse.json(
+      { error: 'Faltan EMAIL_USER o GOOGLE_APP_PASSWORD en el entorno del servidor.' },
+      { status: 500 }
+    );
+  }
+
   try {
     const {
       nombre,
@@ -50,10 +56,10 @@ export async function POST(req: Request) {
                 ${telefono ? `<p style="color: #6b7280; font-size: 11px; text-transform: uppercase; font-weight: bold; margin: 0 0 5px 0;">Teléfono</p><p style="color: #111827; font-size: 16px; font-weight: bold; margin: 0 0 20px 0;">${telefono}</p>` : ''}
                 `;
 
-    const data = await resend.emails.send({
-      from: 'Web Grupo Pro-energéticos <onboarding@resend.dev>',
+    const data = await transporter.sendMail({
+      from: MAIL_FROM,
       to: ['contactoproenergeticos@gmail.com'],
-      reply_to: correo,
+      replyTo: correo,
       subject: asunto ? `${prefijoAsunto}: ${asunto}` : `${prefijoAsunto}: ${nombre}`,
       html: `
         <div style="background-color: #f4f4f4; padding: 40px 10px; font-family: sans-serif;">
@@ -93,7 +99,8 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ success: true, data });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Error al enviar correo.';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
