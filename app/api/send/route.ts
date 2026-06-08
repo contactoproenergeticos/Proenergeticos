@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getMailTransporter, MAIL_FROM } from '@/lib/nodemailerTransport';
 
-const DEFAULT_TO = 'sistemas@proenergeticos.mx';
+const MAIL_ADMINISTRACION = 'administracion@proenergeticos.mx';
+const MAIL_VENTAS = 'ventas@proenergeticos.mx';
 
 type SendFormBody = {
   nombre?: unknown;
@@ -20,38 +21,24 @@ type SendFormBody = {
   dispensario?: unknown;
 };
 
-const TO_BY_TIPO: Record<string, string | string[]> = {
-  COTIZACION: 'ventas@proenergeticos.mx',
-  CONTACTO: ['sistemas@proenergeticos.mx', 'ventas@proenergeticos.mx'],
-  QUEJAS_SUGERENCIAS: DEFAULT_TO,
-};
+function resolveMailTo(tipoFormulario: string): string[] {
+  const tipoKey = tipoFormulario.toUpperCase();
 
-const TO_BY_SECCION: Record<string, string | string[]> = {
-  corporativo: 'ventas@proenergeticos.mx',
-  contacto: ['sistemas@proenergeticos.mx', 'ventas@proenergeticos.mx'],
-  quejas: DEFAULT_TO,
-};
+  if (tipoKey === 'COTIZACION') {
+    return [MAIL_VENTAS];
+  }
+
+  if (tipoKey === 'CONTACTO' || tipoKey === 'QUEJAS_SUGERENCIAS') {
+    return [MAIL_ADMINISTRACION];
+  }
+
+  return [MAIL_ADMINISTRACION];
+}
 
 function asTrimmedString(value: unknown, fallback = ''): string {
   if (value == null) return fallback;
   const text = String(value).trim();
   return text || fallback;
-}
-
-function resolveMailTo(tipoFormulario: string, seccion: string): string[] {
-  const tipoKey = tipoFormulario.toUpperCase();
-  const seccionKey = seccion.toLowerCase();
-
-  const candidate =
-    TO_BY_SECCION[seccionKey] ??
-    TO_BY_TIPO[tipoKey] ??
-    DEFAULT_TO;
-
-  const list = (Array.isArray(candidate) ? candidate : [candidate])
-    .map((entry) => asTrimmedString(entry))
-    .filter(Boolean);
-
-  return list.length > 0 ? list : [DEFAULT_TO];
 }
 
 export async function POST(req: Request) {
@@ -91,7 +78,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const mailTo = resolveMailTo(tipoFormulario, seccion);
+  const mailTo = resolveMailTo(tipoFormulario);
 
   const esCotizacion = tipoFormulario === 'COTIZACION';
   const esQuejas = tipoFormulario === 'QUEJAS_SUGERENCIAS';
