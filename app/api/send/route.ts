@@ -1,6 +1,59 @@
 import { NextResponse } from 'next/server';
 import { getMailTransporter, MAIL_FROM } from '@/lib/nodemailerTransport';
 
+const DEFAULT_TO = 'sistemas@proenergeticos.mx';
+
+type SendFormBody = {
+  nombre?: unknown;
+  correo?: unknown;
+  mensaje?: unknown;
+  tipo?: unknown;
+  tipoFormulario?: unknown;
+  seccion?: unknown;
+  categoria?: unknown;
+  asunto?: unknown;
+  telefono?: unknown;
+  estacion?: unknown;
+  motivo?: unknown;
+  fechaHecho?: unknown;
+  horaHecho?: unknown;
+  dispensario?: unknown;
+};
+
+const TO_BY_TIPO: Record<string, string | string[]> = {
+  COTIZACION: 'ventas@proenergeticos.mx',
+  CONTACTO: ['sistemas@proenergeticos.mx', 'ventas@proenergeticos.mx'],
+  QUEJAS_SUGERENCIAS: DEFAULT_TO,
+};
+
+const TO_BY_SECCION: Record<string, string | string[]> = {
+  corporativo: 'ventas@proenergeticos.mx',
+  contacto: ['sistemas@proenergeticos.mx', 'ventas@proenergeticos.mx'],
+  quejas: DEFAULT_TO,
+};
+
+function asTrimmedString(value: unknown, fallback = ''): string {
+  if (value == null) return fallback;
+  const text = String(value).trim();
+  return text || fallback;
+}
+
+function resolveMailTo(tipoFormulario: string, seccion: string): string[] {
+  const tipoKey = tipoFormulario.toUpperCase();
+  const seccionKey = seccion.toLowerCase();
+
+  const candidate =
+    TO_BY_SECCION[seccionKey] ??
+    TO_BY_TIPO[tipoKey] ??
+    DEFAULT_TO;
+
+  const list = (Array.isArray(candidate) ? candidate : [candidate])
+    .map((entry) => asTrimmedString(entry))
+    .filter(Boolean);
+
+  return list.length > 0 ? list : [DEFAULT_TO];
+}
+
 export async function POST(req: Request) {
   const transporter = getMailTransporter();
   if (!transporter) {
@@ -10,45 +63,61 @@ export async function POST(req: Request) {
     );
   }
 
+  let body: SendFormBody;
   try {
-    const {
-      nombre,
-      correo,
-      mensaje,
-      tipo,
-      categoria,
-      asunto,
-      telefono,
-      estacion,
-      motivo,
-      fechaHecho,
-      horaHecho,
-      dispensario,
-    } = await req.json();
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: 'Cuerpo inválido.' }, { status: 400 });
+  }
 
-    const esCotizacion = tipo === 'COTIZACION';
-    const esQuejas = tipo === 'QUEJAS_SUGERENCIAS';
+  const tipoFormulario = asTrimmedString(body.tipoFormulario ?? body.tipo, 'CONTACTO');
+  const seccion = asTrimmedString(body.seccion, 'contacto');
+  const nombre = asTrimmedString(body.nombre);
+  const correo = asTrimmedString(body.correo);
+  const mensaje = asTrimmedString(body.mensaje);
+  const categoria = asTrimmedString(body.categoria);
+  const asunto = asTrimmedString(body.asunto);
+  const telefono = asTrimmedString(body.telefono);
+  const estacion = asTrimmedString(body.estacion);
+  const motivo = asTrimmedString(body.motivo);
+  const fechaHecho = asTrimmedString(body.fechaHecho);
+  const horaHecho = asTrimmedString(body.horaHecho);
+  const dispensario = asTrimmedString(body.dispensario);
 
-    const colorHeader = esCotizacion ? '#E30613' : esQuejas ? '#B91C1C' : '#111827';
-    const tituloCorreo = esCotizacion
-      ? 'SOLICITUD DE COTIZACIÓN'
-      : esQuejas
-        ? 'BUZÓN DE QUEJAS Y SUGERENCIAS (NOM-016)'
-        : 'CONSULTA GENERAL';
-    const prefijoAsunto = esCotizacion
-      ? '💼 COTIZACIÓN'
-      : esQuejas
-        ? `📋 ${categoria ?? 'MENSAJE'}`
-        : '📩 CONTACTO';
-    const origenCorreo = esCotizacion
-      ? 'Sección Corporativa'
-      : esQuejas
-        ? 'Buzón NOM-016-CRE-2016 — Estaciones de servicio'
-        : 'Formulario de Contacto';
+  if (!nombre || !correo || !mensaje) {
+    return NextResponse.json(
+      { error: 'Faltan campos obligatorios: nombre, correo o mensaje.' },
+      { status: 400 }
+    );
+  }
 
-    const filasQuejas =
-      esQuejas &&
-      `
+  const mailTo = resolveMailTo(tipoFormulario, seccion);
+
+  const esCotizacion = tipoFormulario === 'COTIZACION';
+  const esQuejas = tipoFormulario === 'QUEJAS_SUGERENCIAS';
+
+  const colorHeader = esCotizacion ? '#E30613' : esQuejas ? '#B91C1C' : '#111827';
+  const tituloCorreo = esCotizacion
+    ? 'SOLICITUD DE COTIZACIÓN'
+    : esQuejas
+      ? 'BUZÓN DE QUEJAS Y SUGERENCIAS (NOM-016)'
+      : 'CONSULTA GENERAL';
+  const prefijoAsunto = esCotizacion
+    ? '💼 COTIZACIÓN'
+    : esQuejas
+      ? `📋 ${categoria || 'MENSAJE'}`
+      : '📩 CONTACTO';
+  const origenCorreo = esCotizacion
+    ? 'Sección Corporativa'
+    : esQuejas
+      ? 'Buzón NOM-016-CRE-2016 — Estaciones de servicio'
+      : seccion === 'contacto'
+        ? 'Formulario de Contacto'
+        : `Formulario web (${seccion})`;
+
+  const filasQuejas =
+    esQuejas &&
+    `
                 ${motivo ? `<p style="color: #6b7280; font-size: 11px; text-transform: uppercase; font-weight: bold; margin: 0 0 5px 0;">Motivo / tema NOM</p><p style="color: #111827; font-size: 16px; font-weight: bold; margin: 0 0 20px 0;">${motivo}</p>` : ''}
                 ${estacion ? `<p style="color: #6b7280; font-size: 11px; text-transform: uppercase; font-weight: bold; margin: 0 0 5px 0;">Estación</p><p style="color: #111827; font-size: 16px; font-weight: bold; margin: 0 0 20px 0;">${estacion}</p>` : ''}
                 ${fechaHecho ? `<p style="color: #6b7280; font-size: 11px; text-transform: uppercase; font-weight: bold; margin: 0 0 5px 0;">Fecha del hecho</p><p style="color: #111827; font-size: 16px; font-weight: bold; margin: 0 0 20px 0;">${fechaHecho}${horaHecho ? ` — ${horaHecho}` : ''}</p>` : ''}
@@ -56,9 +125,10 @@ export async function POST(req: Request) {
                 ${telefono ? `<p style="color: #6b7280; font-size: 11px; text-transform: uppercase; font-weight: bold; margin: 0 0 5px 0;">Teléfono</p><p style="color: #111827; font-size: 16px; font-weight: bold; margin: 0 0 20px 0;">${telefono}</p>` : ''}
                 `;
 
+  try {
     const data = await transporter.sendMail({
       from: MAIL_FROM,
-      to: ['sistemas@proenergeticos.mx'],
+      to: mailTo,
       replyTo: correo,
       subject: asunto ? `${prefijoAsunto}: ${asunto}` : `${prefijoAsunto}: ${nombre}`,
       html: `
