@@ -1,4 +1,4 @@
-import { getMailTransporter, MAIL_FROM } from '@/lib/nodemailerTransport';
+import { getMailTransporter, getMailFrom } from '@/lib/nodemailerTransport';
 
 const NOTIFICATION_TO = ['sistemas@proenergeticos.mx', 'ventas@proenergeticos.mx'];
 
@@ -35,8 +35,9 @@ export async function sendDataUpdateTestEmail(
   });
 
   try {
+    const mailFrom = getMailFrom();
     const info = await transporter.sendMail({
-      from: MAIL_FROM,
+      from: mailFrom,
       to: NOTIFICATION_TO,
       subject: `Notificación — ${summary.origen}`,
       html: `
@@ -54,7 +55,7 @@ export async function sendDataUpdateTestEmail(
             ${summary.detalle ? `<li><strong>Detalle:</strong> ${summary.detalle}</li>` : ''}
           </ul>
           <p style="color: #9ca3af; font-size: 12px; margin-top: 24px;">
-            Remitente: ${MAIL_FROM} · Destinos: ${NOTIFICATION_TO.join(', ')}
+            Remitente: ${mailFrom} · Destinos: ${NOTIFICATION_TO.join(', ')}
           </p>
         </div>
       `,

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getMailTransporter, MAIL_FROM } from '@/lib/nodemailerTransport';
+import { getMailTransporter, getMailFrom } from '@/lib/nodemailerTransport';
 
 const MAIL_ADMINISTRACION = 'administracion@proenergeticos.mx';
 const MAIL_VENTAS = 'ventas@proenergeticos.mx';
@@ -225,7 +225,7 @@ export async function POST(req: Request) {
 
   try {
     const data = await transporter.sendMail({
-      from: MAIL_FROM,
+      from: getMailFrom(),
       to: config.mailTo,
       replyTo: correo,
       subject: config.subject(nombre),
