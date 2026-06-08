@@ -24,7 +24,6 @@ type SendFormBody = {
 };
 
 type FormMailConfig = {
-  mailTo: string[];
   subject: (nombre: string) => string;
   tipoMensajeLabel: string;
   tipoMensajeBadgeStyle: string;
@@ -40,18 +39,60 @@ function asTrimmedString(value: unknown, fallback = ''): string {
   return text || fallback;
 }
 
-function normalizeFormTipo(raw: string): FormTipo {
-  const key = raw.toUpperCase();
-  if (key === 'COTIZACION') return 'COTIZACION';
-  if (key === 'QUEJAS_SUGERENCIAS') return 'QUEJAS_SUGERENCIAS';
+function normalizeFormKey(raw: string): string {
+  return raw
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase()
+    .trim()
+    .replace(/[\s-]+/g, '_')
+    .replace(/_+/g, '_');
+}
+
+function normalizeFormTipo(raw: string, seccion = ''): FormTipo {
+  const key = normalizeFormKey(raw);
+  const seccionKey = normalizeFormKey(seccion);
+
+  if (key === 'COTIZACION' || key === 'COTIZACIONES') {
+    return 'COTIZACION';
+  }
+
+  if (
+    key === 'QUEJAS_SUGERENCIAS' ||
+    key === 'QUEJAS' ||
+    key === 'QUEJA' ||
+    key === 'SUGERENCIAS' ||
+    key === 'SUGERENCIA' ||
+    key.startsWith('QUEJAS_') ||
+    key.includes('QUEJA') ||
+    key.includes('SUGERENCIA') ||
+    key.includes('NOM_016') ||
+    key.includes('NOM016') ||
+    seccionKey === 'QUEJAS' ||
+    seccionKey.includes('QUEJA')
+  ) {
+    return 'QUEJAS_SUGERENCIAS';
+  }
+
+  if (key === 'CONTACTO') {
+    return 'CONTACTO';
+  }
+
   return 'CONTACTO';
+}
+
+function resolveMailTo(tipo: FormTipo): string[] {
+  if (tipo === 'COTIZACION') {
+    return [MAIL_VENTAS];
+  }
+
+  return [MAIL_ADMINISTRACION];
 }
 
 function getFormMailConfig(tipo: FormTipo): FormMailConfig {
   switch (tipo) {
     case 'COTIZACION':
       return {
-        mailTo: [MAIL_VENTAS],
         subject: (nombre) => `[WEB: Cotización] - Solicitud de ${nombre}`,
         tipoMensajeLabel: 'Tipo de Mensaje: COTIZACIÓN',
         tipoMensajeBadgeStyle:
@@ -63,7 +104,6 @@ function getFormMailConfig(tipo: FormTipo): FormMailConfig {
       };
     case 'QUEJAS_SUGERENCIAS':
       return {
-        mailTo: [MAIL_ADMINISTRACION],
         subject: (nombre) => `[WEB: Quejas y Sugerencias] - Reporte de ${nombre}`,
         tipoMensajeLabel: 'Tipo de Mensaje: QUEJA / SUGERENCIA',
         tipoMensajeBadgeStyle:
@@ -76,7 +116,6 @@ function getFormMailConfig(tipo: FormTipo): FormMailConfig {
     case 'CONTACTO':
     default:
       return {
-        mailTo: [MAIL_ADMINISTRACION],
         subject: (nombre) => `[WEB: Contacto] - Mensaje de ${nombre}`,
         tipoMensajeLabel: 'Tipo de Mensaje: CONTACTO',
         tipoMensajeBadgeStyle:
@@ -187,8 +226,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Cuerpo inválido.' }, { status: 400 });
   }
 
+  const seccion = asTrimmedString(body.seccion);
   const tipoFormulario = normalizeFormTipo(
-    asTrimmedString(body.tipoFormulario ?? body.tipo, 'CONTACTO')
+    asTrimmedString(body.tipoFormulario ?? body.tipo, 'CONTACTO'),
+    seccion
   );
   const nombre = asTrimmedString(body.nombre);
   const correo = asTrimmedString(body.correo);
@@ -226,7 +267,7 @@ export async function POST(req: Request) {
   try {
     const data = await transporter.sendMail({
       from: getMailFrom(),
-      to: config.mailTo,
+      to: resolveMailTo(tipoFormulario),
       replyTo: correo,
       subject: config.subject(nombre),
       html: buildMailHtml(config, { nombre, correo, mensaje, asunto, extraRows }),

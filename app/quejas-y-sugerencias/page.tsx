@@ -38,6 +38,9 @@ const MOTIVOS_NOM = [
   { value: 'otro', label: 'Otro motivo relacionado con petrolíferos' },
 ] as const;
 
+/** Debe coincidir con normalizeFormTipo() en app/api/send/route.ts */
+const FORM_TIPO = 'QUEJAS_SUGERENCIAS' as const;
+
 const REQUISITOS_NOM = [
   'Buzón accesible para usuarios y consumidores de nuestras estaciones de servicio.',
   'Tratamiento de quejas y sugerencias vinculadas a la calidad de petrolíferos conforme a la NOM-016-CRE-2016.',
@@ -106,7 +109,9 @@ export default function QuejasYSugerenciasPage() {
           correo: formData.correo,
           telefono: formData.telefono,
           mensaje: formData.mensaje,
-          tipo: 'QUEJAS_SUGERENCIAS',
+          tipo: FORM_TIPO,
+          tipoFormulario: FORM_TIPO,
+          seccion: 'quejas',
           categoria: etiquetaCategoria,
           asunto: `${etiquetaCategoria} — ${motivoLabel}`,
           estacion: estacionLabel,
