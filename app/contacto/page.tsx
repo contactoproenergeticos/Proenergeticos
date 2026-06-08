@@ -51,6 +51,7 @@ const ContactInfo = ({
 export default function Page() {
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [formData, setFormData] = useState({
     nombre: '',
     correo: '',
@@ -59,22 +60,65 @@ export default function Page() {
   });
 
   const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-  const hasNumbersInNombre = /\d/.test(formData.nombre);
-  const isNombreValid = formData.nombre.trim().length >= 3 && !hasNumbersInNombre;
-  const isCorreoValid = validateEmail(formData.correo);
-  const isAsuntoValid = formData.asunto.trim().length >= 5;
-  const isMensajeValid = formData.mensaje.trim().length >= 10;
-  const isFormValid = isNombreValid && isCorreoValid && isAsuntoValid && isMensajeValid;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
+  const getFieldErrors = (data: typeof formData) => ({
+    nombre:
+      data.nombre.trim().length === 0
+        ? 'Indica tu nombre.'
+        : data.nombre.trim().length < 3
+          ? 'El nombre debe tener al menos 3 caracteres.'
+          : '',
+    correo:
+      data.correo.trim().length === 0
+        ? 'Indica tu correo electrónico.'
+        : !validateEmail(data.correo)
+          ? 'Escribe un correo válido.'
+          : '',
+    asunto:
+      data.asunto.trim().length === 0
+        ? 'Indica un asunto.'
+        : data.asunto.trim().length < 5
+          ? 'El asunto debe tener al menos 5 caracteres.'
+          : '',
+    mensaje:
+      data.mensaje.trim().length === 0
+        ? 'Escribe tu mensaje.'
+        : data.mensaje.trim().length < 10
+          ? 'El mensaje debe tener al menos 10 caracteres.'
+          : '',
+  });
+
+  const fieldErrors = getFieldErrors(formData);
+
+  const syncField = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | React.FormEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.currentTarget;
     if (status !== 'idle') setStatus('idle');
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => (prev[name as keyof typeof prev] === value ? prev : { ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setTouched((prev) => ({ ...prev, [e.target.name]: true }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!isFormValid) return;
+
+    const fd = new FormData(e.currentTarget);
+    const syncedData = {
+      nombre: String(fd.get('nombre') ?? formData.nombre).trim(),
+      correo: String(fd.get('correo') ?? formData.correo).trim(),
+      asunto: String(fd.get('asunto') ?? formData.asunto).trim(),
+      mensaje: String(fd.get('mensaje') ?? formData.mensaje).trim(),
+    };
+
+    setFormData(syncedData);
+    setTouched({ nombre: true, correo: true, asunto: true, mensaje: true });
+
+    const errors = getFieldErrors(syncedData);
+    if (Object.values(errors).some((error) => error !== '')) return;
+
     setLoading(true);
     setStatus('idle');
 
@@ -83,15 +127,16 @@ export default function Page() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
+          ...syncedData,
           tipo: 'CONTACTO',
-          asunto: formData.asunto,
+          asunto: syncedData.asunto,
         }),
       });
 
       if (response.ok) {
         setStatus('success');
         setFormData({ nombre: '', correo: '', asunto: '', mensaje: '' });
+        setTouched({});
       } else {
         setStatus('error');
       }
@@ -101,6 +146,8 @@ export default function Page() {
       setLoading(false);
     }
   };
+
+  const showError = (field: keyof typeof formData) => touched[field] && fieldErrors[field];
 
   return (
     <SiteShell>
@@ -180,43 +227,83 @@ export default function Page() {
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5 flex-1 flex flex-col">
-                  <input
-                    name="nombre"
-                    required
-                    value={formData.nombre}
-                    onChange={handleChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white font-bold text-sm outline-none focus:bg-white focus:text-gray-900 transition-all"
-                    placeholder="Nombre completo"
-                  />
-                  <input
-                    type="email"
-                    name="correo"
-                    required
-                    value={formData.correo}
-                    onChange={handleChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white font-bold text-sm outline-none focus:bg-white focus:text-gray-900 transition-all"
-                    placeholder="Correo electrónico"
-                  />
-                  <input
-                    name="asunto"
-                    required
-                    value={formData.asunto}
-                    onChange={handleChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white font-bold text-sm outline-none focus:bg-white focus:text-gray-900 transition-all"
-                    placeholder="Asunto"
-                  />
-                  <textarea
-                    name="mensaje"
-                    required
-                    value={formData.mensaje}
-                    onChange={handleChange}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white font-bold text-sm outline-none resize-none focus:bg-white focus:text-gray-900 min-h-[140px]"
-                    placeholder="¿En qué podemos ayudarte?"
-                  />
+                  <div>
+                    <input
+                      name="nombre"
+                      required
+                      value={formData.nombre}
+                      onChange={syncField}
+                      onInput={syncField}
+                      onBlur={handleBlur}
+                      autoComplete="name"
+                      className={`w-full bg-white/5 border rounded-xl px-5 py-4 text-white font-bold text-sm outline-none focus:bg-white focus:text-gray-900 transition-all ${
+                        showError('nombre') ? 'border-red-400' : 'border-white/10'
+                      }`}
+                      placeholder="Nombre completo"
+                    />
+                    {showError('nombre') && (
+                      <p className="mt-2 text-xs font-semibold text-red-300">{fieldErrors.nombre}</p>
+                    )}
+                  </div>
+                  <div>
+                    <input
+                      type="email"
+                      name="correo"
+                      required
+                      value={formData.correo}
+                      onChange={syncField}
+                      onInput={syncField}
+                      onBlur={handleBlur}
+                      autoComplete="email"
+                      className={`w-full bg-white/5 border rounded-xl px-5 py-4 text-white font-bold text-sm outline-none focus:bg-white focus:text-gray-900 transition-all ${
+                        showError('correo') ? 'border-red-400' : 'border-white/10'
+                      }`}
+                      placeholder="Correo electrónico"
+                    />
+                    {showError('correo') && (
+                      <p className="mt-2 text-xs font-semibold text-red-300">{fieldErrors.correo}</p>
+                    )}
+                  </div>
+                  <div>
+                    <input
+                      name="asunto"
+                      required
+                      value={formData.asunto}
+                      onChange={syncField}
+                      onInput={syncField}
+                      onBlur={handleBlur}
+                      autoComplete="off"
+                      className={`w-full bg-white/5 border rounded-xl px-5 py-4 text-white font-bold text-sm outline-none focus:bg-white focus:text-gray-900 transition-all ${
+                        showError('asunto') ? 'border-red-400' : 'border-white/10'
+                      }`}
+                      placeholder="Asunto"
+                    />
+                    {showError('asunto') && (
+                      <p className="mt-2 text-xs font-semibold text-red-300">{fieldErrors.asunto}</p>
+                    )}
+                  </div>
+                  <div>
+                    <textarea
+                      name="mensaje"
+                      required
+                      value={formData.mensaje}
+                      onChange={syncField}
+                      onInput={syncField}
+                      onBlur={handleBlur}
+                      autoComplete="off"
+                      className={`w-full bg-white/5 border rounded-xl px-5 py-4 text-white font-bold text-sm outline-none resize-none focus:bg-white focus:text-gray-900 min-h-[140px] ${
+                        showError('mensaje') ? 'border-red-400' : 'border-white/10'
+                      }`}
+                      placeholder="¿En qué podemos ayudarte?"
+                    />
+                    {showError('mensaje') && (
+                      <p className="mt-2 text-xs font-semibold text-red-300">{fieldErrors.mensaje}</p>
+                    )}
+                  </div>
 
                   <button
                     type="submit"
-                    disabled={loading || !isFormValid}
+                    disabled={loading}
                     className="w-full py-4 md:py-5 rounded-2xl font-black uppercase tracking-[0.15em] text-sm bg-[#E30613] text-white flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-700"
                   >
                     {loading ? (
