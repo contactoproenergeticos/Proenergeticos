@@ -58,7 +58,7 @@ export async function POST(req: Request) {
 
     const data = await transporter.sendMail({
       from: MAIL_FROM,
-      to: ['contactoproenergeticos@gmail.com'],
+      to: ['sistemas@proenergeticos.mx'],
       replyTo: correo,
       subject: asunto ? `${prefijoAsunto}: ${asunto}` : `${prefijoAsunto}: ${nombre}`,
       html: `
