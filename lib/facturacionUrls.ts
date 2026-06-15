@@ -32,8 +32,9 @@ function valorPorClaveInsensitive(
 }
 
 export function enlacesDesdeFilaFacturacion(fila: Record<string, unknown>): FacturacionLinks {
+  // En Supabase las URLs quedaron en la columna opuesta; se invierten al exponerlas.
   return {
-    GSI: valorPorClaveInsensitive(fila, 'GSI'),
-    GPO: valorPorClaveInsensitive(fila, 'GPO'),
+    GSI: valorPorClaveInsensitive(fila, 'GPO'),
+    GPO: valorPorClaveInsensitive(fila, 'GSI'),
   };
 }
