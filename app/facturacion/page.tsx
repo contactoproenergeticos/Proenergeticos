@@ -2,10 +2,15 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import { MessageCircle } from 'lucide-react';
+import { Megaphone, MessageCircle } from 'lucide-react';
 import SiteShell from '@/components/SiteShell';
 
 type ClaveEstacion = 'GSI' | 'GPO';
+
+type AvisoFacturacion = {
+  titulo: string;
+  url: string;
+};
 
 type EstacionFacturacion = {
   clave: ClaveEstacion;
@@ -16,6 +21,7 @@ type EstacionFacturacion = {
   whatsappAyuda: string;
   color: string;
   logoContainerClasses: string;
+  aviso?: AvisoFacturacion;
 };
 
 const ESTACIONES: EstacionFacturacion[] = [
@@ -38,6 +44,10 @@ const ESTACIONES: EstacionFacturacion[] = [
     whatsappAyuda: 'https://wa.me/525671254032?text=Hola%2C%20quiero%20facturar!',
     color: 'border-gray-900',
     logoContainerClasses: 'h-12 sm:h-16 md:h-30 w-full relative mb-2 sm:mb-4 md:mb-6',
+    aviso: {
+      titulo: 'Aviso importante',
+      url: 'https://proenergeticosfactura.nexusfuel.mx',
+    },
   },
 ];
 
@@ -141,6 +151,46 @@ export default function FacturacionPage() {
                   <p className="sm:hidden text-gray-500 font-black text-[7px] tracking-widest uppercase leading-tight mb-3 px-1">
                     {estacion.razonSocial}
                   </p>
+
+                  {estacion.aviso ? (
+                    <aside
+                      className="w-full mb-3 sm:mb-4 md:mb-6 rounded-xl sm:rounded-2xl md:rounded-3xl border border-[#E30613]/25 bg-gradient-to-b from-[#E30613]/10 to-white px-2.5 sm:px-3.5 md:px-5 py-2.5 sm:py-3.5 md:py-5 text-left shadow-sm"
+                      role="status"
+                      aria-label={`Aviso de ${estacion.nombre}`}
+                    >
+                      <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2 md:mb-3">
+                        <span className="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 rounded-full bg-[#E30613] text-white shrink-0">
+                          <Megaphone className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4" aria-hidden />
+                        </span>
+                        <p className="text-[7px] sm:text-[9px] md:text-[11px] font-black uppercase tracking-widest text-[#E30613]">
+                          {estacion.aviso.titulo}
+                        </p>
+                      </div>
+                      <p className="text-[7px] sm:text-[10px] md:text-xs font-bold uppercase tracking-wide text-gray-800 leading-relaxed">
+                        A partir del{' '}
+                        <span className="text-[#E30613] font-black">22 de septiembre</span>
+                        {' a las '}
+                        <span className="text-[#E30613] font-black">10:00 AM</span>
+                        {', los tickets generados se facturan en nuestro nuevo sistema de facturación.'}
+                      </p>
+                      <a
+                        href={estacion.aviso.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 sm:mt-3 md:mt-4 w-full inline-flex items-center justify-center font-black py-1.5 sm:py-2 md:py-2.5 rounded-lg sm:rounded-xl md:rounded-2xl bg-gray-900 hover:bg-[#E30613] text-white transition-all duration-300 text-[7px] sm:text-[9px] md:text-[11px] italic uppercase tracking-widest active:scale-95"
+                      >
+                        Nuevo sistema de facturación
+                      </a>
+                      <a
+                        href={estacion.aviso.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-1.5 sm:mt-2 block text-center text-[6px] sm:text-[8px] md:text-[10px] font-bold text-[#E30613] break-all leading-tight hover:underline"
+                      >
+                        {estacion.aviso.url.replace(/^https?:\/\//, '')}
+                      </a>
+                    </aside>
+                  ) : null}
 
                   {portalDisponible ? (
                     <a
