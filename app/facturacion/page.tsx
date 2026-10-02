@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
-import { Megaphone, MessageCircle } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 import SiteShell from '@/components/SiteShell';
 
 type ClaveEstacion = 'GSI' | 'GPO';
@@ -16,12 +16,8 @@ type EstacionFacturacion = {
   whatsappAyuda: string;
   color: string;
   logoContainerClasses: string;
+  urlForzada?: string;
 };
-
-const AVISO_GPO = {
-  titulo: 'Aviso importante — El Pozole (GPO)',
-  url: 'https://proenergeticosfactura.nexusfuel.mx',
-} as const;
 
 const ESTACIONES: EstacionFacturacion[] = [
   {
@@ -43,6 +39,7 @@ const ESTACIONES: EstacionFacturacion[] = [
     whatsappAyuda: 'https://wa.me/525671254032?text=Hola%2C%20quiero%20facturar!',
     color: 'border-gray-900',
     logoContainerClasses: 'h-12 sm:h-16 md:h-30 w-full relative mb-2 sm:mb-4 md:mb-6',
+    urlForzada: 'https://proenergeticosfactura.nexusfuel.mx',
   },
 ];
 
@@ -92,7 +89,7 @@ export default function FacturacionPage() {
     () =>
       ESTACIONES.map((estacion) => ({
         ...estacion,
-        link: links[estacion.clave],
+        link: estacion.urlForzada ?? links[estacion.clave],
       })),
     [links]
   );
@@ -198,42 +195,6 @@ export default function FacturacionPage() {
               );
             })}
           </div>
-
-          <aside
-            className="mt-3 sm:mt-5 md:mt-8 w-full rounded-2xl sm:rounded-[2rem] md:rounded-[2.5rem] border border-[#E30613]/25 bg-white shadow-xl px-4 sm:px-8 md:px-10 py-4 sm:py-6 md:py-7"
-            role="status"
-            aria-label="Aviso de El Pozole (GPO)"
-          >
-            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-              <span className="inline-flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-[#E30613] text-white shrink-0">
-                <Megaphone className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" aria-hidden />
-              </span>
-              <p className="text-[8px] sm:text-[10px] md:text-xs font-black uppercase tracking-widest text-[#E30613]">
-                {AVISO_GPO.titulo}
-              </p>
-            </div>
-            <p className="text-center text-[9px] sm:text-sm md:text-base font-bold uppercase tracking-wide text-gray-800 leading-relaxed">
-              A partir del <span className="text-[#E30613] font-black">22 de septiembre</span> a las <span className="text-[#E30613] font-black">10:00 AM</span>, los tickets generados se facturan en nuestro nuevo sistema de facturación.
-            </p>
-            <div className="mt-3 sm:mt-4 md:mt-5 flex flex-col items-center gap-1.5 sm:gap-2">
-              <a
-                href={AVISO_GPO.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center font-black py-2 sm:py-2.5 md:py-3 px-5 sm:px-7 md:px-8 rounded-lg sm:rounded-xl md:rounded-2xl bg-gray-900 hover:bg-[#E30613] text-white transition-all duration-300 text-[8px] sm:text-[10px] md:text-xs italic uppercase tracking-widest active:scale-95"
-              >
-                Nuevo sistema de facturación
-              </a>
-              <a
-                href={AVISO_GPO.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[7px] sm:text-[9px] md:text-[11px] font-bold text-[#E30613] break-all hover:underline"
-              >
-                {AVISO_GPO.url.replace(/^https?:\/\//, '')}
-              </a>
-            </div>
-          </aside>
 
           <div className="mt-3 sm:mt-6 md:mt-12 text-center opacity-60">
             <p className="text-gray-400 text-[8px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-[0.25em] sm:tracking-[0.3em] italic leading-tight">
